@@ -29,7 +29,7 @@ func main() {
 	// Routes
 	r.Route("/api/v1", func(r chi.Router) {
 		// Debug
-		r.HandleFunc("GET /health", v1.Health)
+		r.HandleFunc("GET /health", v1.HealthHandler)
 	})
 
 	// SwaggerUI
