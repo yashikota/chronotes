@@ -14,7 +14,7 @@ func TestSuccessJsonResponse(t *testing.T) {
 	// テストデータ
 	testData := map[string]string{"key": "value"}
 
-	SuccessJsonResponse(w, testData)
+	SuccessJSONResponse(w, testData)
 
 	// ステータスコードを確認
 	if w.Code != http.StatusOK {
@@ -48,7 +48,7 @@ func TestErrorJsonResponse(t *testing.T) {
 	testStatus := http.StatusBadRequest
 
 	// 関数を呼び出し
-	ErrorJsonResponse(w, testStatus, testError)
+	ErrorJSONResponse(w, testStatus, testError)
 
 	// ステータスコードを確認
 	if w.Code != testStatus {
