@@ -24,7 +24,7 @@ build:
 
 # API
 .PHONY: api-lint
-api-lint: api-bundle
+api-lint: bundle
 	docker run --rm -v ${PWD}:/spec redocly/cli lint --config docs/api/redoc.yaml docs/api/bundled.yaml
 
 .PHONY: bundle
