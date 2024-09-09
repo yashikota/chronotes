@@ -1,0 +1,16 @@
+# See https://redocly.com/docs/cli/configuration/
+
+extends:
+  - recommended
+
+rules:
+  # A sample custom rule. Read more about rules: https://redocly.com/docs/cli/rules/
+  info-license: off
+  no-server-example.com: off
+  rule/operation-description:
+    subject:
+      type: Operation
+      property: description
+    assertions:
+      defined: true
+      minLength: 10

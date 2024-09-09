@@ -1,0 +1,16 @@
+get:
+  summary: 疎通確認
+  description: 生きていればpongを返す
+  operationId: getHealth
+  security: []
+  tags:
+    - debug
+  responses:
+    '200':
+      description: OK
+    '400':
+      description: Bad Request
+    '500':
+      description: Internal Server Error
+    default:
+      description: Generic Error

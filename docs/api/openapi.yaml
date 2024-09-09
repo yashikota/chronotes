@@ -1,0 +1,28 @@
+openapi: 3.1.0
+
+info:
+  title: 58hack api
+  description: 58hack api specification
+  version: "0.1"
+
+servers:
+  - url: http://localhost:8080/api
+    description: dev
+  - url: https://58hack.yashikota.com/api
+    description: prd
+
+tags:
+  - name: debug
+    description: デバッグ
+
+paths:
+  /v1/health:
+    $ref: "paths/v1_health.yaml"
+
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      description: Session token for API
+      scheme: bearer
+      bearerFormat: JWT
