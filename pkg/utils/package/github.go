@@ -98,6 +98,7 @@ func main() {
 					fmt.Println("No files changed or no detailed information available")
 				}
 				fmt.Println()
+				// test
 			}
 		}
 	}
