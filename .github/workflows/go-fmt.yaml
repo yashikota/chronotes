@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -25,18 +27,7 @@ jobs:
       - name: Go Fmt
         run: go fmt ./...
 
-      - name: Commit and Push
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Check if there are changes after go fmt
-          if [[ `git status --porcelain` ]]; then
-            git add .
-            git commit -m "Go fmt"
-            git push origin ${{ github.head_ref }}
-          else
-            echo "No changes to commit"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Auto commit
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update Go Fmt"
