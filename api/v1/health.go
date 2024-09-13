@@ -7,5 +7,5 @@ import (
 )
 
 func HealthHandler(w http.ResponseWriter, r *http.Request) {
-		utils.SuccessJSONResponse(w, map[string]string{"message": "pong"})
+	utils.SuccessJSONResponse(w, map[string]string{"message": "pong"})
 }
