@@ -12,8 +12,7 @@ const (
 	Token = "DISCORD_BOT_TOKEN"
 )
 
-// main 関数はボットの起動を管理し、指定されたチャンネルIDでメッセージを取得します
-func main() {
+func Discordprovider() {
 	channelID := "channel_ID" // 取得したいチャンネルのIDを設定
 
 	runBot(channelID)
