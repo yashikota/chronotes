@@ -4,15 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
 )
 
-func Githubprovider() (map[string][]map[string]interface{}, error) {
+func GitHubProvider(userID string) (map[string][]map[string]interface{}, error) {
 	ctx := context.Background()
-	token := "GITHUB_TOKEN" // GitHub Personal Access Token
+	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
 		return nil, fmt.Errorf("GITHUB_TOKEN environment variable is required")
 	}
@@ -22,13 +23,12 @@ func Githubprovider() (map[string][]map[string]interface{}, error) {
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
-	user := "TaueIkumi"
 	filterCategories := []string{"This Week", "This Month", "This Year"}
 
 	categorizedCommits := make(map[string][]map[string]interface{})
 
 	// リポジトリリストを取得
-	repos, _, err := client.Repositories.List(ctx, user, nil)
+	repos, _, err := client.Repositories.List(ctx, userID, nil)
 	if err != nil {
 		return nil, err
 	}
