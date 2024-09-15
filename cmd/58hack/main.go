@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	v1 "github.com/yashikota/58hack/api/v1"
+	v1 "github.com/yashikota/chronotes/api/v1"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

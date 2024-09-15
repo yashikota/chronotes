@@ -1,4 +1,4 @@
-# 58hack
+# chronotes
 
 Usage: `make <target>`  
 

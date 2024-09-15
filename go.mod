@@ -1,4 +1,4 @@
-module github.com/yashikota/58hack
+module github.com/yashikota/chronotes
 
 go 1.22.2
 
