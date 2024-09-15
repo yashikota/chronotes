@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	h "github.com/yashikota/58hack/api/v1"
+	h "github.com/yashikota/chronotes/api/v1"
 )
 
 func TestHealthHandler(t *testing.T) {

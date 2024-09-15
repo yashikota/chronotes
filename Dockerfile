@@ -15,7 +15,7 @@ COPY . .
 
 ARG TARGETARCH
 
-RUN CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./cmd/58hack
+RUN CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./cmd/chronotes
 
 EXPOSE 5678
 
@@ -47,7 +47,7 @@ ARG TARGETARCH
 # source code into the container.
 RUN --mount=type=cache,target=/go/pkg/mod/ \
     --mount=type=bind,target=. \
-    CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./cmd/58hack
+    CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./cmd/chronotes
 
 ### ---------------- ###
 ### Production image ###

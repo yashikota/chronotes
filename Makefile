@@ -24,7 +24,7 @@ dev: ## Run development environment
 	docker compose up --build
 
 build: ## Build Docker image
-	docker build -t 58hack .
+	docker build -t chronotes .
 
 # API commands
 .PHONY: api-lint bundle docs

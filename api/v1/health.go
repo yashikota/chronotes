@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/yashikota/58hack/pkg/utils"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func HealthHandler(w http.ResponseWriter, r *http.Request) {
