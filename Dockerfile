@@ -7,15 +7,17 @@ FROM --platform=$BUILDPLATFORM golang:${GO_VERSION} AS dev
 WORKDIR /app
 
 COPY go.mod go.sum ./
-RUN go mod download -x
 
+RUN go mod download -x
 RUN go install github.com/air-verse/air@latest
 
 COPY . .
 
 ARG TARGETARCH
 
-RUN CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./src
+RUN CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./cmd/58hack
+
+EXPOSE 5678
 
 CMD ["air", "-c", ".air.toml"]
 
@@ -45,24 +47,26 @@ ARG TARGETARCH
 # source code into the container.
 RUN --mount=type=cache,target=/go/pkg/mod/ \
     --mount=type=bind,target=. \
-    CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./src
+    CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./cmd/58hack
 
 ### ---------------- ###
 ### Production image ###
 ### ---------------- ###
-FROM gcr.io/distroless/static-debian12 AS final
+FROM gcr.io/distroless/static-debian12:nonroot AS final
 
 # Copy the executable from the "build" stage.
 COPY --from=build /bin/server /bin/
+
+WORKDIR /app
 
 # Copy OpenAPI files.
 COPY ./docs/api ./docs/api
 
 # Timezone
-ENV TZ Asia/Tokyo
+ENV TZ=Asia/Tokyo
 
 # Expose the port that the application listens on.
-EXPOSE 8080
+EXPOSE 5678
 
 # What the container should run when it is started.
 ENTRYPOINT [ "/bin/server" ]
