@@ -1,5 +1,7 @@
 # chronotes
 
+[![codecov](https://codecov.io/github/yashikota/chronotes/graph/badge.svg?token=8LK1D9KWN5)](https://codecov.io/github/yashikota/chronotes)
+
 Usage: `make <target>`  
 
 | command | description |
