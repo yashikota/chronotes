@@ -27,7 +27,7 @@ build: ## Build Docker image
 	docker build -t chronotes .
 
 # API commands
-.PHONY: api-lint bundle docs
+.PHONY: api-lint bundle docs tsp-install tsp
 
 api-lint: bundle ## Lint API documentation
 	docker run --rm -v ${PWD}:/spec redocly/cli lint --config docs/api/redoc.yaml docs/api/bundled.yaml
@@ -38,6 +38,9 @@ bundle: ## Bundle OpenAPI specification
 docs: ## Generate API documentation
 	docker run --rm -v ${PWD}:/spec redocly/cli build-docs docs/api/openapi.yaml --o docs/api/redoc.html
 
+tsp: ## Genrate Open API from Typespec
+	docker run --rm -v ${PWD}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/tsp
+
 # Docker commands
 .PHONY: docker-lint
 
@@ -46,7 +49,7 @@ docker-lint: ## Lint Dockerfile
 
 # Test comannds
 # See: https://note.com/reality_eng/n/n338cc671968e
-.PHONY: coverage
+.PHONY: coverage ## Generate test coverage
 
 coverage:
 	go test ./... -short -v -covermode=count -coverprofile=coverage.out | tee test_output.txt

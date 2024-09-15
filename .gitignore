@@ -31,4 +31,9 @@ docs/api/bundled.yaml
 coverage.txt
 test_output.txt
 
+# Default TypeSpec output
+node_modules/
+tsp-output/
+dist/
+
 # End of https://www.toptal.com/developers/gitignore/api/go
