@@ -1,14 +1,14 @@
 openapi: 3.1.0
 
 info:
-  title: 58hack api
-  description: 58hack api specification
+  title: chronotes api
+  description: chronotes api specification
   version: "0.1"
 
 servers:
   - url: http://localhost:8080/api
     description: dev
-  - url: https://58hack.yashikota.com/api
+  - url: https://chronotes.yashikota.com/api
     description: prd
 
 tags:
