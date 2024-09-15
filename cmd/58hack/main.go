@@ -39,7 +39,7 @@ func main() {
 	})
 
 	// Start server
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	if err := http.ListenAndServe(":5678", r); err != nil {
 		log.Fatal(err)
 	}
 }
