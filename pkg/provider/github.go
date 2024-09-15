@@ -8,10 +8,11 @@ import (
 	"time"
 
 	"github.com/google/go-github/github"
+	model "github.com/yashikota/58hack/model/v1/provider"
 	"golang.org/x/oauth2"
 )
 
-func GitHubProvider(userID string) (map[string][]map[string]interface{}, error) {
+func GitHubProvider(userID string) (map[string][]model.CommitInfo, error) {
 	ctx := context.Background()
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
@@ -25,7 +26,7 @@ func GitHubProvider(userID string) (map[string][]map[string]interface{}, error) 
 
 	filterCategories := []string{"This Week", "This Month", "This Year"}
 
-	categorizedCommits := make(map[string][]map[string]interface{})
+	categorizedCommits := make(map[string][]model.CommitInfo)
 
 	// リポジトリリストを取得
 	repos, _, err := client.Repositories.List(ctx, userID, nil)
@@ -92,9 +93,9 @@ func categorizeCommitDate(date time.Time) []string {
 }
 
 // Function to filter commits by multiple categories
-func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []string, client *github.Client, repo *github.Repository) (map[string][]map[string]interface{}, error) {
-	filteredCommits := make(map[string][]map[string]interface{})
-	ctx := context.Background() // Add context here for API calls
+func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []string, client *github.Client, repo *github.Repository) (map[string][]model.CommitInfo, error) {
+	filteredCommits := make(map[string][]model.CommitInfo)
+	ctx := context.Background()
 
 	for _, commit := range commits {
 		if commit.Author != nil && commit.Commit.Author.Date != nil {
@@ -108,7 +109,7 @@ func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []
 			for _, filterCat := range categories {
 				if categoryMap[filterCat] {
 					if _, exists := filteredCommits[filterCat]; !exists {
-						filteredCommits[filterCat] = []map[string]interface{}{}
+						filteredCommits[filterCat] = []model.CommitInfo{}
 					}
 
 					// コミットの詳細を取得
@@ -119,24 +120,24 @@ func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []
 					}
 
 					// コミットのファイルの情報を収集
-					fileChanges := []map[string]interface{}{}
+					fileChanges := []model.FileChange{}
 					if detailedCommit.Files != nil {
 						for _, file := range detailedCommit.Files {
-							fileChange := map[string]interface{}{
-								"Filename":  file.Filename,
-								"Status":    file.Status,
-								"Additions": file.Additions,
-								"Deletions": file.Deletions,
-								"Changes":   file.Changes,
-								"Patch":     file.Patch,
+							fileChange := model.FileChange{
+								Filename:  *file.Filename,
+								Status:    *file.Status,
+								Additions: *file.Additions,
+								Deletions: *file.Deletions,
+								Changes:   *file.Changes,
+								Patch:     *file.Patch,
 							}
 							fileChanges = append(fileChanges, fileChange)
 						}
 					}
 
-					commitInfo := map[string]interface{}{
-						"Message": *commit.Commit.Message,
-						"Changes": fileChanges,
+					commitInfo := model.CommitInfo{
+						Message: *commit.Commit.Message,
+						Changes: fileChanges,
 					}
 
 					filteredCommits[filterCat] = append(filteredCommits[filterCat], commitInfo)
