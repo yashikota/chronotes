@@ -4,6 +4,6 @@ services:
       - TZ=Asia/Tokyo
     build:
       context: .
-      target: final
+      target: dev
     ports:
-      - 8080:8080
+      - 5678:5678
