@@ -28,4 +28,4 @@ jobs:
         run: go fmt ./...
 
       - name: Check for changes
-        run: git diff --exit-code
+        run: git diff --name-only --exit-code
