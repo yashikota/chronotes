@@ -19,7 +19,7 @@ services:
       - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=chronotes
-      - POSTGRES_DB_PASSWORD=${POSTGRES_DB_PASSWORD}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - TZ=Asia/Tokyo
     expose:
       - 5432
@@ -34,7 +34,7 @@ services:
     ports:
       - "5433:8081"
     environment:
-      - PGWEB_DATABASE_URL=postgres://postgres:${POSTGRES_DB_PASSWORD}@db:5432/chronotes?sslmode=disable
+      - PGWEB_DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@db:5432/chronotes?sslmode=disable
       - TZ=Asia/Tokyo
     depends_on:
       db:
