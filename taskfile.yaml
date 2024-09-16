@@ -63,4 +63,3 @@ tasks:
     desc: "Generate Open API from TypeSpec"
     cmds:
       - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
-
