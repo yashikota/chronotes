@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	model "github.com/yashikota/chronotes/model/v1/provider"
 )
 
-func DiscordProvider(channelID string) {
+func DiscordProvider(channelID string) (map[string][]model.Message, error) {
 	token := os.Getenv("DISCORD_TOKEN")
 	if token == "" {
 		log.Fatal("DISCORD_TOKEN environment variable is not set")
@@ -22,6 +23,7 @@ func DiscordProvider(channelID string) {
 
 	categorizedMessages := categorizeMessages(messages)
 	printCategorizedMessages(categorizedMessages)
+	return categorizedMessages, nil
 }
 
 func runBot(channelID, token string) ([]*discordgo.Message, error) {
@@ -55,7 +57,7 @@ func getMessageHistory(s *discordgo.Session, channelID string) ([]*discordgo.Mes
 	return messages, nil
 }
 
-func categorizeMessages(messages []*discordgo.Message) map[string][]map[string]interface{} {
+func categorizeMessages(messages []*discordgo.Message) map[string][]model.Message {
 	now := time.Now()
 
 	startOfWeek := now.AddDate(0, 0, -int(now.Weekday()))
@@ -63,17 +65,17 @@ func categorizeMessages(messages []*discordgo.Message) map[string][]map[string]i
 	startOfQuarter := time.Date(now.Year(), (now.Month()-1)/3*3+1, 1, 0, 0, 0, 0, time.Local)
 	startOfYear := time.Date(now.Year(), 1, 1, 0, 0, 0, 0, time.Local)
 
-	var weeklyMessages []map[string]interface{}
-	var monthlyMessages []map[string]interface{}
-	var quarterlyMessages []map[string]interface{}
-	var yearlyMessages []map[string]interface{}
+	var weeklyMessages []model.Message
+	var monthlyMessages []model.Message
+	var quarterlyMessages []model.Message
+	var yearlyMessages []model.Message
 
 	for _, message := range messages {
-		messageData := map[string]interface{}{
-			"ID":        message.ID,
-			"Author":    message.Author.Username,
-			"Content":   message.Content,
-			"Timestamp": message.Timestamp.Format(time.RFC3339),
+		messageData := model.Message{
+			ID:        message.ID,
+			Author:    message.Author.Username,
+			Content:   message.Content,
+			Timestamp: message.Timestamp,
 		}
 
 		timestamp := message.Timestamp
@@ -91,7 +93,7 @@ func categorizeMessages(messages []*discordgo.Message) map[string][]map[string]i
 		}
 	}
 
-	return map[string][]map[string]interface{}{
+	return map[string][]model.Message{
 		"This Week":    weeklyMessages,
 		"This Month":   monthlyMessages,
 		"This Quarter": quarterlyMessages,
@@ -99,11 +101,12 @@ func categorizeMessages(messages []*discordgo.Message) map[string][]map[string]i
 	}
 }
 
-func printCategorizedMessages(messages map[string][]map[string]interface{}) {
+func printCategorizedMessages(messages map[string][]model.Message) {
 	for period, msgs := range messages {
 		fmt.Printf("Messages from %s:\n", period)
 		for _, message := range msgs {
-			fmt.Printf("Message ID: %s\nAuthor: %s\nContent: %s\nDate: %s\n\n", message["ID"], message["Author"], message["Content"], message["Timestamp"])
+			fmt.Printf("Message ID: %s\nAuthor: %s\nContent: %s\nDate: %s\n\n",
+				message.ID, message.Author, message.Content, message.Timestamp.Format(time.RFC3339))
 		}
 	}
 }
