@@ -897,9 +897,9 @@ components:
       enum:
         - v1
 servers:
-  - url: https://chronotes.yashikota.com/api/v1
+  - url: https://chronotes.yashikota.com
     description: prd
     variables: {}
-  - url: http://localhost:5678/api/v1
+  - url: http://localhost:5678
     description: dev
     variables: {}

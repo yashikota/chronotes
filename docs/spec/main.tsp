@@ -12,8 +12,8 @@ using TypeSpec.Versioning;
   description: "Chronotes api specification"
 })
 @versioned(Versions)
-@server("http://localhost:5678/api/v1", "dev")
-@server("https://chronotes.yashikota.com/api/v1", "prd")
+@server("http://localhost:5678", "dev")
+@server("https://chronotes.yashikota.com", "prd")
 namespace chronotes;
 
 enum Versions {

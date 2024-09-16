@@ -4,6 +4,41 @@ services:
       - TZ=Asia/Tokyo
     build:
       context: .
-      target: dev
+      target: final
     ports:
       - 5678:5678
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres
+    restart: always
+    user: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=chronotes
+      - POSTGRES_DB_PASSWORD=${POSTGRES_DB_PASSWORD}
+      - TZ=Asia/Tokyo
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgweb:
+    image: sosedoff/pgweb
+    ports:
+      - "5433:8081"
+    environment:
+      - PGWEB_DATABASE_URL=postgres://postgres:${POSTGRES_DB_PASSWORD}@db:5432/chronotes?sslmode=disable
+      - TZ=Asia/Tokyo
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
