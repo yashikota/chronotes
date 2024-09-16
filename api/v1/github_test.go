@@ -14,7 +14,7 @@ func TestGithubHandler(t *testing.T) {
 	if githubToken == "" {
 		t.Fatal("GITHUB_TOKEN environment variable is not set")
 	}
-	userID := os.Getenv("GITHUB_USER_ID")
+	userID := "TaueIkumi"
 	if userID == "" {
 		t.Fatal("GITHUB_USER_ID environment variable is not set")
 	}
