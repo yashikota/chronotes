@@ -15,7 +15,8 @@ lint: ## Run Go linters
 
 test: ## Run Go tests
 	GITHUB_TOKEN=$(GITHUB_TOKEN) go build ./...
-	GITHUB_TOKEN=$(GITHUB_TOKEN) go test -v ./...
+	GITHUB_TOKEN=$(GITHUB_TOKEN) go test -v ./... -coverprofile=coverage.txt
+
 
 
 fmt: ## Format Go code
