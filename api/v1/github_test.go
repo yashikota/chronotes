@@ -42,13 +42,19 @@ func TestGithubHandler(t *testing.T) {
 
 		// 各カテゴリにコミットがある場合、その内容を出力
 		for _, commit := range commits {
-			// コミットメッセージも表示（コミットの内容）
-			fmt.Printf("  Commit Message: %s\n", commit.Message)
+			// コミットメッセージと期間を出力
+			fmt.Printf("Commit Message: %s\n", commit.Message)
+			fmt.Printf("Period: %s\n", commit.Period)
 
 			// ファイルごとの変更を出力
 			for _, file := range commit.Changes {
-				fmt.Printf("    File: %s, Status: %s, Additions: %d, Deletions: %d, Changes: %d, Patch: %s\n",
-					file.Filename, file.Status, file.Additions, file.Deletions, file.Changes, file.Patch)
+				fmt.Printf("File Name: %s\n", file.Filename)
+				fmt.Printf("Status: %s\n", file.Status)
+				fmt.Printf("Additions: %d\n", file.Additions)
+				fmt.Printf("Deletions: %d\n", file.Deletions)
+				fmt.Printf("Changes: %d\n", file.Changes)
+				fmt.Printf("Patch: %s\n", file.Patch)
+				fmt.Println()
 			}
 		}
 	}

@@ -132,8 +132,6 @@ func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []
 				}
 
 				// コミットの詳細を取得する
-				//log.Printf("Fetching details for commit SHA: %s", *commit.SHA)
-
 				detailedCommit, _, err := client.Repositories.GetCommit(ctx, *repo.Owner.Login, *repo.Name, *commit.SHA)
 				if err != nil {
 					log.Printf("Error getting commit details for SHA %s: %v", *commit.SHA, err)
@@ -156,15 +154,13 @@ func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []
 						}
 
 						fileChanges = append(fileChanges, fileChange)
-
-						// 追加された行や削除された行の情報をログに出力
-						// log.Printf("File: %s, Additions: %d, Deletions: %d, Patch: %s", *file.Filename, *file.Additions, *file.Deletions, *file.Patch)
 					}
 				}
 
 				commitInfo := model.CommitInfo{
 					Message: *commit.Commit.Message,
 					Changes: fileChanges,
+					Period:  commitCategory, // 追加: コミットが属する期間
 				}
 
 				filteredCommits[filterCat] = append(filteredCommits[filterCat], commitInfo)

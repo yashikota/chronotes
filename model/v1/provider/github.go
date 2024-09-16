@@ -3,6 +3,7 @@ package model
 type CommitInfo struct {
 	Message string       `json:"message"`
 	Changes []FileChange `json:"changes"`
+	Period  string       `json:"period"`
 }
 
 type FileChange struct {
