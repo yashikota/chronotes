@@ -36,4 +36,7 @@ node_modules/
 tsp-output/
 dist/
 
+# secrets
+.env
+
 # End of https://www.toptal.com/developers/gitignore/api/go

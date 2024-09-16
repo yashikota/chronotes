@@ -1,4 +1,4 @@
-name: Go Fmt
+name: Go fmt
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   job:
-    name: Go Fmt
+    name: Go fmt
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -27,7 +27,5 @@ jobs:
       - name: Go Fmt
         run: go fmt ./...
 
-      - name: Auto commit
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Update Go Fmt"
+      - name: Check for changes
+        run: git diff --name-only --exit-code

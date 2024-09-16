@@ -1,4 +1,4 @@
-name: Go Lint Review
+name: Go lint Review
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   job:
-    name: Go Lint Review
+    name: Go lint Review
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
