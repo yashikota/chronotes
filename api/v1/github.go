@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/yashikota/58hack/pkg/provider"
+	"github.com/yashikota/chronotes/pkg/provider"
 )
 
 func GithubHandler(w http.ResponseWriter, r *http.Request) {

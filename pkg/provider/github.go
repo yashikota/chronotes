@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/github"
-	model "github.com/yashikota/58hack/model/v1/provider"
+	model "github.com/yashikota/chronotes/model/v1/provider"
 	"golang.org/x/oauth2"
 )
 
