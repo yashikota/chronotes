@@ -14,8 +14,9 @@ lint: ## Run Go linters
 	staticcheck ./...
 
 test: ## Run Go tests
-	go build ./...
-	go test -v ./...
+	GITHUB_TOKEN=$(GITHUB_TOKEN) go build ./...
+	GITHUB_TOKEN=$(GITHUB_TOKEN) go test -v ./...
+
 
 fmt: ## Format Go code
 	go fmt ./...
@@ -52,8 +53,8 @@ docker-lint: ## Lint Dockerfile
 .PHONY: coverage ## Generate test coverage
 
 coverage:
-	go test ./... -short -v -covermode=count -coverprofile=coverage.out | tee test_output.txt
-	go tool cover -func=coverage.out | awk '/total:/ {print "| **" $$1 "** | **" $$3 "** |"}' | tee coverage.txt
+	GITHUB_TOKEN=$(GITHUB_TOKEN) go test ./... -short -v -covermode=count -coverprofile=coverage.out | tee test_output.txt
+	GITHUB_TOKEN=$(GITHUB_TOKEN) go tool cover -func=coverage.out | awk '/total:/ {print "| **" $$1 "** | **" $$3 "** |"}' | tee coverage.txt
 	cat test_output.txt | grep 'ok.*coverage' | awk '{sub("github.com/your/package/", "", $$2); print "| " $$2 " | " $$5 " |"}' | tee -a coverage.txt
 	echo "## Test Coverage Report" > coverage_with_header.txt
 	echo "| Package           | Coverage |" >> coverage_with_header.txt
