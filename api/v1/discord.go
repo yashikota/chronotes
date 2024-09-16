@@ -8,21 +8,19 @@ import (
 	"github.com/yashikota/chronotes/pkg/provider"
 )
 
-func GithubHandler(w http.ResponseWriter, r *http.Request) {
-	userID := r.URL.Query().Get("userID")
-	if userID == "" {
-		http.Error(w, "userID is required", http.StatusBadRequest)
+func DiscordHandler(w http.ResponseWriter, r *http.Request) {
+	channelID := r.URL.Query().Get("channelID")
+	if channelID == "" {
+		http.Error(w, "channelID is required", http.StatusBadRequest)
 		return
 	}
 
-	data, err := provider.GitHubProvider(userID)
+	data, err := provider.GitHubProvider(channelID)
 	if err != nil {
 		http.Error(w, "Failed to fetch data from GitHub", http.StatusInternalServerError)
 		log.Println("Error fetching data:", err)
 		return
 	}
-
-	log.Printf("Fetched data: %v", data) // デバッグ用ログ
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(data); err != nil {

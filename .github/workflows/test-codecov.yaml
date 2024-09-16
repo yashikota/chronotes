@@ -3,6 +3,9 @@ name: Test coverage
 on:
   push
 
+env :
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+  
 jobs:
   job:
     name: Test coverage

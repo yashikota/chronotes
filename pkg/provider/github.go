@@ -24,127 +24,150 @@ func GitHubProvider(userID string) (map[string][]model.CommitInfo, error) {
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
-	filterCategories := []string{"This Week", "This Month", "This Year"}
+	// 上位カテゴリから順にフィルタリングするように順序を設定
+	filterCategories := []string{"Today", "This Week", "This Month", "This Year", "Q1 (Jan-Mar)", "Q2 (Apr-Jun)", "Q3 (Jul-Sep)", "Q4 (Oct-Dec)"}
 
 	categorizedCommits := make(map[string][]model.CommitInfo)
 
 	// リポジトリリストを取得
 	repos, _, err := client.Repositories.List(ctx, userID, nil)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error fetching repositories: %v", err)
 	}
 
 	for _, repo := range repos {
-		fmt.Println("Repository:", *repo.Name)
+		if repo == nil || repo.Owner == nil || repo.Name == nil {
+			log.Printf("Skipping repository due to nil Owner or Name")
+			continue
+		}
 
 		// 各リポジトリのコミット履歴を取得
 		commits, _, err := client.Repositories.ListCommits(ctx, *repo.Owner.Login, *repo.Name, nil)
 		if err != nil {
-			return nil, err
+			continue
+		}
+		if len(commits) == 0 {
+			// リポジトリが空である場合はスキップ
+			log.Printf("Skipping empty repository %s", *repo.Name)
+			continue
 		}
 
-		// 指定したカテゴリのコミットのみをフィルタリング
+		// 指定したカテゴリのコミットのみをフィルタリング（重複を避ける）
 		filteredCommits, err := filterCommitsByCategories(commits, filterCategories, client, repo)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error filtering commits for repository %s: %v", *repo.Name, err)
 		}
 
+		// フィルタリングされたコミットのデバッグ出力
 		for category, commits := range filteredCommits {
-			categorizedCommits[category] = commits
+			if _, exists := categorizedCommits[category]; !exists {
+				categorizedCommits[category] = []model.CommitInfo{}
+			}
+			categorizedCommits[category] = append(categorizedCommits[category], commits...)
 		}
 	}
 
 	return categorizedCommits, nil
 }
 
-// Function to categorize the commit date
-func categorizeCommitDate(date time.Time) []string {
-	now := time.Now()
-	var categories []string
+func categorizeCommitDate(date time.Time) string {
+	now := time.Now().UTC() // Current UTC time for comparison
 
-	// Check for this week
+	// 今日のコミットかどうか
+	if date.Year() == now.Year() && date.YearDay() == now.YearDay() {
+		return "Today"
+	}
+
+	// 今日でない場合は今週かどうか判定
 	nowYear, nowWeek := now.ISOWeek()
 	commitYear, commitWeek := date.ISOWeek()
 	if commitYear == nowYear && commitWeek == nowWeek {
-		categories = append(categories, "This Week")
+		return "This Week"
 	}
 
-	// Check for this month
+	// 今週でない場合は今月かどうか判定
 	if date.Month() == now.Month() && date.Year() == now.Year() {
-		categories = append(categories, "This Month")
+		return "This Month"
 	}
 
-	// Check for this year
-	if date.Year() == nowYear {
-		categories = append(categories, "This Year")
+	// 今月でない場合は今年かどうか判定
+	if date.Year() == now.Year() {
+		// 四半期を判定
+		month := int(date.Month())
+		quarter := (month-1)/3 + 1
+		switch quarter {
+		case 1:
+			return "Q1 (Jan-Mar)"
+		case 2:
+			return "Q2 (Apr-Jun)"
+		case 3:
+			return "Q3 (Jul-Sep)"
+		case 4:
+			return "Q4 (Oct-Dec)"
+		}
+		return "This Year" // 四半期に該当しない場合は今年
 	}
 
-	// Check for previous weeks of the current year
-	if commitYear == nowYear-1 && commitWeek < nowWeek {
-		categories = append(categories, "Previous Weeks")
-	}
-
-	// If no category matched, add "Older"
-	if len(categories) == 0 {
-		categories = append(categories, "Older")
-	}
-
-	return categories
+	// それ以外は古いコミット
+	return "Older"
 }
 
-// Function to filter commits by multiple categories
 func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []string, client *github.Client, repo *github.Repository) (map[string][]model.CommitInfo, error) {
 	filteredCommits := make(map[string][]model.CommitInfo)
 	ctx := context.Background()
 
 	for _, commit := range commits {
-		if commit.Author != nil && commit.Commit.Author.Date != nil {
-			date := *commit.Commit.Author.Date
-			commitCategories := categorizeCommitDate(date)
-			categoryMap := make(map[string]bool)
-			for _, c := range commitCategories {
-				categoryMap[c] = true
-			}
+		if commit == nil || commit.Author == nil || commit.Commit == nil || commit.Commit.Author == nil || commit.Commit.Author.Date == nil {
+			log.Println("Skipping invalid commit")
+			continue
+		}
 
-			for _, filterCat := range categories {
-				if categoryMap[filterCat] {
-					if _, exists := filteredCommits[filterCat]; !exists {
-						filteredCommits[filterCat] = []model.CommitInfo{}
-					}
+		date := *commit.Commit.Author.Date
+		commitCategory := categorizeCommitDate(date)
 
-					// コミットの詳細を取得
-					detailedCommit, _, err := client.Repositories.GetCommit(ctx, *repo.Owner.Login, *repo.Name, *commit.SHA)
-					if err != nil {
-						log.Printf("Error getting commit details for SHA %s: %v", *commit.SHA, err)
-						continue // Proceed with other commits
-					}
-
-					// コミットのファイルの情報を収集
-					fileChanges := []model.FileChange{}
-					if detailedCommit.Files != nil {
-						for _, file := range detailedCommit.Files {
-							fileChange := model.FileChange{
-								Filename:  *file.Filename,
-								Status:    *file.Status,
-								Additions: *file.Additions,
-								Deletions: *file.Deletions,
-								Changes:   *file.Changes,
-								Patch:     *file.Patch,
-							}
-							fileChanges = append(fileChanges, fileChange)
-						}
-					}
-
-					commitInfo := model.CommitInfo{
-						Message: *commit.Commit.Message,
-						Changes: fileChanges,
-					}
-
-					filteredCommits[filterCat] = append(filteredCommits[filterCat], commitInfo)
-					break
+		for _, filterCat := range categories {
+			if filterCat == commitCategory {
+				if _, exists := filteredCommits[filterCat]; !exists {
+					filteredCommits[filterCat] = []model.CommitInfo{}
 				}
+
+				// コミットの詳細を取得する
+				detailedCommit, _, err := client.Repositories.GetCommit(ctx, *repo.Owner.Login, *repo.Name, *commit.SHA)
+				if err != nil {
+					log.Printf("Error getting commit details for SHA %s: %v", *commit.SHA, err)
+					return nil, err
+				}
+
+				fileChanges := []model.FileChange{}
+				if detailedCommit.Files != nil {
+					for _, file := range detailedCommit.Files {
+						fileChange := model.FileChange{
+							Filename:  *file.Filename,
+							Status:    *file.Status,    // ファイルのステータス（追加、削除、変更）
+							Additions: *file.Additions, // 追加された行数
+							Deletions: *file.Deletions, // 削除された行数
+							Changes:   *file.Changes,   // 変更された行数
+							Patch:     "",              // Patch が nil の場合に空の文字列を設定
+						}
+						if file.Patch != nil {
+							fileChange.Patch = *file.Patch
+						}
+
+						fileChanges = append(fileChanges, fileChange)
+					}
+				}
+
+				commitInfo := model.CommitInfo{
+					Message: *commit.Commit.Message,
+					Changes: fileChanges,
+					Period:  commitCategory, // 追加: コミットが属する期間
+				}
+
+				filteredCommits[filterCat] = append(filteredCommits[filterCat], commitInfo)
+				break
 			}
 		}
 	}
+
 	return filteredCommits, nil
 }
