@@ -1,4 +1,4 @@
-name: Go Test
+name: Go test
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   job:
-    name: Go Test
+    name: Go test
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -19,5 +19,11 @@ jobs:
         with:
           go-version: "1.22"
 
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and Test
-        run: make test
+        run: task test

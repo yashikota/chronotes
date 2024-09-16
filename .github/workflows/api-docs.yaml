@@ -1,4 +1,4 @@
-name: API Docs
+name: API docs
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   job:
-    name: API Docs
+    name: API docs
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -19,10 +19,14 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Build API Docs
-        run: make docs
-
-      - name: Auto commit
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Install Task
+        uses: arduino/setup-task@v2
         with:
-          commit_message: "Update API Docs"
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build API docs
+        run: task docs
+
+      - name: Check for changes
+        run: git diff --exit-code

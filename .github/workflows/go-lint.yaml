@@ -1,4 +1,4 @@
-name: Go Lint
+name: Go lint
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   job:
-    name: Go Lint
+    name: Go lint
     runs-on: ubuntu-latest
     timeout-minutes: 5
 

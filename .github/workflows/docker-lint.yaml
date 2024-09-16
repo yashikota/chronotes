@@ -1,4 +1,4 @@
-name: Docker Lint
+name: Docker lint
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   job:
-    name: Docker Lint
+    name: Docker lint
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -16,7 +16,11 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: hadolint/hadolint-action@v3.1.0
+      - name: Install Task
+        uses: arduino/setup-task@v2
         with:
-          dockerfile: Dockerfile
-          failure-threshold: warning
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker lint
+        run: task docker-lint

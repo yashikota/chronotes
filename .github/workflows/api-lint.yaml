@@ -1,4 +1,4 @@
-name: API Lint
+name: API lint
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   job:
-    name: API Lint
+    name: API lint
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -14,5 +14,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: API Lint
-        run: make api-lint
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: API lint
+        run: task api-lint
