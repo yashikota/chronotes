@@ -3,6 +3,8 @@ name: Go Test
 on:
   push:
   workflow_dispatch:
+env :
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
   job:
@@ -10,8 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
-    env :
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
       - name: Checkout
