@@ -5,8 +5,8 @@ on:
 
 env :
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-  DISCORDTOKEN: ${{ secrets.DISCORD_TOKEN }}
-  
+  DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+
   
 jobs:
   job:
