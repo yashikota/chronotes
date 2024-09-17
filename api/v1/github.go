@@ -9,9 +9,9 @@ import (
 )
 
 func GithubHandler(w http.ResponseWriter, r *http.Request) {
-	userID := r.URL.Query().Get("userID")
+	userID := r.URL.Query().Get("user_id")
 	if userID == "" {
-		http.Error(w, "userID is required", http.StatusBadRequest)
+		http.Error(w, "user_id is required", http.StatusBadRequest)
 		return
 	}
 
