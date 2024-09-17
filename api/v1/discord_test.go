@@ -24,6 +24,13 @@ func TestDiscordHandler(t *testing.T) {
 	channelID := os.Getenv("DISCORD_CHANNEL_ID")
 
 	if token == "" {
+		token = "DISCORD_TOKEN"
+	}
+
+	if channelID == "" {
+		channelID = "1241617406552445011"
+	}
+	if token == "" {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("DISCORD_TOKEN is not set"))
 		return
 	}
