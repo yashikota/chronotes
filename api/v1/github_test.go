@@ -1,61 +1,96 @@
 package handler_test
 
 import (
+	"errors"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
+	"github.com/joho/godotenv"
 	"github.com/yashikota/chronotes/pkg/provider"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func TestGithubHandler(t *testing.T) {
-	// 環境変数を設定する
-	githubToken := os.Getenv("GITHUB_TOKEN")
-	if githubToken == "" {
-		t.Fatal("GITHUB_TOKEN environment variable is not set")
-	}
-	userID := "TaueIkumi"
-	if userID == "" {
-		t.Fatal("GITHUB_USER_ID environment variable is not set")
-	}
-	categorizedCommits, err := provider.GitHubProvider(userID)
+	w := httptest.NewRecorder()
+	err := godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
 	if err != nil {
-		t.Fatalf("Error fetching data: %v", err)
+		t.Fatalf("Failed to load .env file: %v", err)
 	}
 
-	// リポジトリが空の場合のチェック
-	if len(categorizedCommits) == 0 {
-		t.Log("No commits found. Skipping category checks.")
+	token := os.Getenv("GITHUB_TOKEN")
+	userID := os.Getenv("USER_ID")
+
+	if token == "" {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("GITHUB_TOKEN is not set"))
 		return
 	}
 
-	// カテゴリごとに確認する
+	if userID == "" {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("USER_ID is not set"))
+		return
+	}
+
+	categorizedCommits, err := provider.GitHubProvider(userID)
+
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if categorizedCommits != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("could not fetch commits"))
+		return
+	}
+
 	categories := []string{"Today", "This Week", "This Month", "Q1 (Jan-Mar)", "Q2 (Apr-Jun)", "Q3 (Jul-Sep)", "Q4 (Oct-Dec)", "Older"}
+	var results []map[string]string
 
 	for _, category := range categories {
 		commits := categorizedCommits[category]
 
-		// カテゴリ名を出力
-		if len(commits) > 0 {
-			fmt.Printf("\nCategory: %s\n", category)
+		if commits == nil {
+			utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("period not found"))
+			return
 		}
-
-		// 各カテゴリにコミットがある場合、その内容を出力
 		for _, commit := range commits {
-			// コミットメッセージと期間を出力
-			fmt.Printf("Commit Message: %s\n", commit.Message)
-			fmt.Printf("Period: %s\n", commit.Period)
-
-			// ファイルごとの変更を出力
 			for _, file := range commit.Changes {
-				fmt.Printf("File Name: %s\n", file.Filename)
-				fmt.Printf("Status: %s\n", file.Status)
-				fmt.Printf("Additions: %d\n", file.Additions)
-				fmt.Printf("Deletions: %d\n", file.Deletions)
-				fmt.Printf("Changes: %d\n", file.Changes)
-				fmt.Printf("Patch: %s\n", file.Patch)
-				fmt.Println()
+				if file.Filename == "" {
+					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("filename not found"))
+					return
+				}
+				if file.Status == "" {
+					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("status not found"))
+					return
+				}
+				if file.Additions < 0 {
+					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("additions not found"))
+					return
+				}
+				if file.Deletions < 0 {
+					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("deletions not found"))
+					return
+				}
+				if file.Changes < 0 {
+					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("changes not found"))
+					return
+				}
+				if file.Patch == "" {
+					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("patch not found"))
+					return
+				}
+
+				result := map[string]string{
+					"period":   commit.Period,
+					"filename": file.Filename,
+					"patch":    file.Patch,
+				}
+
+				results = append(results, result)
 			}
 		}
 	}
+	utils.SuccessJSONResponse(w, results)
 }
