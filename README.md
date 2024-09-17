@@ -3,16 +3,23 @@
 [![codecov](https://codecov.io/github/yashikota/chronotes/graph/badge.svg?token=8LK1D9KWN5)](https://codecov.io/github/yashikota/chronotes)
 [![Go Report Card](https://goreportcard.com/badge/github.com/yashikota/chronotes)](https://goreportcard.com/report/github.com/yashikota/chronotes)
 
-Usage: `make <target>`  
+## Commands
 
-| command | description |
-| ---- | -------------- |
-| lint | Run Go linters |
-| test | Run Go tests |
-| fmt | Format Go code |
-| dev | Run development environment |
-| build | Build Docker image |
-| api-lint | Lint API documentation |
-| bundle | Bundle OpenAPI specification |
-| docs | Generate API documentation |
-| help | Display this help message |
+```sh
+go install github.com/go-task/task/v3/cmd/task@latest
+```
+
+```txt
+task: Available tasks for this project:
+* api-lint:          Lint API documentation
+* build:             Build Docker image
+* bundle:            Bundle OpenAPI specification
+* default:           Display this help message
+* dev:               Run development environment
+* docker-lint:       Lint Dockerfile
+* docs:              Generate API documentation
+* fmt:               Format Go code
+* lint:              Run Go linters
+* test:              Run Go tests
+* tsp:               Generate Open API from TypeSpec
+```
