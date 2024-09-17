@@ -21,7 +21,7 @@ func TestGithubHandler(t *testing.T) {
 	}
 
 	token := os.Getenv("GITHUB_TOKEN")
-	userID := os.Getenv("USER_ID")
+	userID := os.Getenv("GITHUB_USER_ID")
 
 	if token == "" {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("GITHUB_TOKEN is not set"))
