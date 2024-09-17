@@ -52,7 +52,7 @@ func TestGithubHandler(t *testing.T) {
 		commits := categorizedCommits[category]
 
 		if commits == nil {
-			utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("period not found"))
+			utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("commits not found"))
 			return
 		}
 		for _, commit := range commits {

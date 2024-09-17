@@ -1,52 +1,67 @@
 package handler_test
 
 import (
+	"errors"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
-	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/yashikota/chronotes/pkg/provider"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func TestDiscordHandler(t *testing.T) {
-	// 環境変数を設定する
-	discordToken := os.Getenv("DISCORD_TOKEN")
-	if discordToken == "" {
-		t.Fatal("DISCORD_TOKEN environment variable is not set")
-	}
-	channelID := "1241617406552445011"
-	if channelID == "" {
-		t.Fatal("DISCORD_CHANNEL_ID environment variable is not set")
-	}
-	categorizedMessages, err := provider.DiscordProvider(channelID)
+	w := httptest.NewRecorder()
+	err := godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
 	if err != nil {
-		t.Fatalf("Error fetching data: %v", err)
+		t.Fatalf("Failed to load .env file: %v", err)
 	}
 
-	// カテゴリごとに確認する
-	categories := []string{"Today", "This Week", "This Month", "Q1 (Jan-Mar)", "Q2 (Apr-Jun)", "Q3 (Jul-Sep)", "Q4 (Oct-Dec)", "This Year"}
+	token := os.Getenv("DISCORD_TOKEN")
+	channelID := os.Getenv("DISCORD_CHANNEL_ID")
+
+	if token == "" {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("DISCORD_TOKEN is not set"))
+		return
+	}
+
+	if channelID == "" {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("DISCORD CHANNEL ID is not set"))
+		return
+	}
+
+	categorizedCommits, err := provider.DiscordProvider(channelID)
+
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if categorizedCommits != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("could not fetch commits"))
+		return
+	}
+
+	categories := []string{
+		"Today", "This Week", "This Month", "Q1 (Jan-Mar)", "Q2 (Apr-Jun)", "Q3 (Jul-Sep)", "Q4 (Oct-Dec)", "This Year"}
+	var results []map[string]string
 
 	for _, category := range categories {
-		messages := categorizedMessages[category]
-
-		// カテゴリにメッセージがある場合、その内容を出力
-		if len(messages) > 0 {
-			t.Logf("\nCategory: %s\n", category)
-			for _, message := range messages {
-				// メッセージの作成日付を整形
-				period := formatPeriod(message.Timestamp)
-
-				// メッセージ内容と期間を出力
-				t.Logf("Message Content: %s\n", message.Content)
-				t.Logf("Period: %s\n", period)
+		commits := categorizedCommits[category]
+		if commits == nil {
+			utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("commits not found"))
+			return
+		}
+		for _, commit := range commits {
+			result := map[string]string{
+				"content": commit.Content,
+				"period":  commit.Period,
 			}
-		} else {
-			t.Logf("\nCategory: %s - No messages found.\n", category)
+			results = append(results, result)
 		}
 	}
-}
-
-// メッセージのタイムスタンプから、指定したフォーマットで期間を取得
-func formatPeriod(timestamp time.Time) string {
-	return timestamp.Format("2006-01-02 15:04:05")
+	utils.SuccessJSONResponse(w, results)
 }
