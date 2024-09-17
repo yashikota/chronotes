@@ -16,8 +16,8 @@ import (
 func TestDiscordHandler(t *testing.T) {
 	w := httptest.NewRecorder()
 	err := godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
-	if err != nil {
-		t.Fatalf("Failed to load .env file: %v", err)
+	if err != nil && !os.IsNotExist(err) {
+		t.Error(err)
 	}
 
 	token := os.Getenv("DISCORD_TOKEN")
