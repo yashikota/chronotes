@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 env :
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+  DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
 
 jobs:
   job:
