@@ -14,7 +14,7 @@ func TestDiscordHandler(t *testing.T) {
 	if discordToken == "" {
 		t.Fatal("DISCORD_TOKEN environment variable is not set")
 	}
-	channelID := os.Getenv("CHANNEL_ID")
+	channelID := "1241617406552445011"
 	if channelID == "" {
 		t.Fatal("DISCORD_CHANNEL_ID environment variable is not set")
 	}
