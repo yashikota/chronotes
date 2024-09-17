@@ -29,4 +29,15 @@ jobs:
         run: task docs
 
       - name: Check for changes
+        continue-on-error: true
         run: git diff --name-only --exit-code
+
+      - name: Error check
+        if: ${{ steps.error_execution.outcome == "failure" }}
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Please run `task docs`" > /tmp/comment
+          gh pr comment "${PR_NUMBER}" -F /tmp/comment
+
