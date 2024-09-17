@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -11,18 +10,20 @@ import (
 )
 
 func DiscordProvider(channelID string) (map[string][]model.Message, error) {
+	if channelID == "" {
+		return nil, fmt.Errorf("DISCORD_CHANNEL_ID environment variable is not set")
+	}
 	token := os.Getenv("DISCORD_TOKEN")
 	if token == "" {
-		log.Fatal("DISCORD_TOKEN environment variable is not set")
+		return nil, fmt.Errorf("DISCORD_TOKEN environment variable is not set")
 	}
 
 	messages, err := runBot(channelID, token)
 	if err != nil {
-		log.Fatalf("Error running bot: %v", err)
+		return nil, fmt.Errorf("error running bot: %v", err)
 	}
 
 	categorizedMessages := categorizeMessages(messages)
-	printCategorizedMessages(categorizedMessages)
 	return categorizedMessages, nil
 }
 
@@ -59,18 +60,22 @@ func getMessageHistory(s *discordgo.Session, channelID string) ([]*discordgo.Mes
 
 func categorizeMessages(messages []*discordgo.Message) map[string][]model.Message {
 	now := time.Now()
-
+	startOfToday := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	startOfWeek := now.AddDate(0, 0, -int(now.Weekday()))
 	startOfMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.Local)
-	startOfQuarter := time.Date(now.Year(), (now.Month()-1)/3*3+1, 1, 0, 0, 0, 0, time.Local)
 	startOfYear := time.Date(now.Year(), 1, 1, 0, 0, 0, 0, time.Local)
 
+	startOfQuarter := getStartOfQuarter(now)
+	endOfQuarter := startOfQuarter.AddDate(0, 3, -1)
+
+	var todayMessages []model.Message
 	var weeklyMessages []model.Message
 	var monthlyMessages []model.Message
 	var quarterlyMessages []model.Message
 	var yearlyMessages []model.Message
 
 	for _, message := range messages {
+		timestamp := message.Timestamp
 		messageData := model.Message{
 			ID:        message.ID,
 			Author:    message.Author.Username,
@@ -78,35 +83,69 @@ func categorizeMessages(messages []*discordgo.Message) map[string][]model.Messag
 			Timestamp: message.Timestamp,
 		}
 
-		timestamp := message.Timestamp
-		if timestamp.After(startOfWeek) {
+		// Periodの設定
+		switch {
+		case timestamp.After(startOfToday):
+			messageData.Period = "Today"
+			todayMessages = append(todayMessages, messageData)
+		case timestamp.After(startOfWeek):
+			messageData.Period = "This Week"
 			weeklyMessages = append(weeklyMessages, messageData)
-		}
-		if timestamp.After(startOfMonth) {
+		case timestamp.After(startOfMonth):
+			messageData.Period = "This Month"
 			monthlyMessages = append(monthlyMessages, messageData)
-		}
-		if timestamp.After(startOfQuarter) {
+		case timestamp.After(startOfQuarter) && timestamp.Before(endOfQuarter):
+			messageData.Period = "This Quarter"
 			quarterlyMessages = append(quarterlyMessages, messageData)
-		}
-		if timestamp.After(startOfYear) {
+		case timestamp.After(startOfYear):
+			messageData.Period = "This Year"
 			yearlyMessages = append(yearlyMessages, messageData)
 		}
 	}
 
 	return map[string][]model.Message{
+		"Today":        todayMessages,
 		"This Week":    weeklyMessages,
 		"This Month":   monthlyMessages,
-		"This Quarter": quarterlyMessages,
+		"Q1 (Jan-Mar)": filterMessagesByQuarter(quarterlyMessages, time.January, time.March),
+		"Q2 (Apr-Jun)": filterMessagesByQuarter(quarterlyMessages, time.April, time.June),
+		"Q3 (Jul-Sep)": filterMessagesByQuarter(quarterlyMessages, time.July, time.September),
+		"Q4 (Oct-Dec)": filterMessagesByQuarter(quarterlyMessages, time.October, time.December),
 		"This Year":    yearlyMessages,
 	}
 }
 
-func printCategorizedMessages(messages map[string][]model.Message) {
-	for period, msgs := range messages {
-		fmt.Printf("Messages from %s:\n", period)
-		for _, message := range msgs {
-			fmt.Printf("Message ID: %s\nAuthor: %s\nContent: %s\nDate: %s\n\n",
-				message.ID, message.Author, message.Content, message.Timestamp.Format(time.RFC3339))
+// 四半期の開始日を取得する関数
+func getStartOfQuarter(now time.Time) time.Time {
+	month := now.Month()
+	var startOfQuarter time.Time
+	switch {
+	case month >= time.January && month <= time.March:
+		startOfQuarter = time.Date(now.Year(), time.January, 1, 0, 0, 0, 0, time.Local)
+	case month >= time.April && month <= time.June:
+		startOfQuarter = time.Date(now.Year(), time.April, 1, 0, 0, 0, 0, time.Local)
+	case month >= time.July && month <= time.September:
+		startOfQuarter = time.Date(now.Year(), time.July, 1, 0, 0, 0, 0, time.Local)
+	case month >= time.October && month <= time.December:
+		startOfQuarter = time.Date(now.Year(), time.October, 1, 0, 0, 0, 0, time.Local)
+	}
+	return startOfQuarter
+}
+
+func filterMessagesByQuarter(messages []model.Message, startMonth, endMonth time.Month) []model.Message {
+	var filteredMessages []model.Message
+	startDate := time.Date(time.Now().Year(), startMonth, 1, 0, 0, 0, 0, time.Local)
+	endDate := time.Date(time.Now().Year(), endMonth+1, 1, 0, 0, 0, 0, time.Local).AddDate(0, 0, -1)
+
+	for _, message := range messages {
+		if isInRange(message.Timestamp, startDate, endDate) {
+			filteredMessages = append(filteredMessages, message)
 		}
 	}
+
+	return filteredMessages
+}
+
+func isInRange(timestamp, startDate, endDate time.Time) bool {
+	return timestamp.After(startDate) && timestamp.Before(endDate)
 }
