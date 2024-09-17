@@ -34,14 +34,14 @@ build: ## Build Docker image
 api-lint: bundle ## Lint API documentation
 	docker run --rm -v ${PWD}:/spec redocly/cli lint --config docs/api/redoc.yaml docs/api/bundled.yaml
 
-bundle: ## Bundle OpenAPI specification
+bundle: tsp ## Bundle OpenAPI specification
 	docker run --rm -v ${PWD}:/spec redocly/cli bundle docs/api/openapi.yaml -o docs/api/bundled.yaml
 
 docs: ## Generate API documentation
 	docker run --rm -v ${PWD}:/spec redocly/cli build-docs docs/api/openapi.yaml --o docs/api/redoc.html
 
 tsp: ## Genrate Open API from Typespec
-	docker run --rm -v ${PWD}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/tsp
+	docker run --rm -v ${PWD}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
 
 # Docker commands
 .PHONY: docker-lint
