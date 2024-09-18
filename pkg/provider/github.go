@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/google/go-github/github"
 	model "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/pkg/utils"
 	"golang.org/x/oauth2"
 )
 
@@ -66,50 +66,7 @@ func GitHubProvider(userID string) (map[string][]model.CommitInfo, error) {
 			categorizedCommits[category] = append(categorizedCommits[category], commits...)
 		}
 	}
-
 	return categorizedCommits, nil
-}
-
-func categorizeCommitDate(date time.Time) string {
-	now := time.Now().UTC() // Current UTC time for comparison
-
-	// 今日のコミットかどうか
-	if date.Year() == now.Year() && date.YearDay() == now.YearDay() {
-		return "Today"
-	}
-
-	// 今日でない場合は今週かどうか判定
-	nowYear, nowWeek := now.ISOWeek()
-	commitYear, commitWeek := date.ISOWeek()
-	if commitYear == nowYear && commitWeek == nowWeek {
-		return "This Week"
-	}
-
-	// 今週でない場合は今月かどうか判定
-	if date.Month() == now.Month() && date.Year() == now.Year() {
-		return "This Month"
-	}
-
-	// 今月でない場合は今年かどうか判定
-	if date.Year() == now.Year() {
-		// 四半期を判定
-		month := int(date.Month())
-		quarter := (month-1)/3 + 1
-		switch quarter {
-		case 1:
-			return "Q1 (Jan-Mar)"
-		case 2:
-			return "Q2 (Apr-Jun)"
-		case 3:
-			return "Q3 (Jul-Sep)"
-		case 4:
-			return "Q4 (Oct-Dec)"
-		}
-		return "This Year" // 四半期に該当しない場合は今年
-	}
-
-	// それ以外は古いコミット
-	return "Older"
 }
 
 func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []string, client *github.Client, repo *github.Repository) (map[string][]model.CommitInfo, error) {
@@ -123,7 +80,7 @@ func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []
 		}
 
 		date := *commit.Commit.Author.Date
-		commitCategory := categorizeCommitDate(date)
+		commitCategory := utils.CategorizeCommitDate(date)
 
 		for _, filterCat := range categories {
 			if filterCat == commitCategory {
