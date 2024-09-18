@@ -46,6 +46,7 @@ tasks:
     desc: "Lint API documentation"
     cmds:
       - task: tsp
+      - task: bundle
       - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 lint --config docs/api/redoc.yaml docs/api/bundled.yaml
 
   tsp:
@@ -62,7 +63,6 @@ tasks:
   bundle:
     desc: "Bundle OpenAPI specification"
     cmds:
-      - task: tsp
       - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 bundle docs/api/openapi.yaml -o docs/api/bundled.yaml
 
   docs:
