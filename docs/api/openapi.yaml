@@ -60,6 +60,9 @@ servers:
   - url: https://chronotes.yashikota.com
     description: prd
     variables: {}
+  - url: http://localhost:5678/mock
+    description: mock
+    variables: {}
   - url: http://localhost:5678
     description: dev
     variables: {}

@@ -1,18 +1,32 @@
 services:
-  server:
+  nginx:
+    image: nginx:1.27.1
+    ports:
+      - "5678:80"
+    volumes:
+      - type: bind
+        source: "./nginx.conf"
+        target: "/etc/nginx/nginx.conf"
+        read_only: true
+    depends_on:
+      - api
+      - prism
+      - swagger
+      - redoc
+      - pgweb
+
+  api:
     environment:
       - TZ=Asia/Tokyo
     build:
       context: .
       target: final
-    ports:
-      - 5678:5678
     depends_on:
       db:
         condition: service_healthy
 
   db:
-    image: postgres
+    image: postgres:16.4
     restart: always
     user: postgres
     volumes:
@@ -30,15 +44,46 @@ services:
       retries: 5
 
   pgweb:
-    image: sosedoff/pgweb
+    image: sosedoff/pgweb:0.16.1
     ports:
-      - "5433:8081"
+      - "8081:8081"
     environment:
       - PGWEB_DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@db:5432/chronotes?sslmode=disable
       - TZ=Asia/Tokyo
     depends_on:
       db:
         condition: service_healthy
+
+  swagger:
+    image: swaggerapi/swagger-ui:v5.17.14
+    environment:
+      - SWAGGER_JSON=/tmp/api/bundled.yaml
+    volumes:
+      - type: bind
+        source: "docs/api/bundled.yaml"
+        target: "/tmp/api/bundled.yaml"
+        read_only: true
+
+  redoc:
+    image: redocly/redoc:v2.1.5
+    ports:
+      - "3032:80"
+    environment:
+      - SPEC_URL=/redoc/openapi/bundled.yaml
+    volumes:
+      - type: bind
+        source: "docs/api/bundled.yaml"
+        target: "/usr/share/nginx/html/openapi/bundled.yaml"
+        read_only: true
+
+  prism:
+    image: stoplight/prism:5.11.2
+    command: "mock -h 0.0.0.0 /tmp/api/openapi.yaml"
+    volumes:
+      - type: bind
+        source: "docs/api"
+        target: "/tmp/api"
+        read_only: true
 
 volumes:
   db-data:
