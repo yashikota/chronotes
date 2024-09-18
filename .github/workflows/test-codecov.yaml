@@ -1,13 +1,13 @@
 name: Test coverage
 
 on:
-  push
+  push:
+  workflow_dispatch:
 
-env :
+env:
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
 
-  
 jobs:
   job:
     name: Test coverage
