@@ -47,28 +47,29 @@ func TestDiscordHandler(t *testing.T) {
 		return
 	}
 
-	if categorizedCommits != nil {
+	if categorizedCommits == nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("could not fetch commits"))
 		return
 	}
 
-	categories := []string{
-		"Today", "This Week", "This Month", "Q1 (Jan-Mar)", "Q2 (Apr-Jun)", "Q3 (Jul-Sep)", "Q4 (Oct-Dec)", "This Year"}
-	var results []map[string]string
-
-	for _, category := range categories {
-		commits := categorizedCommits[category]
-		if commits == nil {
-			utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("commits not found"))
-			return
-		}
-		for _, commit := range commits {
-			result := map[string]string{
-				"content": commit.Content,
-				"period":  commit.Period,
-			}
-			results = append(results, result)
-		}
+	// Todayカテゴリのみを取り出す
+	category := "Today"
+	commits := categorizedCommits[category]
+	if commits == nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("commits not found for Today"))
+		return
 	}
+
+	var results []map[string]string
+	for _, commit := range commits {
+		result := map[string]string{
+			"content": commit.Content,
+			"period":  commit.Period,
+		}
+		results = append(results, result)
+	}
+
+	fmt.Println("result[period]:", results[0]["period"])
+	fmt.Println("result[content]:", results[0]["content"])
 	utils.SuccessJSONResponse(w, results)
 }
