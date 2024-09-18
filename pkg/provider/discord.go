@@ -9,7 +9,7 @@ import (
 	model "github.com/yashikota/chronotes/model/v1/provider"
 )
 
-func DiscordProvider(channelID string) (map[string][]model.Message, error) {
+func DiscordProvider(channelID string) (map[string][]model.DiscordMessage, error) {
 	if channelID == "" {
 		return nil, fmt.Errorf("DISCORD_CHANNEL_ID environment variable is not set")
 	}
@@ -58,7 +58,7 @@ func getMessageHistory(s *discordgo.Session, channelID string) ([]*discordgo.Mes
 	return messages, nil
 }
 
-func categorizeMessages(messages []*discordgo.Message) map[string][]model.Message {
+func categorizeMessages(messages []*discordgo.Message) map[string][]model.DiscordMessage {
 	now := time.Now()
 	startOfToday := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	startOfWeek := now.AddDate(0, 0, -int(now.Weekday()))
@@ -68,15 +68,15 @@ func categorizeMessages(messages []*discordgo.Message) map[string][]model.Messag
 	startOfQuarter := getStartOfQuarter(now)
 	endOfQuarter := startOfQuarter.AddDate(0, 3, -1)
 
-	var todayMessages []model.Message
-	var weeklyMessages []model.Message
-	var monthlyMessages []model.Message
-	var quarterlyMessages []model.Message
-	var yearlyMessages []model.Message
+	var todayMessages []model.DiscordMessage
+	var weeklyMessages []model.DiscordMessage
+	var monthlyMessages []model.DiscordMessage
+	var quarterlyMessages []model.DiscordMessage
+	var yearlyMessages []model.DiscordMessage
 
 	for _, message := range messages {
 		timestamp := message.Timestamp
-		messageData := model.Message{
+		messageData := model.DiscordMessage{
 			ID:        message.ID,
 			Author:    message.Author.Username,
 			Content:   message.Content,
@@ -103,7 +103,7 @@ func categorizeMessages(messages []*discordgo.Message) map[string][]model.Messag
 		}
 	}
 
-	return map[string][]model.Message{
+	return map[string][]model.DiscordMessage{
 		"Today":        todayMessages,
 		"This Week":    weeklyMessages,
 		"This Month":   monthlyMessages,
@@ -132,8 +132,8 @@ func getStartOfQuarter(now time.Time) time.Time {
 	return startOfQuarter
 }
 
-func filterMessagesByQuarter(messages []model.Message, startMonth, endMonth time.Month) []model.Message {
-	var filteredMessages []model.Message
+func filterMessagesByQuarter(messages []model.DiscordMessage, startMonth, endMonth time.Month) []model.DiscordMessage {
+	var filteredMessages []model.DiscordMessage
 	startDate := time.Date(time.Now().Year(), startMonth, 1, 0, 0, 0, 0, time.Local)
 	endDate := time.Date(time.Now().Year(), endMonth+1, 1, 0, 0, 0, 0, time.Local).AddDate(0, 0, -1)
 

@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type Message struct {
+type DiscordMessage struct {
 	ID        string    `json:"id"`
 	Author    string    `json:"author"`
 	Content   string    `json:"content"`
