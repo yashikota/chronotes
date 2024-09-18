@@ -8,5 +8,5 @@ coverage:
         informational: true
 
 comment:
-  layout: "reach, diff, flags, files, footer"
+  layout: "diff, flags, files"
   behavior: default
