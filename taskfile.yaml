@@ -45,7 +45,7 @@ tasks:
   api-lint:
     desc: "Lint API documentation"
     cmds:
-      - task: tsp
+      - task: bundle
       - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 lint --config docs/api/redoc.yaml docs/api/bundled.yaml
 
   tsp:
