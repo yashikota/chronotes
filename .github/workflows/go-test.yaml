@@ -3,7 +3,8 @@ name: Go test
 on:
   push:
   workflow_dispatch:
-env :
+
+env:
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
 
