@@ -6,3 +6,8 @@ properties:
     type: array
     items:
       type: string
+example:
+  tags:
+    - important
+    - urgent
+    - project

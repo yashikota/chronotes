@@ -20,3 +20,5 @@ delete:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Integrations
+  security:
+    - BearerAuth: []

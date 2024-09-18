@@ -11,6 +11,10 @@ get:
             type: array
             items:
               type: string
+          example:
+            - Meeting Notes
+            - Daily Journal
+            - Project Plan
     default:
       description: An unexpected error response.
       content:
@@ -19,3 +23,5 @@ get:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Notes
+  security:
+    - BearerAuth: []

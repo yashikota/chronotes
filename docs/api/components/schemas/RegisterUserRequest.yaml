@@ -10,3 +10,7 @@ properties:
     type: string
   password:
     type: string
+example:
+  username: JohnDoe
+  email: john.doe@example.com
+  password: password

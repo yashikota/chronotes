@@ -6,3 +6,17 @@ properties:
     type: array
     items:
       $ref: ./Note.yaml
+example:
+  notes:
+    - id: note3
+      title: Matching Note
+      content: This note matches the search query
+      tags:
+        - search
+        - result
+      images:
+        - id: img2
+          url: https://example.com/image2.jpg
+      isDraft: false
+      createdAt: '2023-01-03T09:15:00Z'
+      updatedAt: '2023-01-03T09:15:00Z'

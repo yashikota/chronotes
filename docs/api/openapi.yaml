@@ -56,6 +56,11 @@ paths:
     $ref: paths/api_v1_users_register.yaml
   /api/v1/users/{userId}:
     $ref: paths/api_v1_users_{userId}.yaml
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
 servers:
   - url: https://chronotes.yashikota.com
     description: prd

@@ -14,6 +14,7 @@ post:
         application/json:
           schema:
             $ref: ../components/schemas/Note.yaml
+          example: {}
     default:
       description: An unexpected error response.
       content:
@@ -28,3 +29,9 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/UploadImageRequest.yaml
+        example:
+          image:
+            id: img4
+            url: https://example.com/image4.jpg
+  security:
+    - BearerAuth: []

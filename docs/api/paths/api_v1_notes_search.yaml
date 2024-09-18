@@ -15,6 +15,7 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/SearchNotesResponse.yaml
+          example: {}
     default:
       description: An unexpected error response.
       content:
@@ -23,3 +24,5 @@ get:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Notes
+  security:
+    - BearerAuth: []

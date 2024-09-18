@@ -9,6 +9,7 @@ post:
         application/json:
           schema:
             $ref: ../components/schemas/Note.yaml
+          example: {}
     default:
       description: An unexpected error response.
       content:
@@ -23,6 +24,18 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/CreateNoteRequest.yaml
+        example:
+          title: My New Note
+          content: This is the content of my new note.
+          tags:
+            - work
+            - project
+          images:
+            - id: img2
+              url: https://example.com/image2.jpg
+          isDraft: true
+  security:
+    - BearerAuth: []
 get:
   operationId: getNotes
   summary: Get a list of notes
@@ -48,6 +61,7 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/GetNotesResponse.yaml
+          example: {}
     default:
       description: An unexpected error response.
       content:
@@ -56,3 +70,5 @@ get:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Notes
+  security:
+    - BearerAuth: []

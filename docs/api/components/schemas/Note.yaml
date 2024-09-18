@@ -31,3 +31,16 @@ properties:
   updatedAt:
     type: string
     format: date-time
+example:
+  id: note123
+  title: My First Note
+  content: This is the content of my first note.
+  tags:
+    - personal
+    - ideas
+  images:
+    - id: img1
+      url: https://example.com/image1.jpg
+  isDraft: false
+  createdAt: '2023-01-01T12:00:00Z'
+  updatedAt: '2023-01-01T12:30:00Z'
