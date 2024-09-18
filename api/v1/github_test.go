@@ -41,63 +41,86 @@ func TestGithubHandler(t *testing.T) {
 		return
 	}
 	categorizedCommits, err := provider.GitHubProvider(userID)
-
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	if categorizedCommits != nil {
+	if categorizedCommits == nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("could not fetch commits"))
 		return
 	}
-
+	categoryResults := make(map[string][]map[string]string)
 	categories := []string{"Today", "This Week", "This Month", "Q1 (Jan-Mar)", "Q2 (Apr-Jun)", "Q3 (Jul-Sep)", "Q4 (Oct-Dec)", "Older"}
-	var results []map[string]string
 
 	for _, category := range categories {
 		commits := categorizedCommits[category]
-
 		if commits == nil {
-			utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("commits not found"))
-			return
+			// カテゴリが空でもスキップ
+			continue
 		}
+		fmt.Println("commits:", commits)
 		for _, commit := range commits {
 			for _, file := range commit.Changes {
 				if file.Filename == "" {
-					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("filename not found"))
-					return
+					// filenameが空の場合はスキップ
+					fmt.Println("Skipping commit due to empty filename:", commit)
+					continue
 				}
 				if file.Status == "" {
-					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("status not found"))
-					return
+					// statusが空の場合はスキップ
+					fmt.Println("Skipping commit due to empty status:", commit)
+					continue
 				}
 				if file.Additions < 0 {
-					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("additions not found"))
-					return
+					// additionsが不正な場合はスキップ
+					fmt.Println("Skipping commit due to negative additions:", commit)
+					continue
 				}
 				if file.Deletions < 0 {
-					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("deletions not found"))
-					return
+					// deletionsが不正な場合はスキップ
+					fmt.Println("Skipping commit due to negative deletions:", commit)
+					continue
 				}
 				if file.Changes < 0 {
-					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("changes not found"))
-					return
+					// changesが不正な場合はスキップ
+					fmt.Println("Skipping commit due to negative changes:", commit)
+					continue
 				}
 				if file.Patch == "" {
-					utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("patch not found"))
-					return
+					// patchが空の場合はスキップ
+					fmt.Println("Skipping commit due to empty patch:", commit)
+					continue
 				}
 
 				result := map[string]string{
 					"period":   commit.Period,
 					"filename": file.Filename,
 					"patch":    file.Patch,
+					"message":  commit.Message, // コミットメッセージを追加
 				}
 
-				results = append(results, result)
+				categoryResults[category] = append(categoryResults[category], result)
 			}
 		}
 	}
-	utils.SuccessJSONResponse(w, results)
+
+	// 指定した期間の結果を出力する
+	periodToPrint := "Today" // 例: "Today" を指定
+	resultsToPrint, exists := categoryResults[periodToPrint]
+	if exists {
+		fmt.Printf("Results for period '%s':\n", periodToPrint)
+		for _, result := range resultsToPrint {
+			fmt.Printf("Period: %s, Filename: %s, Patch: %s, Message: %s\n", result["period"], result["filename"], result["patch"], result["message"])
+		}
+	} else {
+		fmt.Printf("No results found for period '%s'.\n", periodToPrint)
+	}
+
+	if len(categoryResults) == 0 {
+		utils.ErrorJSONResponse(w, http.StatusNoContent, errors.New("no results found"))
+		return
+	}
+
+	utils.SuccessJSONResponse(w, categoryResults)
 }
