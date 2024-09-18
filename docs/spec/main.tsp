@@ -13,7 +13,7 @@ using TypeSpec.Versioning;
 })
 @versioned(Versions)
 @server("http://localhost:5678", "dev")
-@server("http://localhost:5678/mock", "mock")
+@server("http://chronotes.yashikota.com/mock", "mock")
 @server("https://chronotes.yashikota.com", "prd")
 namespace chronotes;
 
