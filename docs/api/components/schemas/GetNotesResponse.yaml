@@ -1,0 +1,12 @@
+type: object
+required:
+  - notes
+  - totalCount
+properties:
+  notes:
+    type: array
+    items:
+      $ref: ./Note.yaml
+  totalCount:
+    type: integer
+    format: int32

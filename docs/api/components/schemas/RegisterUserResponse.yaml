@@ -1,0 +1,9 @@
+type: object
+required:
+  - user
+  - token
+properties:
+  user:
+    $ref: ./User.yaml
+  token:
+    type: string

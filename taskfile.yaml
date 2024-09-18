@@ -46,20 +46,27 @@ tasks:
     desc: "Lint API documentation"
     cmds:
       - task: bundle
-      - docker run --rm -v {{.PWD}}:/spec redocly/cli lint --config docs/api/redoc.yaml docs/api/bundled.yaml
-
-  bundle:
-    desc: "Bundle OpenAPI specification"
-    cmds:
-      - task: tsp
-      - docker run --rm -v {{.PWD}}:/spec redocly/cli bundle docs/api/openapi.yaml -o docs/api/bundled.yaml
-
-  docs:
-    desc: "Generate API documentation"
-    cmds:
-      - docker run --rm -v {{.PWD}}:/spec redocly/cli build-docs docs/api/openapi.yaml --o docs/api/redoc.html
+      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 lint --config docs/api/redoc.yaml docs/api/bundled.yaml
 
   tsp:
     desc: "Generate Open API from TypeSpec"
     cmds:
       - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
+      - task: split
+
+  split:
+    desc: "Split OpenAPI specification"
+    cmds:
+      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 split docs/api/openapi.yaml --outDir=docs/api
+
+  bundle:
+    desc: "Bundle OpenAPI specification"
+    cmds:
+      - task: tsp
+      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 bundle docs/api/openapi.yaml -o docs/api/bundled.yaml
+
+  docs:
+    desc: "Generate API documentation"
+    cmds:
+      - task: bundle
+      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 build-docs docs/api/bundled.yaml --o docs/api/redoc.html
