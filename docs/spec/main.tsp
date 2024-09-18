@@ -13,11 +13,12 @@ using TypeSpec.Versioning;
 })
 @versioned(Versions)
 @server("http://localhost:5678", "dev")
+@server("http://localhost:5678/mock", "mock")
 @server("https://chronotes.yashikota.com", "prd")
 namespace chronotes;
 
 enum Versions {
-    v1,
+  v1,
 }
 
 model User {

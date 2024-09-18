@@ -35,14 +35,9 @@ func main() {
 
 	})
 
-	// SwaggerUI
-	swaggerServer := http.StripPrefix("/docs/api", http.FileServer(http.Dir("/app/docs/api")))
-	r.HandleFunc("GET /docs/api/*", func(w http.ResponseWriter, r *http.Request) {
-		swaggerServer.ServeHTTP(w, r)
-	})
-
 	// Start server
-	if err := http.ListenAndServe(":5678", r); err != nil {
+	log.Println("Starting server on http://localhost:8080")
+	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatal(err)
 	}
 }

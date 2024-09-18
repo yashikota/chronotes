@@ -53,6 +53,7 @@ tasks:
     cmds:
       - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
       - task: split
+      - task: bundle
 
   split:
     desc: "Split OpenAPI specification"
@@ -62,11 +63,4 @@ tasks:
   bundle:
     desc: "Bundle OpenAPI specification"
     cmds:
-      - task: tsp
       - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 bundle docs/api/openapi.yaml -o docs/api/bundled.yaml
-
-  docs:
-    desc: "Generate API documentation"
-    cmds:
-      - task: bundle
-      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 build-docs docs/api/openapi.yaml --o docs/api/redoc.html
