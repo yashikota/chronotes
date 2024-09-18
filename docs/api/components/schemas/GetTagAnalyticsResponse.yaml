@@ -1,0 +1,8 @@
+type: object
+required:
+  - tags
+properties:
+  tags:
+    type: array
+    items:
+      $ref: ./TagAnalytics.yaml

@@ -1,0 +1,19 @@
+type: object
+required:
+  - title
+  - content
+properties:
+  title:
+    type: string
+  content:
+    type: string
+  tags:
+    type: array
+    items:
+      type: string
+  images:
+    type: array
+    items:
+      $ref: ./Image.yaml
+  isDraft:
+    type: boolean

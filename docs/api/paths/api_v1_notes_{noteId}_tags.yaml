@@ -1,0 +1,30 @@
+post:
+  operationId: addTagsToNote
+  summary: Add tags to a note
+  parameters:
+    - name: noteId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Note.yaml
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Notes
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/AddTagsRequest.yaml

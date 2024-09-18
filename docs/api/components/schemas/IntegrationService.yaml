@@ -1,0 +1,11 @@
+type: object
+required:
+  - serviceName
+  - isConnected
+properties:
+  serviceName:
+    type: string
+  isConnected:
+    type: boolean
+  data:
+    type: string

@@ -1,0 +1,8 @@
+type: object
+required:
+  - notes
+properties:
+  notes:
+    type: array
+    items:
+      $ref: ./Note.yaml
