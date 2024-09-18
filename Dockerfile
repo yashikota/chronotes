@@ -18,7 +18,7 @@ ARG TARGETARCH
 
 RUN CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./cmd/chronotes
 
-EXPOSE 5678
+EXPOSE 8080
 
 CMD ["air", "-c", ".air.toml"]
 
@@ -61,13 +61,13 @@ COPY --from=build /bin/server /bin/
 WORKDIR /app
 
 # Copy OpenAPI files.
-COPY ./docs/api ./docs/api
+COPY docs/api docs/api
 
 # Timezone
 ENV TZ=Asia/Tokyo
 
 # Expose the port that the application listens on.
-EXPOSE 5678
+EXPOSE 8080
 
 # What the container should run when it is started.
 ENTRYPOINT [ "/bin/server" ]

@@ -24,9 +24,6 @@
 # Go workspace file
 go.work
 
-# gen api docs
-docs/api/bundled.yaml
-
 # tests
 coverage.txt
 test_output.txt
