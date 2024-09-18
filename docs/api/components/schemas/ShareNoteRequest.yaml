@@ -4,3 +4,5 @@ required:
 properties:
   shareWith:
     type: string
+example:
+  shareWith: jane.doe@example.com

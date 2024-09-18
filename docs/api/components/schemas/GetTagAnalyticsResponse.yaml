@@ -6,3 +6,11 @@ properties:
     type: array
     items:
       $ref: ./TagAnalytics.yaml
+example:
+  tags:
+    - tag: work
+      count: 10
+    - tag: personal
+      count: 5
+    - tag: ideas
+      count: 3

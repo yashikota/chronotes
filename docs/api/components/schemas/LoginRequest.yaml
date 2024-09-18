@@ -7,3 +7,6 @@ properties:
     type: string
   password:
     type: string
+example:
+  email: john.doe@example.com
+  password: password123

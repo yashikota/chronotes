@@ -14,3 +14,8 @@ properties:
   createdAt:
     type: string
     format: date-time
+example:
+  id: '1'
+  username: JohnDoe
+  email: john.doe@example.com
+  createdAt: '2021-01-01T00:00:00Z'

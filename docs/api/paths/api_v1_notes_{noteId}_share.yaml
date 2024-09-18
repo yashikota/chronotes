@@ -26,6 +26,10 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/ShareNoteRequest.yaml
+        example:
+          shareWith: jane.doe@example.com
+  security:
+    - BearerAuth: []
 delete:
   operationId: unshareNote
   summary: Unshare a previously shared note
@@ -48,3 +52,5 @@ delete:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Notes
+  security:
+    - BearerAuth: []

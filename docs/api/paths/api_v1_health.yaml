@@ -9,6 +9,7 @@ get:
         application/json:
           schema:
             type: string
+          example: pong
     default:
       description: An unexpected error response.
       content:
@@ -17,3 +18,5 @@ get:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Health
+  security:
+    - {}

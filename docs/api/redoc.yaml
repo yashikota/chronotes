@@ -8,8 +8,8 @@ rules:
   info-license: off
   no-server-example.com: off
   # FIXME: enable below rules
-  security-defined: off
   operation-description: off
   no-unused-components: off
   operation-4xx-response: off
   tag-description: off
+  no-invalid-media-type-examples: off

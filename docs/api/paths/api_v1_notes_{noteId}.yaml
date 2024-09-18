@@ -14,6 +14,7 @@ put:
         application/json:
           schema:
             $ref: ../components/schemas/Note.yaml
+          example: {}
     default:
       description: An unexpected error response.
       content:
@@ -28,6 +29,18 @@ put:
       application/json:
         schema:
           $ref: ../components/schemas/UpdateNoteRequest.yaml
+        example:
+          title: Updated Note Title
+          content: This is the updated content of my note.
+          tags:
+            - personal
+            - updated
+          images:
+            - id: img3
+              url: https://example.com/image3.jpg
+          isDraft: false
+  security:
+    - BearerAuth: []
 delete:
   operationId: deleteNote
   summary: Delete a note
@@ -50,6 +63,8 @@ delete:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Notes
+  security:
+    - BearerAuth: []
 get:
   operationId: getNote
   summary: Get a specific note
@@ -66,6 +81,7 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/Note.yaml
+          example: {}
     default:
       description: An unexpected error response.
       content:
@@ -74,3 +90,5 @@ get:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Notes
+  security:
+    - BearerAuth: []

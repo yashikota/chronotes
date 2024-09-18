@@ -45,7 +45,7 @@ tasks:
   api-lint:
     desc: "Lint API documentation"
     cmds:
-      - task: bundle
+      - task: tsp
       - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 lint --config docs/api/redoc.yaml docs/api/bundled.yaml
 
   tsp:
@@ -53,14 +53,14 @@ tasks:
     cmds:
       - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
       - task: split
-      - task: bundle
 
   split:
     desc: "Split OpenAPI specification"
     cmds:
-      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 split docs/api/openapi.yaml --outDir=docs/api
+      - rm -rf docs/spec/components docs/spec/paths
+      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 split docs/api/bundled.yaml --outDir=docs/api
 
-  bundle:
-    desc: "Bundle OpenAPI specification"
-    cmds:
-      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 bundle docs/api/openapi.yaml -o docs/api/bundled.yaml
+  # bundle:
+  #   desc: "Bundle OpenAPI specification"
+  #   cmds:
+  #     - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 bundle docs/api/openapi.yaml -o docs/api/bundled.yaml
