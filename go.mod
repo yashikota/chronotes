@@ -15,11 +15,16 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-require github.com/slack-go/slack v0.14.0
+require (
+	github.com/redis/go-redis/v9 v9.6.1
+	github.com/slack-go/slack v0.14.0
+)
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
