@@ -4,13 +4,14 @@ import (
 	"log"
 	"net/http"
 
-	v1 "github.com/yashikota/chronotes/api/v1"
-	"github.com/yashikota/chronotes/db"
-	"github.com/yashikota/chronotes/pkg/utils"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+
+	"github.com/yashikota/chronotes/api/v1/users"
+	"github.com/yashikota/chronotes/api/v1/debug"
+	"github.com/yashikota/chronotes/db"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func main() {
@@ -36,11 +37,11 @@ func main() {
 
 	// Routes
 	r.Route("/api/v1", func(r chi.Router) {
-		r.HandleFunc("POST /users/register", v1.RegisterHandler)
-		// r.HandleFunc("POST /users/login", v1.LoginHandler)
+		r.HandleFunc("POST /users/register", users.RegisterHandler)
+		r.HandleFunc("POST /users/login", users.LoginHandler)
 
 		// Debug
-		r.HandleFunc("GET /health", v1.HealthHandler)
+		r.HandleFunc("GET /health", debug.HealthHandler)
 	})
 
 	// Routes with JWT middleware
