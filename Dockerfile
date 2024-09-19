@@ -7,17 +7,11 @@ FROM --platform=$BUILDPLATFORM golang:${GO_VERSION} AS dev
 WORKDIR /app
 
 COPY go.mod go.sum ./
-
 RUN go mod download -x
 # hadolint ignore=DL3059
-RUN go install github.com/air-verse/air@latest
+RUN go install github.com/air-verse/air@v1.52.3
 
 COPY . .
-
-ARG TARGETARCH
-
-RUN CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/server ./cmd/chronotes
-
 EXPOSE 8080
 
 CMD ["air", "-c", ".air.toml"]
@@ -59,9 +53,6 @@ FROM gcr.io/distroless/static-debian12:nonroot AS final
 COPY --from=build /bin/server /bin/
 
 WORKDIR /app
-
-# Copy OpenAPI files.
-COPY docs/api docs/api
 
 # Timezone
 ENV TZ=Asia/Tokyo
