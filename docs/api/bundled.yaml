@@ -1162,7 +1162,7 @@ servers:
   - url: https://chronotes.yashikota.com
     description: prd
     variables: {}
-  - url: http://chronotes.yashikota.com/mock
+  - url: https://chronotes.yashikota.com/mock
     description: mock
     variables: {}
   - url: http://localhost:5678
