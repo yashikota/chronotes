@@ -10,7 +10,7 @@ import (
 
 	"github.com/yashikota/chronotes/api/v1/debug"
 	"github.com/yashikota/chronotes/api/v1/users"
-	"github.com/yashikota/chronotes/db"
+	"github.com/yashikota/chronotes/pkg/db"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
