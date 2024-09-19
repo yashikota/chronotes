@@ -8,8 +8,8 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
-	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/api/v1/debug"
+	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/db"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
@@ -53,8 +53,8 @@ func main() {
 	// r.HandleFunc("DELETE /users/{user_id}", v1.DeleteUserHandler)
 
 	// Providers
-	// 	r.HandleFunc("GET /provider/github", v1.GithubHandler)
-	// 	r.HandleFunc("GET /provider/discord", v1.DiscordHandler)
+	// r.HandleFunc("GET /provider/github", provider.GithubHandler)
+	// r.HandleFunc("GET /provider/discord", provider.DiscordHandler)
 	// })
 
 	// Start server

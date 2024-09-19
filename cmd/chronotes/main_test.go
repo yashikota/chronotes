@@ -8,9 +8,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/stretchr/testify/assert"
-	
-	"github.com/yashikota/chronotes/api/v1/users"
+
 	"github.com/yashikota/chronotes/api/v1/debug"
+	"github.com/yashikota/chronotes/api/v1/users"
 )
 
 func TestRoutes(t *testing.T) {

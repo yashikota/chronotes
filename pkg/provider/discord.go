@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+
 	model "github.com/yashikota/chronotes/model/v1/provider"
 )
 
