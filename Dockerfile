@@ -9,7 +9,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download -x
 # hadolint ignore=DL3059
-RUN go install github.com/air-verse/air@latest
+RUN go install github.com/air-verse/air@v1.52.3
 
 COPY . .
 EXPOSE 8080
