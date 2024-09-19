@@ -22,7 +22,7 @@ services:
       - TZ=Asia/Tokyo
     build:
       context: .
-      target: final
+      target: dev #final
     depends_on:
       db:
         condition: service_healthy
