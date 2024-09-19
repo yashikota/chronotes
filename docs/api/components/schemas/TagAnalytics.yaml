@@ -8,3 +8,6 @@ properties:
   count:
     type: integer
     format: int32
+example:
+  tag: project
+  count: 7

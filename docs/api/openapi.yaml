@@ -56,11 +56,16 @@ paths:
     $ref: paths/api_v1_users_register.yaml
   /api/v1/users/{userId}:
     $ref: paths/api_v1_users_{userId}.yaml
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
 servers:
   - url: https://chronotes.yashikota.com
     description: prd
     variables: {}
-  - url: http://localhost:5678/mock
+  - url: https://chronotes.yashikota.com/mock
     description: mock
     variables: {}
   - url: http://localhost:5678

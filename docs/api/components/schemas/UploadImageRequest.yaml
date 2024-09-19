@@ -4,3 +4,7 @@ required:
 properties:
   image:
     $ref: ./Image.yaml
+example:
+  image:
+    id: img4
+    url: https://example.com/image4.jpg

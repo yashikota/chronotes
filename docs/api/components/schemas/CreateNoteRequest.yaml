@@ -17,3 +17,13 @@ properties:
       $ref: ./Image.yaml
   isDraft:
     type: boolean
+example:
+  title: My New Note
+  content: This is the content of my new note.
+  tags:
+    - work
+    - project
+  images:
+    - id: img2
+      url: https://example.com/image2.jpg
+  isDraft: true

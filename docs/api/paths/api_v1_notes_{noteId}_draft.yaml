@@ -14,6 +14,7 @@ post:
         application/json:
           schema:
             $ref: ../components/schemas/Note.yaml
+          example: {}
     default:
       description: An unexpected error response.
       content:
@@ -22,3 +23,5 @@ post:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Notes
+  security:
+    - BearerAuth: []

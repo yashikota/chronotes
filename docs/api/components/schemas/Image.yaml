@@ -7,3 +7,6 @@ properties:
     type: string
   url:
     type: string
+example:
+  id: img5
+  url: https://example.com/image5.jpg
