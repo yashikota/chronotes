@@ -2,31 +2,35 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
+	"errors"
 	"net/http"
 
 	"github.com/yashikota/chronotes/pkg/provider"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func GithubHandler(w http.ResponseWriter, r *http.Request) {
-	userID := r.URL.Query().Get("user_id")
+	userID, err := utils.GetQueryParam(r, "userID", true)
+
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
 	if userID == "" {
-		http.Error(w, "user_id is required", http.StatusBadRequest)
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("userID is not set"))
 		return
 	}
 
 	data, err := provider.GitHubProvider(userID)
+
 	if err != nil {
-		http.Error(w, "Failed to fetch data from GitHub", http.StatusInternalServerError)
-		log.Println("Error fetching data:", err)
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	log.Printf("Fetched data: %v", data) // デバッグ用ログ
-
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(data); err != nil {
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-		log.Println("error encoding response", err)
+		utils.SuccessJSONResponse(w, data)
 	}
 }

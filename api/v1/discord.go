@@ -2,29 +2,35 @@ package handler
 
 import (
 	"encoding/json"
-	"log"
+	"errors"
 	"net/http"
 
 	"github.com/yashikota/chronotes/pkg/provider"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func DiscordHandler(w http.ResponseWriter, r *http.Request) {
-	channelID := r.URL.Query().Get("channelID")
-	if channelID == "" {
-		http.Error(w, "channelID is required", http.StatusBadRequest)
+	channelID, err := utils.GetQueryParam(r, "channelID", true)
+
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
-	data, err := provider.GitHubProvider(channelID)
+	if channelID == "" {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("channelID is not set"))
+		return
+	}
+
+	data, err := provider.DiscordProvider(channelID)
+
 	if err != nil {
-		http.Error(w, "Failed to fetch data from GitHub", http.StatusInternalServerError)
-		log.Println("Error fetching data:", err)
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(data); err != nil {
-		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
-		log.Println("error encoding response", err)
+		utils.SuccessJSONResponse(w, data)
 	}
 }
