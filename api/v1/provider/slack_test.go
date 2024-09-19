@@ -1,4 +1,4 @@
-package handler_test
+package provider_test
 
 import (
 	"errors"
@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
+
 	model "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/provider"
 	"github.com/yashikota/chronotes/pkg/utils"

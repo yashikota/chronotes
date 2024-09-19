@@ -1,4 +1,4 @@
-package handler
+package provider
 
 import (
 	"encoding/json"
@@ -9,8 +9,9 @@ import (
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func SlackHandler(w http.ResponseWriter, r *http.Request) {
+func DiscordHandler(w http.ResponseWriter, r *http.Request) {
 	channelID, err := utils.GetQueryParam(r, "channelID", true)
+
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
@@ -21,7 +22,7 @@ func SlackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := provider.SlackProvider(channelID)
+	data, err := provider.DiscordProvider(channelID)
 
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
