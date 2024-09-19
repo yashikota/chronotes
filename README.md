@@ -18,6 +18,7 @@ task: Available tasks for this project:
 * docker-lint:       Lint Dockerfile
 * fmt:               Format Go code
 * lint:              Run Go linters
+* ogen:              Generate OpenAPI specification
 * split:             Split OpenAPI specification
 * test:              Run Go tests
 * tsp:               Generate Open API from TypeSpec

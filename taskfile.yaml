@@ -42,6 +42,11 @@ tasks:
       - docker run --rm -i hadolint/hadolint < Dockerfile
 
   # API
+  ogen:
+    desc: "Generate OpenAPI specification"
+    cmds:
+      - docker run --rm -v {{.PWD}}:/wd ghcr.io/ogen-go/ogen:v1.4.1 --target wd/pkg/ogen --clean wd/docs/api/bundled.yaml
+
   api-lint:
     desc: "Lint API documentation"
     cmds:
