@@ -1,4 +1,4 @@
-package handler_test
+package debug_test
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	h "github.com/yashikota/chronotes/api/v1"
+	h "github.com/yashikota/chronotes/api/v1/debug"
 )
 
 func TestHealthHandler(t *testing.T) {

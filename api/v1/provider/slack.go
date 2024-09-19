@@ -1,4 +1,4 @@
-package handler
+package provider
 
 import (
 	"encoding/json"
@@ -9,20 +9,19 @@ import (
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func GithubHandler(w http.ResponseWriter, r *http.Request) {
-	userID, err := utils.GetQueryParam(r, "userID", true)
-
+func SlackHandler(w http.ResponseWriter, r *http.Request) {
+	channelID, err := utils.GetQueryParam(r, "channelID", true)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
-	if userID == "" {
-		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("userID is not set"))
+	if channelID == "" {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("channelID is not set"))
 		return
 	}
 
-	data, err := provider.GitHubProvider(userID)
+	data, err := provider.SlackProvider(channelID)
 
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)

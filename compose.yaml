@@ -29,6 +29,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   db:
     image: postgres:16.4
@@ -60,6 +62,21 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  redis:
+    image: redis:7.4.0
+    container_name: redis
+    volumes:
+      - redis-data:/data
+    environment:
+      - TZ=Asia/Tokyo
+    expose:
+      - 6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   swagger:
     image: swaggerapi/swagger-ui:v5.17.14
@@ -100,3 +117,4 @@ services:
 
 volumes:
   db-data:
+  redis-data:

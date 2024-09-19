@@ -8,7 +8,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/stretchr/testify/assert"
-	v1 "github.com/yashikota/chronotes/api/v1"
+
+	"github.com/yashikota/chronotes/api/v1/debug"
+	"github.com/yashikota/chronotes/api/v1/users"
 )
 
 func TestRoutes(t *testing.T) {
@@ -63,11 +65,12 @@ func setupRouter() http.Handler {
 
 	// Routes
 	r.Route("/api/v1", func(r chi.Router) {
-		r.HandleFunc("GET /health", v1.HealthHandler)
-		r.HandleFunc("GET /provider/github", v1.GithubHandler)
-		r.HandleFunc("GET /provider/discord", v1.DiscordHandler)
-	})
+		r.HandleFunc("POST /users/register", users.RegisterHandler)
+		r.HandleFunc("POST /users/login", users.LoginHandler)
 
+		// Debug
+		r.HandleFunc("GET /health", debug.HealthHandler)
+	})
 	// SwaggerUI
 	swaggerServer := http.StripPrefix("/docs/api", http.FileServer(http.Dir("/app/docs/api")))
 	r.HandleFunc("GET /docs/api/*", func(w http.ResponseWriter, r *http.Request) {

@@ -11,6 +11,7 @@ go install github.com/go-task/task/v3/cmd/task@latest
 
 ```txt
 task: Available tasks for this project:
+* all:               Run all tasks
 * api-lint:          Lint API documentation
 * build:             Build Docker image
 * default:           Display this help message
@@ -18,7 +19,6 @@ task: Available tasks for this project:
 * docker-lint:       Lint Dockerfile
 * fmt:               Format Go code
 * lint:              Run Go linters
-* ogen:              Generate OpenAPI specification
 * split:             Split OpenAPI specification
 * test:              Run Go tests
 * tsp:               Generate Open API from TypeSpec
