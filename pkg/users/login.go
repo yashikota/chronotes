@@ -5,8 +5,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/yashikota/chronotes/db"
 	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/pkg/db"
 )
 
 func LoginUser(user *model.User) (string, error) {
