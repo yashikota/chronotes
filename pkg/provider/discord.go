@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-
 	model "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func DiscordProvider(channelID string) (map[string][]model.DiscordMessage, error) {
+func DiscordProvider(channelID string) ([]string, error) {
 	if channelID == "" {
 		return nil, fmt.Errorf("DISCORD_CHANNEL_ID environment variable is not set")
 	}
@@ -25,7 +25,23 @@ func DiscordProvider(channelID string) (map[string][]model.DiscordMessage, error
 	}
 
 	categorizedMessages := categorizeMessages(messages)
-	return categorizedMessages, nil
+
+	// 「Today」カテゴリのメッセージのみを取り出す
+	todayMessages := categorizedMessages["Today"]
+	contents := extractContentsDiscord(todayMessages)
+	summaries, err := utils.SummarizeText(contents)
+	if err != nil {
+		return nil, fmt.Errorf("error summarizing text: %v", err)
+	}
+	return summaries, nil
+}
+
+func extractContentsDiscord(messages []model.DiscordMessage) []string {
+	var contents []string
+	for _, msg := range messages {
+		contents = append(contents, msg.Content)
+	}
+	return contents
 }
 
 func runBot(channelID, token string) ([]*discordgo.Message, error) {
@@ -52,11 +68,20 @@ func ready(s *discordgo.Session, event *discordgo.Ready) {
 }
 
 func getMessageHistory(s *discordgo.Session, channelID string) ([]*discordgo.Message, error) {
-	messages, err := s.ChannelMessages(channelID, 100, "", "", "")
-	if err != nil {
-		return nil, fmt.Errorf("error getting messages: %w", err)
+	var allMessages []*discordgo.Message
+	var lastMessageID string
+	for {
+		messages, err := s.ChannelMessages(channelID, 100, lastMessageID, "", "")
+		if err != nil {
+			return nil, fmt.Errorf("error getting messages: %w", err)
+		}
+		if len(messages) == 0 {
+			break
+		}
+		allMessages = append(allMessages, messages...)
+		lastMessageID = messages[len(messages)-1].ID
 	}
-	return messages, nil
+	return allMessages, nil
 }
 
 func categorizeMessages(messages []*discordgo.Message) map[string][]model.DiscordMessage {
