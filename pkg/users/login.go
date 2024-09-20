@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"log"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -9,24 +10,29 @@ import (
 	"github.com/yashikota/chronotes/pkg/db"
 )
 
-func LoginUser(user *model.User) (string, error) {
+func LoginUser(loginUser *model.User) error {
 	if db.DB == nil {
-		return "", errors.New("database connection is not initialized")
+		return errors.New("database connection is not initialized")
 	}
 
 	// Find the user by email
-	result := db.DB.Where("email = ?", user.Email).First(&user)
+	registeredUser := model.User{}
+	result := db.DB.Where("email = ?", loginUser.Email).First(&registeredUser)
 	if result.Error != nil {
-		return "", result.Error
+		return result.Error
 	}
+
+	log.Println("User found")
 
 	// Compare the hashed password
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(user.Password)); err != nil {
-		return "", errors.New("invalid password")
+	if err := bcrypt.CompareHashAndPassword([]byte(registeredUser.Password), []byte(loginUser.Password)); err != nil {
+		return errors.New("password does not match")
 	}
 
-	// Generate token
-	// TODO: Implement token generation
+	log.Println("Password matched")
 
-	return "token", nil
+	loginUser.ID = registeredUser.ID
+	loginUser.Name = registeredUser.Name
+
+	return nil
 }

@@ -51,8 +51,8 @@ func main() {
 		r.Use(utils.JwtMiddleware)
 
 		// User
-		// r.HandleFunc("POST /users/logout", v1.LogoutHandler)
-		// r.HandleFunc("DELETE /users/{user_id}", v1.DeleteUserHandler)
+		// r.HandleFunc("POST /users/logout", users.LogoutHandler)
+		// r.HandleFunc("DELETE /users/{user_id}", users.DeleteUserHandler)
 
 		// Providers
 		// r.HandleFunc("GET /provider/github", provider.GithubHandler)

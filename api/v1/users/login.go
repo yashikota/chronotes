@@ -2,6 +2,7 @@ package users
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 
@@ -28,6 +29,14 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
+	// Check if email is already taken
+	if taken, err := users.IsEmailTaken(user.Email); err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	} else if !taken {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("email is not registered"))
+		return
+	}
 
 	// Validate password
 	// Rule: Required, Min 8, Max 32
@@ -40,14 +49,29 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Validation passed")
 
 	// Login user
-	token, err := users.LoginUser(&user)
+	err := users.LoginUser(&user)
 	if err != nil {
 		log.Println("Login failed")
 		utils.ErrorJSONResponse(w, http.StatusUnauthorized, err)
 		return
 	}
 
-	log.Println("token" + token)
+	// Generate a new token
+	token, err := utils.GenerateToken(user.ID)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	// Save the token in Redis
+	log.Println("Login user.ID: ", user.ID)
+	key := "jwt:" + user.ID
+	if err := utils.SaveToken(key, token); err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	log.Println("Generated Token: " + token)
 
 	// Response
 	res := map[string]interface{}{"token": token}
