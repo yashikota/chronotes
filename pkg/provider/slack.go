@@ -20,6 +20,7 @@ func SlackProvider(channelID string) ([]string, error) {
 	}
 
 	api := slack.New(token)
+
 	history, err := api.GetConversationHistory(&slack.GetConversationHistoryParameters{
 		ChannelID: channelID,
 		Limit:     100,
@@ -64,6 +65,11 @@ func SlackProvider(channelID string) ([]string, error) {
 		categorizedMessages["Today"] = todayMessages
 	}
 	contens := extractContentSlack(todayMessages)
+
+	if contens == nil {
+		return nil, fmt.Errorf("could not fetch commits")
+	}
+
 	// fmt.Println("Contents:", contens)
 	summaries, err := utils.SummarizeText(contens)
 	if err != nil {
