@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	model "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/provider"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
@@ -42,37 +41,18 @@ func TestSlackHandler(t *testing.T) {
 	}
 
 	// provider.SlackProvider の呼び出し
-	categorizedCommits, err := provider.SlackProvider(channelID)
+	summaries, err := provider.SlackProvider(channelID)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	if categorizedCommits == nil {
+	if summaries == nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("could not fetch commits"))
 		return
 	}
 
-	// 今日のメッセージを取得
-	var todayMessages []model.SlackMessage
+	fmt.Println(summaries)
 
-	// マップのキーと値を処理する
-	if messages, ok := categorizedCommits["Today"]; ok {
-		todayMessages = messages
-	}
-
-	if len(todayMessages) == 0 {
-		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("no commits found for Today"))
-		return
-	}
-
-	var todayResults []string
-
-	for _, commit := range todayMessages {
-		todayResults = append(todayResults, commit.Text) // テキスト部分のみを追加
-	}
-
-	fmt.Println(todayResults)
-	// 今日のデータをレスポンスとして送信
-	utils.SuccessJSONResponse(w, todayResults)
+	utils.SuccessJSONResponse(w, summaries)
 }
