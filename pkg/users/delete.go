@@ -15,7 +15,7 @@ func DeleteUser(deleteUser *model.User) error {
 
 	// Find the user by ID
 	user := model.User{}
-	result := db.DB.Where("id = ?", deleteUser.ID).First(&user)
+	result := db.DB.Where("id = ?", deleteUser.UserID).First(&user)
 	if result.Error != nil {
 		return result.Error
 	}

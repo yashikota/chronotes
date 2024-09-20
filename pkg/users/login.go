@@ -31,7 +31,7 @@ func LoginUser(loginUser *model.User) error {
 
 	log.Println("Password matched")
 
-	loginUser.ID = registeredUser.ID
+	loginUser.UserID = registeredUser.UserID
 	loginUser.Name = registeredUser.Name
 
 	return nil

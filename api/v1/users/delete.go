@@ -12,10 +12,10 @@ import (
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
 	user := model.User{}
-	user.ID = r.Context().Value(utils.TokenKey).(utils.Token).ID
+	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
 
 	// Check if token exists
-	key := "jwt:" + user.ID
+	key := "jwt:" + user.UserID
 	if _, err := utils.GetToken(key); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
@@ -34,7 +34,7 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Delete user successful")
 
 	// Delete token
-	log.Println("Logout user.ID: ", user.ID)
+	log.Println("Logout user.ID: ", user.UserID)
 	if err := utils.DeleteToken(key); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

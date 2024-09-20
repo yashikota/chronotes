@@ -57,21 +57,21 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check if user is already logged in
-	key := "jwt:" + user.ID
+	key := "jwt:" + user.UserID
 	if _, err := utils.GetToken(key); err == nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("already logged in"))
 		return
 	}
 
 	// Generate a new token
-	token, err := utils.GenerateToken(user.ID)
+	token, err := utils.GenerateToken(user.UserID)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	// Save the token in Redis
-	log.Println("Login user.ID: ", user.ID)
+	log.Println("Login user.ID: ", user.UserID)
 	if err := utils.SaveToken(key, token); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

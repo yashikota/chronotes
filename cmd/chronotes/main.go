@@ -53,10 +53,6 @@ func main() {
 		// User
 		r.HandleFunc("POST /users/logout", users.LogoutHandler)
 		// r.HandleFunc("DELETE /users/{user_id}", users.DeleteUserHandler)
-
-		// Providers
-		// r.HandleFunc("GET /provider/github", provider.GithubHandler)
-		// r.HandleFunc("GET /provider/discord", provider.DiscordHandler)
 	})
 
 	// Start server
