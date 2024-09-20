@@ -26,9 +26,12 @@ func SummarizeText(texts []string) ([]string, error) {
 
 	// テキストを結合します。
 	combinedText := strings.Join(texts, "\n\n") // 各テキストを2つの改行で区切る
+	if combinedText == "" {
+		summary := "進捗なし"
+		return []string{summary}, nil
+	}
 
-	// 要約リクエストを作成し、API を呼び出します。
-	resp, err := model.GenerateContent(ctx, genai.Text(fmt.Sprintf("次の文章から日記を書いて: %s", combinedText)))
+	resp, err := model.GenerateContent(ctx, genai.Text(fmt.Sprintf("次の文章から日記を書いて:%s", combinedText)))
 	if err != nil {
 		return nil, fmt.Errorf("error generating content for text: %v", err)
 	}
