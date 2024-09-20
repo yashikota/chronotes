@@ -7,9 +7,10 @@ import (
 	"os"
 
 	"github.com/google/go-github/github"
+	"golang.org/x/oauth2"
+
 	model "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/utils"
-	"golang.org/x/oauth2"
 )
 
 func GitHubProvider(userID string) ([]string, error) {
