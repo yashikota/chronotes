@@ -45,6 +45,7 @@ func main() {
 
 	// Debug
 	r.HandleFunc("GET /api/v1/health", debug.HealthHandler)
+	r.HandleFunc("GET /api/v1/fake", debug.FakeHandler)
 
 	// Routes with JWT middleware
 	r.Route("/api/v1", func(r chi.Router) {
