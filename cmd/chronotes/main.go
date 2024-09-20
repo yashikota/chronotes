@@ -11,6 +11,7 @@ import (
 	"github.com/yashikota/chronotes/api/v1/debug"
 	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/pkg/db"
+	"github.com/yashikota/chronotes/pkg/redis"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
@@ -31,6 +32,9 @@ func main() {
 
 	// Connect to database
 	db.Connect()
+
+	// Connect to Redis
+	redis.Connect()
 
 	// Setup JWT
 	utils.SetupPrivateKey()

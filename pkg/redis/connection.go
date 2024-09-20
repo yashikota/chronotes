@@ -6,7 +6,7 @@ import (
 
 var Client *redis.Client
 
-func NewClient() {
+func Connect() {
 	Client = redis.NewClient(&redis.Options{
 		Addr: "localhost:6379",
 	})
