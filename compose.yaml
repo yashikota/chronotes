@@ -17,6 +17,7 @@ services:
       - swagger
       - redoc
       - pgweb
+      - redis-commander
 
   api:
     container_name: api
@@ -77,6 +78,18 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    container_name: redis-commander
+    environment:
+      - REDIS_HOSTS=redis
+      - TZ=Asia/Tokyo
+    ports:
+      - "8082:8081"
+    depends_on:
+      redis:
+        condition: service_healthy
 
   swagger:
     image: swaggerapi/swagger-ui:v5.17.14

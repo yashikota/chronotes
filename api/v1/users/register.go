@@ -77,6 +77,14 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Save the token in Redis
+	log.Println("Register user.ID: ", user.ID)
+	key := "jwt:" + user.ID
+	if err := utils.SaveToken(key, token); err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
 	log.Println("Generated Token: " + token)
 
 	// Response

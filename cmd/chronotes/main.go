@@ -11,6 +11,7 @@ import (
 	"github.com/yashikota/chronotes/api/v1/debug"
 	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/pkg/db"
+	"github.com/yashikota/chronotes/pkg/redis"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
@@ -32,30 +33,31 @@ func main() {
 	// Connect to database
 	db.Connect()
 
+	// Connect to Redis
+	redis.Connect()
+
 	// Setup JWT
 	utils.SetupPrivateKey()
 
-	// Routes
-	r.Route("/api/v1", func(r chi.Router) {
-		r.HandleFunc("POST /users/register", users.RegisterHandler)
-		r.HandleFunc("POST /users/login", users.LoginHandler)
+	// Public Routes
+	r.HandleFunc("POST /api/v1/users/register", users.RegisterHandler)
+	r.HandleFunc("POST /api/v1/users/login", users.LoginHandler)
 
-		// Debug
-		r.HandleFunc("GET /health", debug.HealthHandler)
-	})
+	// Debug
+	r.HandleFunc("GET /api/v1/health", debug.HealthHandler)
 
 	// Routes with JWT middleware
-	// r.Route("/api/v1", func(r chi.Router) {
-	// r.Use(v1.JwtMiddleware)
+	r.Route("/api/v1", func(r chi.Router) {
+		r.Use(utils.JwtMiddleware)
 
-	// User
-	// r.HandleFunc("POST /users/logout", v1.LogoutHandler)
-	// r.HandleFunc("DELETE /users/{user_id}", v1.DeleteUserHandler)
+		// User
+		// r.HandleFunc("POST /users/logout", users.LogoutHandler)
+		// r.HandleFunc("DELETE /users/{user_id}", users.DeleteUserHandler)
 
-	// Providers
-	// r.HandleFunc("GET /provider/github", provider.GithubHandler)
-	// r.HandleFunc("GET /provider/discord", provider.DiscordHandler)
-	// })
+		// Providers
+		// r.HandleFunc("GET /provider/github", provider.GithubHandler)
+		// r.HandleFunc("GET /provider/discord", provider.DiscordHandler)
+	})
 
 	// Start server
 	log.Println("Starting server on http://localhost:8080")
