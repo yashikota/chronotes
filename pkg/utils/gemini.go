@@ -34,6 +34,11 @@ func SummarizeText(texts []string) ([]string, error) {
 	}
 
 	summary := extractSummary(resp)
+
+	if summary == "" {
+		return nil, fmt.Errorf("summary is empty")
+	}
+
 	return []string{summary}, nil
 }
 
