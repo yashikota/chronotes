@@ -10,6 +10,8 @@ import (
 
 	"github.com/lestrrat-go/jwx/v2/jwa"
 	"github.com/lestrrat-go/jwx/v2/jwt"
+
+	"github.com/yashikota/chronotes/pkg/redis"
 )
 
 type tokenContextKey struct{}
@@ -69,4 +71,21 @@ func ValidateToken(ctx context.Context, tokenString string) (context.Context, er
 
 	ctx = context.WithValue(ctx, TokenKey, token)
 	return ctx, nil
+}
+
+func GetToken(ctx context.Context) (Token, error) {
+	token, ok := ctx.Value(TokenKey).(Token)
+	if !ok {
+		return Token{}, errors.New("token not found in context")
+	}
+	return token, nil
+}
+
+func SaveToken(key, token string) error {
+	ttl := time.Duration(3) * time.Hour
+	err := redis.Client.Set(redis.Ctx, key, token, ttl).Err()
+	if err != nil {
+		return err
+	}
+	return nil
 }
