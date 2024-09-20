@@ -5,10 +5,11 @@ import (
 	"net/http"
 
 	model "github.com/yashikota/chronotes/model/v1/db"
+	users "github.com/yashikota/chronotes/pkg/users"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
 	user := model.User{}
 	user.ID = r.Context().Value(utils.TokenKey).(utils.Token).ID
@@ -22,6 +23,16 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Validation passed")
 
+	// Delete the user
+	err := users.DeleteUser(&user)
+	if err != nil {
+		log.Println("Login failed")
+		utils.ErrorJSONResponse(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	log.Println("Delete user successful")
+
 	// Delete token
 	log.Println("Logout user.ID: ", user.ID)
 	if err := utils.DeleteToken(key); err != nil {
@@ -29,9 +40,9 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Logout successful")
+	log.Println("Delete toke successful")
 
 	// Response
-	res := map[string]interface{}{"message": "Logout successful"}
+	res := map[string]interface{}{"message": "delete user successful"}
 	utils.SuccessJSONResponse(w, res)
 }
