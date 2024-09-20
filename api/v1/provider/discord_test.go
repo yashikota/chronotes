@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-
 	"github.com/yashikota/chronotes/pkg/provider"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
@@ -41,36 +40,19 @@ func TestDiscordHandler(t *testing.T) {
 		return
 	}
 
-	categorizedCommits, err := provider.DiscordProvider(channelID)
+	summaries, err := provider.DiscordProvider(channelID)
 
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	if categorizedCommits == nil {
+	if summaries == nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("could not fetch commits"))
 		return
 	}
 
-	// Todayカテゴリのみを取り出す
-	category := "Today"
-	commits := categorizedCommits[category]
-	if commits == nil {
-		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("commits not found for Today"))
-		return
-	}
+	// fmt.Println(summaries)
 
-	var results []map[string]string
-	for _, commit := range commits {
-		result := map[string]string{
-			"content": commit.Content,
-			"period":  commit.Period,
-		}
-		results = append(results, result)
-	}
-
-	fmt.Println("result[period]:", results[0]["period"])
-	fmt.Println("result[content]:", results[0]["content"])
-	utils.SuccessJSONResponse(w, results)
+	utils.SuccessJSONResponse(w, summaries)
 }
