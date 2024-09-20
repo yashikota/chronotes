@@ -7,11 +7,12 @@ import (
 	"time"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/pkg/utils"
 
 	"github.com/slack-go/slack"
 )
 
-func SlackProvider(channelID string) (map[string][]model.SlackMessage, error) {
+func SlackProvider(channelID string) ([]string, error) {
 	token := os.Getenv("SLACK_TOKEN")
 
 	if token == "" {
@@ -62,6 +63,21 @@ func SlackProvider(channelID string) (map[string][]model.SlackMessage, error) {
 	if len(todayMessages) > 0 {
 		categorizedMessages["Today"] = todayMessages
 	}
+	contens := extractContentSlack(todayMessages)
+	// fmt.Println("Contents:", contens)
+	summaries, err := utils.SummarizeText(contens)
+	if err != nil {
+		return nil, fmt.Errorf("error summarizing text: %v", err)
+	}
+	// fmt.Println("Summarized texts:", summaries)
+	return summaries, nil
+}
 
-	return categorizedMessages, nil
+func extractContentSlack(messages []model.SlackMessage) []string {
+	var contents []string
+	for _, msg := range messages {
+		// Text フィールドが存在する場合
+		contents = append(contents, msg.Text)
+	}
+	return contents
 }
