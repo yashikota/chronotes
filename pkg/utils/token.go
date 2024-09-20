@@ -73,7 +73,7 @@ func ValidateToken(ctx context.Context, tokenString string) (context.Context, er
 	return ctx, nil
 }
 
-func GetToken(ctx context.Context) (Token, error) {
+func ExtractToken(ctx context.Context) (Token, error) {
 	token, ok := ctx.Value(TokenKey).(Token)
 	if !ok {
 		return Token{}, errors.New("token not found in context")
@@ -81,9 +81,25 @@ func GetToken(ctx context.Context) (Token, error) {
 	return token, nil
 }
 
+func GetToken(key string) (string, error) {
+	token, err := redis.Client.Get(redis.Ctx, key).Result()
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+}
+
 func SaveToken(key, token string) error {
 	ttl := time.Duration(3) * time.Hour
 	err := redis.Client.Set(redis.Ctx, key, token, ttl).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteToken(key string) error {
+	err := redis.Client.Del(redis.Ctx, key).Err()
 	if err != nil {
 		return err
 	}
