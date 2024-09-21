@@ -16,6 +16,7 @@ require (
 )
 
 require (
+	github.com/Code-Hex/synchro v0.5.2
 	github.com/gomarkdown/markdown v0.0.0-20240730141124-034f12af3bf6
 	github.com/google/generative-ai-go v0.18.0
 	github.com/ktsujichan/qiita-sdk-go v1.0.1
@@ -32,7 +33,6 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.2.4 // indirect
 	cloud.google.com/go/compute/metadata v0.5.1 // indirect
 	cloud.google.com/go/longrunning v0.5.7 // indirect
-	github.com/Code-Hex/synchro v0.5.2 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
