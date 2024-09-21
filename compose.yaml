@@ -11,6 +11,8 @@ services:
         source: "./nginx.conf"
         target: "/etc/nginx/nginx.conf"
         read_only: true
+      - "./log:/var/log/nginx"
+      - "./report:/usr/share/nginx/html"
     depends_on:
       - api
       # - prism
@@ -18,6 +20,7 @@ services:
       - redoc
       - pgweb
       - redis-commander
+      - goaccess
 
   api:
     container_name: api
@@ -118,6 +121,16 @@ services:
         source: "docs/api/bundled.yaml"
         target: "/usr/share/nginx/html/openapi/bundled.yaml"
         read_only: true
+
+  goaccess:
+    image: allinurl/goaccess:1.9.3
+    container_name: goaccess
+    command: "--log-format=COMBINED --real-time-html /var/log/nginx/access.log --output /usr/share/nginx/html/report.html"
+    volumes:
+      - "./log:/var/log/nginx"
+      - "./report:/usr/share/nginx/html"
+    ports:
+      - "8083:7890"
 
   # prism:
   #   image: stoplight/prism:5.11.2
