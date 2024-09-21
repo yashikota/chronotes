@@ -16,7 +16,7 @@ func GetNote(userID string, dateTime time.Time) (model.Note, error) {
 
 	// Get note from database
 	note := model.Note{}
-	result := db.DB.Where("id = ? AND created_at = ?", userID, dateTime).First(&note)
+	result := db.DB.Where("id = ? AND DATE(created_at) = DATE(?)", userID, dateTime).First(&note)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return model.Note{}, nil
 	} else if result.Error != nil {
