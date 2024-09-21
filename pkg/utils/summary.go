@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func Summary(message []string) ([]string, error) {
+func Summary(message []string, token string) ([]string, error) {
 	if len(message) < 2 {
 		return message, nil
 	}

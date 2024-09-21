@@ -11,6 +11,7 @@ import (
 
 func TestSummaryHandler(t *testing.T) {
 	err := godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
+	token := os.Getenv("GEMINI_TOKEN")
 	if err != nil && !os.IsNotExist(err) {
 		t.Error(err)
 	}
@@ -24,7 +25,7 @@ func TestSummaryHandler(t *testing.T) {
 	}
 
 	// 関数を実行
-	result, err := utils.Summary(messages)
+	result, err := utils.Summary(messages, token)
 	if err != nil {
 		t.Errorf("エラーが発生しました: %v", err)
 	}
