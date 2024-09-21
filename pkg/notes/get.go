@@ -4,9 +4,10 @@ import (
 	"errors"
 	"time"
 
+	"gorm.io/gorm"
+
 	model "github.com/yashikota/chronotes/model/v1/db"
 	"github.com/yashikota/chronotes/pkg/db"
-	"gorm.io/gorm"
 )
 
 func GetNote(userID string, dateTime time.Time) (model.Note, error) {
