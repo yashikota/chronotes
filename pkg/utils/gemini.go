@@ -18,7 +18,7 @@ func SummarizeText(texts []string) ([]string, error) {
 		return nil, fmt.Errorf("GEMINI_TOKEN が環境変数に設定されていません")
 	}
 
-	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
+	client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_TOKEN")))
 	if err != nil {
 		return nil, fmt.Errorf("error creating Gemini client: %v", err)
 	}
