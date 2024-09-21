@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -16,7 +16,8 @@ func SlackProvider(channelID string) ([]string, error) {
 	token := os.Getenv("SLACK_TOKEN")
 
 	if token == "" {
-		return nil, fmt.Errorf("SLACK_TOKEN environment variable is not set")
+		log.Printf("SLACK_TOKEN environment variable is not set")
+		return nil, nil
 	}
 
 	api := slack.New(token)
@@ -27,7 +28,8 @@ func SlackProvider(channelID string) ([]string, error) {
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("error fetching channel history: %v", err)
+		log.Printf("Slack : error fetching channel history: %v", err)
+		return nil, nil
 	}
 
 	// カテゴリごとのメッセージを格納するためのマップ
@@ -67,13 +69,15 @@ func SlackProvider(channelID string) ([]string, error) {
 	contens := extractContentSlack(todayMessages)
 
 	if contens == nil {
-		return nil, fmt.Errorf("could not fetch commits")
+		log.Printf("Slack : could not fetch commits")
+		return nil, nil
 	}
 
 	// fmt.Println("Contents:", contens)
 	summaries, err := utils.SummarizeText(contens)
 	if err != nil {
-		return nil, fmt.Errorf("error summarizing text: %v", err)
+		log.Printf("Slack : error summarizing text: %v", err)
+		return nil, nil
 	}
 	// fmt.Println("Summarized texts:", summaries)
 	return summaries, nil
