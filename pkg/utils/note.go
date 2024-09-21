@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"net/url"
@@ -32,11 +33,14 @@ func Iso8601ToDate(t string) (time.Time, error) {
 }
 
 func CustomJSONEncoder(v interface{}) (string, error) {
-	jsonBytes, err := json.MarshalIndent(v, "", "  ")
+	var resultBytes bytes.Buffer
+	enc := json.NewEncoder(&resultBytes)
+	enc.SetEscapeHTML(false)
+	err := enc.Encode(v)
 	if err != nil {
 		log.Println("Error encoding JSON:", err)
 		return "", err
 	}
-
-	return string(jsonBytes), nil
+	result := strings.TrimSpace(resultBytes.String())
+	return result, nil
 }

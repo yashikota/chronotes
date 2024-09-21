@@ -11,6 +11,14 @@ func SuccessJSONResponse(w http.ResponseWriter, res interface{}) {
 	json.NewEncoder(w).Encode(res)
 }
 
+func SuccessJSONResponseWithoutEscape(w http.ResponseWriter, res interface{}) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	enc := json.NewEncoder(w)
+	enc.SetEscapeHTML(false)
+	enc.Encode(res)
+}
+
 func ErrorJSONResponse(w http.ResponseWriter, status int, err error) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(status)

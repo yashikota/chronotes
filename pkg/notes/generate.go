@@ -24,7 +24,9 @@ func GenerateNote(userID string, date string, accounts noteModel.Gemini) (dbMode
 	log.Println("Gemini response:", response)
 
 	contentHTML := utils.Md2HTML(response.Result)
+	log.Println("Gemini contentHTML:", contentHTML)
 	content, err := utils.CustomJSONEncoder(contentHTML)
+	log.Println("Gemini content:", content)
 	if err != nil {
 		return dbModel.Note{}, err
 	}
