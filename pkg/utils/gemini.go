@@ -13,9 +13,9 @@ import (
 // SummarizeText は、複数のテキストを要約し、その要約を []string 型で返します。
 func SummarizeText(texts []string) ([]string, error) {
 	ctx := context.Background()
-	token := os.Getenv("GEMINITOKEN")
+	token := os.Getenv("GEMINI_TOKEN")
 	if token == "" {
-		return nil, fmt.Errorf("GITHUB_TOKEN が環境変数に設定されていません")
+		return nil, fmt.Errorf("GEMINI_TOKEN が環境変数に設定されていません")
 	}
 
 	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
