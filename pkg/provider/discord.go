@@ -15,18 +15,18 @@ import (
 func DiscordProvider(channelID string) ([]string, error) {
 	if channelID == "" {
 		log.Printf("Discord : channelID is not set")
-		return nil, nil
+		return []string{}, nil
 	}
 	token := os.Getenv("DISCORD_TOKEN")
 	if token == "" {
 		log.Printf("Discord : DISCORD_TOKEN environment variable is not set")
-		return nil, nil
+		return []string{}, nil
 	}
 
 	messages, err := runBot(channelID, token)
 	if err != nil {
 		log.Printf("Discord : Error running bot: %v", err)
-		return nil, nil
+		return []string{}, nil
 	}
 
 	categorizedMessages := categorizeMessages(messages)
@@ -37,7 +37,7 @@ func DiscordProvider(channelID string) ([]string, error) {
 	summaries, err := utils.SummarizeText(contents)
 	if err != nil {
 		log.Printf("Discord : Error summarizing text: %v", err)
-		return nil, nil
+		return []string{}, nil
 	}
 	return summaries, nil
 }

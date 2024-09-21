@@ -18,12 +18,12 @@ func GitHubProvider(userID string) ([]string, error) {
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
 		log.Printf("GitHub : GITHUB_TOKEN environment variable is not set")
-		return nil, nil
+		return []string{}, nil
 	}
 
 	if userID == "" {
 		log.Printf("GitHub : userID is not set")
-		return nil, nil
+		return []string{}, nil
 	}
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
@@ -38,7 +38,7 @@ func GitHubProvider(userID string) ([]string, error) {
 	repos, _, err := client.Repositories.List(ctx, userID, nil)
 	if err != nil {
 		log.Printf("GitHub : Error fetching repositories: %v", err)
-		return nil, nil
+		return []string{}, nil
 	}
 
 	for _, repo := range repos {
@@ -62,13 +62,13 @@ func GitHubProvider(userID string) ([]string, error) {
 	}
 
 	if len(summaries) == 0 {
-		return nil, nil
+		return []string{}, nil
 	}
 
 	finalSummary, err := utils.SummarizeText(summaries)
 	if err != nil {
 		log.Printf("GitHub : Error summarizing text: %v", err)
-		return nil, nil
+		return []string{}, nil
 	}
 	return finalSummary, nil
 }

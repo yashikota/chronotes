@@ -17,7 +17,7 @@ func SlackProvider(channelID string) ([]string, error) {
 
 	if token == "" {
 		log.Printf("SLACK_TOKEN environment variable is not set")
-		return nil, nil
+		return []string{}, nil
 	}
 
 	api := slack.New(token)
@@ -29,7 +29,7 @@ func SlackProvider(channelID string) ([]string, error) {
 
 	if err != nil {
 		log.Printf("Slack : error fetching channel history: %v", err)
-		return nil, nil
+		return []string{}, nil
 	}
 
 	// カテゴリごとのメッセージを格納するためのマップ
@@ -70,14 +70,14 @@ func SlackProvider(channelID string) ([]string, error) {
 
 	if contens == nil {
 		log.Printf("Slack : could not fetch commits")
-		return nil, nil
+		return []string{}, nil
 	}
 
 	// fmt.Println("Contents:", contens)
 	summaries, err := utils.SummarizeText(contens)
 	if err != nil {
 		log.Printf("Slack : error summarizing text: %v", err)
-		return nil, nil
+		return []string{}, nil
 	}
 	// fmt.Println("Summarized texts:", summaries)
 	return summaries, nil
