@@ -27,6 +27,8 @@ services:
     build:
       context: .
       target: final
+    volumes:
+      - server-data:/img
     depends_on:
       db:
         condition: service_healthy
@@ -131,3 +133,4 @@ services:
 volumes:
   db-data:
   redis-data:
+  server-data:

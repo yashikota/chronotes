@@ -27,35 +27,35 @@ func FakeHandler(w http.ResponseWriter, r *http.Request) {
 ログイン機能の実装は順調に進んでいる。
 今後、ログアウト機能やユーザーの情報を取得する機能などを追加していく予定だ。
 `
-    html := utils.Md2HTML([]byte(content))
+	html := utils.Md2HTML([]byte(content))
 
-    // Create the structure
-    structure := struct {
-        Data    string `json:"data"`
-        Content string `json:"content"`
-    }{
-        Data:    data,
-        Content: string(html),
-    }
+	// Create the structure
+	structure := struct {
+		Data    string `json:"data"`
+		Content string `json:"content"`
+	}{
+		Data:    data,
+		Content: string(html),
+	}
 
-    // カスタムエンコーダーを作成
-    buffer := &bytes.Buffer{}
-    encoder := json.NewEncoder(buffer)
-    encoder.SetEscapeHTML(false)
-    encoder.SetIndent("", "  ")
+	// カスタムエンコーダーを作成
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	encoder.SetEscapeHTML(false)
+	encoder.SetIndent("", "  ")
 
-    // 構造体をJSONエンコード
-    if err := encoder.Encode(structure); err != nil {
-        fmt.Println("Error encoding JSON:", err)
-        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-        return
-    }
+	// 構造体をJSONエンコード
+	if err := encoder.Encode(structure); err != nil {
+		fmt.Println("Error encoding JSON:", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
-    // エンコードされたJSONを取得
-    jsonData := buffer.Bytes()
+	// エンコードされたJSONを取得
+	jsonData := buffer.Bytes()
 
-    // レスポンスの作成
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusOK)
-    w.Write(jsonData)
+	// レスポンスの作成
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }
