@@ -17,11 +17,12 @@ func GitHubProvider(userID string) ([]string, error) {
 	ctx := context.Background()
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
+		log.Printf("GitHub : GITHUB_TOKEN environment variable is not set")
 		return nil, nil
 	}
 
 	if userID == "" {
-		log.Printf("userID is not set")
+		log.Printf("GitHub : userID is not set")
 		return nil, nil
 	}
 	ts := oauth2.StaticTokenSource(
