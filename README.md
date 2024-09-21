@@ -3,6 +3,9 @@
 [![codecov](https://codecov.io/github/yashikota/chronotes/graph/badge.svg?token=8LK1D9KWN5)](https://codecov.io/github/yashikota/chronotes)
 [![Go Report Card](https://goreportcard.com/badge/github.com/yashikota/chronotes)](https://goreportcard.com/report/github.com/yashikota/chronotes)
 
+> [!NOTE]
+> フロントエンドのリポジトリは [GenichiMaruo/chronotes-front](https://github.com/GenichiMaruo/chronotes-front) にあります。  
+
 ## Development
 
 ```sh
