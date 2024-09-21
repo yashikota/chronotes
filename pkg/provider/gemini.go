@@ -31,6 +31,11 @@ func Gemini(input model.Gemini) (model.Response, error) {
 		log.Printf("DiscordProvider error for channel %s: %v\n", input.DiscordChannelID, err)
 	}
 
+	if qiitaText, err := QiitaProvider(input.QiitaUserID); err == nil {
+		text = append(text, qiitaText...)
+	} else {
+		log.Printf("QiitaProvider error for user %s: %v\n", input.QiitaUserID, err)
+	}
 	day = utils.GetDay()
 	fmt.Println(day)
 
