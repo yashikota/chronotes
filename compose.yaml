@@ -22,8 +22,13 @@ services:
   api:
     container_name: api
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - TZ=Asia/Tokyo
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - SLACK_TOKEN=${SLACK_TOKEN}
+      - QIITA_TOKEN=${QIITA_TOKEN}
+      - GEMINI_TOKEN=${GEMINI_TOKEN}
     build:
       context: .
       target: final

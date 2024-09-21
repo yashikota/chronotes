@@ -2,20 +2,24 @@ package notes
 
 import (
 	"errors"
+	"time"
 
 	model "github.com/yashikota/chronotes/model/v1/db"
 	"github.com/yashikota/chronotes/pkg/db"
+	"gorm.io/gorm"
 )
 
-func GetNote(userID string, date string) (model.Note, error) {
+func GetNote(userID string, dateTime time.Time) (model.Note, error) {
 	if db.DB == nil {
 		return model.Note{}, errors.New("database connection is not initialized")
 	}
 
 	// Get note from database
 	note := model.Note{}
-	result := db.DB.Where("user_id = ? AND date = ?", userID, date).First(&note)
-	if result.Error != nil {
+	result := db.DB.Where("id = ? AND created_at = ?", userID, dateTime).First(&note)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return model.Note{}, nil
+	} else if result.Error != nil {
 		return model.Note{}, result.Error
 	}
 
@@ -29,7 +33,7 @@ func GetNoteIgnoreContent(userID string, date string) (model.Note, error) {
 
 	// Get note from database
 	note := model.Note{}
-	result := db.DB.Where("user_id = ? AND date = ?", userID, date).First(&note)
+	result := db.DB.Where("id = ? AND created_at = ?", userID, date).First(&note)
 	if result.Error != nil {
 		return model.Note{}, result.Error
 	}
