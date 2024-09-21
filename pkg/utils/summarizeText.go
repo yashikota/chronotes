@@ -34,7 +34,7 @@ func SummarizeText(texts []string) ([]string, error) {
 		return []string{summary}, nil
 	}
 
-	resp, err := model.GenerateContent(ctx, genai.Text(fmt.Sprintf("次の文章から要約を書いて 要約の量が50字数を超えたら重要な部分以外省いて 要約を作成することができない場合は進捗なしと出力:%s", combinedText)))
+	resp, err := model.GenerateContent(ctx, genai.Text(fmt.Sprintf("次の文章から要約を書いて 要約の量が200字数を超えたら重要な部分以外省いて 要約を作成することができない場合は進捗なしと出力:%s", combinedText)))
 	if err != nil {
 		fmt.Printf("Error generating content: %v\n", err) // エラーメッセージの出力
 		return nil, fmt.Errorf("error generating content for text: %v", err)
