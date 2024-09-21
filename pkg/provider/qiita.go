@@ -15,13 +15,13 @@ func QiitaProvider(userID string) ([]string, error) {
 	token := os.Getenv("QIITA_TOKEN")
 	if token == "" {
 		log.Printf("Qiita: QIITA_TOKEN environment variable is not set")
-		return nil, nil
+		return []string{}, nil
 	}
 	config := qiita.NewConfig()
 	c, err := qiita.NewClient(token, *config)
 	if err != nil {
 		log.Printf("Qiita: Error creating client: %v", err)
-		return nil, nil
+		return []string{}, nil
 	}
 
 	// 今日の日付を取得
@@ -33,14 +33,14 @@ func QiitaProvider(userID string) ([]string, error) {
 	items, err := c.ListItems(ctx, 1, 100, "user:"+userID)
 	if err != nil {
 		log.Printf("Qiita: Error fetching items: %v", err)
-		return nil, nil
+		return []string{}, nil
 	}
 
 	for _, item := range *items {
 		createdAt, err := time.Parse(time.RFC3339, item.CreatedAt)
 		if err != nil {
 			log.Printf("Qiita: Error parsing created_at: %v", err)
-			return nil, nil
+			return []string{}, nil
 		}
 
 		// 今日の日付と比較
@@ -52,7 +52,7 @@ func QiitaProvider(userID string) ([]string, error) {
 
 	if len(todayItems) == 0 {
 		log.Printf("Qiita: No items found for today")
-		return nil, nil
+		return []string{}, nil
 	}
 
 	return todayItems, nil

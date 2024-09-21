@@ -20,19 +20,16 @@ func Gemini(input model.Gemini) (model.Response, error) {
 	} else {
 		log.Printf("GitHubProvider error for user %s: %v\n", input.GitHubUserID, err)
 	}
-
 	if slackText, err := SlackProvider(input.SlackChannelID); err == nil {
 		text = append(text, slackText...)
 	} else {
 		log.Printf("SlackProvider error for channel %s: %v\n", input.SlackChannelID, err)
 	}
-
 	if discordText, err := DiscordProvider(input.DiscordChannelID); err == nil {
 		text = append(text, discordText...)
 	} else {
 		log.Printf("DiscordProvider error for channel %s: %v\n", input.DiscordChannelID, err)
 	}
-
 	if qiitaText, err := QiitaProvider(input.QiitaUserID); err == nil {
 		text = append(text, qiitaText...)
 	} else {
@@ -42,38 +39,49 @@ func Gemini(input model.Gemini) (model.Response, error) {
 
 	if len(text) == 0 {
 		return model.Response{
-			Result: "進捗なし",
+			Result: "",
+			Title:  "",
 			Day:    day,
 		}, nil
 	}
+
 	summary, err := utils.SummarizeText(text)
 	if err != nil {
 		log.Printf("Gemini : error summarizing text: %v\n", err)
 		return model.Response{
-			Result: "進捗なし",
-			Title:  day,
+			Result: "",
+			Title:  "",
 			Day:    day,
+			Tag:    "",
 		}, nil
 	}
-
 	result = strings.Join(summary, "\n")
-
 	title, err := utils.MakeTitle(summary)
 	if err != nil {
 		log.Printf("Gemini : error making title: %v\n", err)
 		return model.Response{
-			Result: "進捗なし",
+			Result: result,
 			Title:  day,
 			Day:    day,
+			Tag:    "",
 		}, nil
 	}
 
-	fmt.Println(result)
-	fmt.Println(title)
-	fmt.Println(day)
+	tag, err := utils.MakeTag(summary)
+	if err != nil {
+		log.Printf("Gemini : error making tag: %v\n", err)
+		return model.Response{
+			Result: result,
+			Title:  title,
+			Day:    day,
+			Tag:    "",
+		}, nil
+	}
+	fmt.Printf("Gemini : result: %s, title: %s, day: %s, tag: %s\n", result, title, day, tag)
 	return model.Response{
 		Result: result,
 		Title:  title,
 		Day:    day,
+		Tag:    tag,
 	}, nil
 }
