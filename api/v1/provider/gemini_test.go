@@ -34,15 +34,20 @@ func TestGeminiHandler(t *testing.T) {
 		input.DiscordChannelID = "DISCORD_CHANNEL_ID"
 	}
 
-	result, err := provider.Gemini(input)
+	response, err := provider.Gemini(input)
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	if result == nil {
+	if response.Result == nil {
 		t.Error("could not fetch commits")
 	}
 
-	fmt.Println("result", result)
+	if response.Day == "" {
+		t.Error("could not fetch day")
+	}
+
+	fmt.Println("result", response.Result)
+	fmt.Println("day", response.Day)
 }
