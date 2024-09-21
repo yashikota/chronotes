@@ -11,8 +11,8 @@ import (
 
 // Response is the structure for the API response.
 type Response struct {
-	Result []string `json:"result"`
-	Day    string   `json:"day"`
+	Result string `json:"result"`
+	Day    string `json:"day"`
 }
 
 // GeminiHandler handles the Gemini API requests.
