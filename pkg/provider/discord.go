@@ -58,9 +58,6 @@ func runBot(channelID, token string) ([]*discordgo.Message, error) {
 		return nil, fmt.Errorf("error opening connection: %w", err)
 	}
 	defer dg.Close()
-
-	fmt.Println("Bot is now running. Press CTRL+C to exit.")
-
 	return getMessageHistory(dg, channelID)
 }
 
