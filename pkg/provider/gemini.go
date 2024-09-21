@@ -3,6 +3,7 @@ package provider
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/utils"
@@ -10,7 +11,8 @@ import (
 
 func Gemini(input model.Gemini) (model.Response, error) {
 	var text []string
-	var result []string
+	var summary []string
+	var result string
 	var day string
 
 	if githubText, err := GitHubProvider(input.GitHubUserID); err == nil {
@@ -37,22 +39,41 @@ func Gemini(input model.Gemini) (model.Response, error) {
 		log.Printf("QiitaProvider error for user %s: %v\n", input.QiitaUserID, err)
 	}
 	day = utils.GetDay()
-	fmt.Println(day)
 
 	if len(text) == 0 {
 		return model.Response{
-			Result: []string{"進捗なし"},
+			Result: "進捗なし",
+			Day:    day,
+		}, nil
+	}
+	summary, err := utils.SummarizeText(text)
+	if err != nil {
+		log.Printf("Gemini : error summarizing text: %v\n", err)
+		return model.Response{
+			Result: "進捗なし",
+			Title:  day,
 			Day:    day,
 		}, nil
 	}
 
-	result, err := utils.SummarizeText(text)
+	result = strings.Join(summary, "\n")
+
+	title, err := utils.MakeTitle(summary)
 	if err != nil {
-		return model.Response{}, fmt.Errorf("error summarizing text: %v", err)
+		log.Printf("Gemini : error making title: %v\n", err)
+		return model.Response{
+			Result: "進捗なし",
+			Title:  day,
+			Day:    day,
+		}, nil
 	}
 
+	fmt.Println(result)
+	fmt.Println(title)
+	fmt.Println(day)
 	return model.Response{
 		Result: result,
+		Title:  title,
 		Day:    day,
 	}, nil
 }

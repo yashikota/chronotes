@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -20,7 +21,9 @@ func SummarizeText(texts []string) ([]string, error) {
 
 	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
 	if err != nil {
-		return nil, fmt.Errorf("error creating Gemini client: %v", err)
+		log.Printf("SummarizeText : error creating Gemini client: %v\n", err) // エラーメッセージの出力
+		summary := "進捗なし"
+		return []string{summary}, nil
 	}
 	defer client.Close()
 
@@ -30,20 +33,20 @@ func SummarizeText(texts []string) ([]string, error) {
 	// テキストを結合します。
 	combinedText := strings.Join(texts, "\n\n") // 各テキストを2つの改行で区切る
 	if combinedText == "" {
-		summary := "進捗なし"
-		return []string{summary}, nil
+		return []string{"進捗なし"}, nil
 	}
 
 	resp, err := model.GenerateContent(ctx, genai.Text(fmt.Sprintf("次の文章から要約を書いて 要約の量が200字数を超えたら重要な部分以外省いて 要約を作成することができない場合は進捗なしと出力:%s", combinedText)))
 	if err != nil {
-		fmt.Printf("Error generating content: %v\n", err) // エラーメッセージの出力
-		return nil, fmt.Errorf("error generating content for text: %v", err)
+		fmt.Printf("SummarizeText : Error generating content: %v\n", err) // エラーメッセージの出力
+		return []string{"進捗なし"}, nil
 	}
 
 	summary := extractSummary(resp)
 
 	if summary == "" {
-		return nil, fmt.Errorf("summary is empty")
+		log.Printf("SummarizeText : summary is empty") // エラーメッセージの出力
+		return []string{"進捗なし"}, nil
 	}
 
 	return []string{summary}, nil

@@ -8,6 +8,7 @@ type Gemini struct {
 }
 
 type Response struct {
-	Result []string `json:"result"`
-	Day    string   `json:"day"`
+	Result string `json:"result"`
+	Title  string `json:"title"`
+	Day    string `json:"day"`
 }
