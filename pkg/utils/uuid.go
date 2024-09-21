@@ -6,6 +6,5 @@ import (
 
 // GenerateULID generates a new ULID
 func GenerateULID() string {
-	entropy := ulid.Monotonic(nil, 0)
-	return ulid.MustNew(ulid.Now(), entropy).String()
+    return ulid.Make().String()
 }
