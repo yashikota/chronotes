@@ -54,6 +54,9 @@ func main() {
 
 		// User
 		r.HandleFunc("POST /users/logout", users.LogoutHandler)
+		r.HandleFunc("DELETE /users/delete/{id}", users.DeleteHandler)
+
+		// Upload
 		r.HandleFunc("POST /upload/image", upload.UploadHandler)
 
 		// Providers
