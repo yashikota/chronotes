@@ -56,7 +56,7 @@ func main() {
 
 		// User
 		r.HandleFunc("POST /users/logout", users.LogoutHandler)
-		r.HandleFunc("DELETE /users/{id}", users.DeleteHandler)
+		r.HandleFunc("DELETE /users/me", users.DeleteHandler)
 
 		// Upload
 		r.HandleFunc("POST /upload/image", upload.UploadHandler)
