@@ -13,9 +13,12 @@ import (
 // SummarizeText は、複数のテキストを要約し、その要約を []string 型で返します。
 func SummarizeText(texts []string) ([]string, error) {
 	ctx := context.Background()
+	token := os.Getenv("GEMINI_TOKEN")
+	if token == "" {
+		return nil, fmt.Errorf("GEMINI_TOKEN が環境変数に設定されていません")
+	}
 
-	// Gemini API クライアントを作成します。
-	client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_TOKEN")))
+	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
 	if err != nil {
 		return nil, fmt.Errorf("error creating Gemini client: %v", err)
 	}
@@ -31,8 +34,9 @@ func SummarizeText(texts []string) ([]string, error) {
 		return []string{summary}, nil
 	}
 
-	resp, err := model.GenerateContent(ctx, genai.Text(fmt.Sprintf("次の文章から日記を書いて:%s", combinedText)))
+	resp, err := model.GenerateContent(ctx, genai.Text(fmt.Sprintf("次の文章から要約を書いて 要約の量が50字数を超えたら重要な部分以外省いて 要約を作成することができない場合は進捗なしと出力:%s", combinedText)))
 	if err != nil {
+		fmt.Printf("Error generating content: %v\n", err) // エラーメッセージの出力
 		return nil, fmt.Errorf("error generating content for text: %v", err)
 	}
 

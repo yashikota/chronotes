@@ -57,7 +57,6 @@ func GitHubProvider(userID string) ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error summarizing text: %v", err)
 	}
-	fmt.Println("finalSummary", finalSummary)
 	return finalSummary, nil
 }
 

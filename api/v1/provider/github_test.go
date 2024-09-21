@@ -52,6 +52,6 @@ func TestGithubHandler(t *testing.T) {
 		return
 	}
 
-	// fmt.Println(summaries)
+	fmt.Println(summaries)
 	utils.SuccessJSONResponse(w, summaries)
 }

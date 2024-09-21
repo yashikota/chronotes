@@ -40,7 +40,6 @@ func TestDiscordHandler(t *testing.T) {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("DISCORD CHANNEL ID is not set"))
 		return
 	}
-
 	summaries, err := provider.DiscordProvider(channelID)
 
 	if err != nil {
@@ -53,7 +52,7 @@ func TestDiscordHandler(t *testing.T) {
 		return
 	}
 
-	// fmt.Println(summaries)
+	fmt.Println(summaries)
 
 	utils.SuccessJSONResponse(w, summaries)
 }
