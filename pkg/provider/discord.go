@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -13,16 +14,19 @@ import (
 
 func DiscordProvider(channelID string) ([]string, error) {
 	if channelID == "" {
-		return nil, fmt.Errorf("DISCORD_CHANNEL_ID environment variable is not set")
+		log.Printf("Discord : channelID is not set")
+		return nil, nil
 	}
 	token := os.Getenv("DISCORD_TOKEN")
 	if token == "" {
-		return nil, fmt.Errorf("DISCORD_TOKEN environment variable is not set")
+		log.Printf("Discord : DISCORD_TOKEN environment variable is not set")
+		return nil, nil
 	}
 
 	messages, err := runBot(channelID, token)
 	if err != nil {
-		return nil, fmt.Errorf("error running bot: %v", err)
+		log.Printf("Discord : Error running bot: %v", err)
+		return nil, nil
 	}
 
 	categorizedMessages := categorizeMessages(messages)
@@ -32,7 +36,8 @@ func DiscordProvider(channelID string) ([]string, error) {
 	contents := extractContentsDiscord(todayMessages)
 	summaries, err := utils.SummarizeText(contents)
 	if err != nil {
-		return nil, fmt.Errorf("error summarizing text: %v", err)
+		log.Printf("Discord : Error summarizing text: %v", err)
+		return nil, nil
 	}
 	return summaries, nil
 }
@@ -48,21 +53,23 @@ func extractContentsDiscord(messages []model.DiscordMessage) []string {
 func runBot(channelID, token string) ([]*discordgo.Message, error) {
 	dg, err := discordgo.New("Bot " + token)
 	if err != nil {
-		return nil, fmt.Errorf("error creating Discord session: %w", err)
+		log.Printf("Discord : Error creating Discord session: %v", err)
+		return nil, nil
 	}
 
 	dg.AddHandler(ready)
 
 	err = dg.Open()
 	if err != nil {
-		return nil, fmt.Errorf("error opening connection: %w", err)
+		log.Printf("Discord : Error opening connection: %v", err)
+		return nil, nil
 	}
 	defer dg.Close()
 	return getMessageHistory(dg, channelID)
 }
 
 func ready(s *discordgo.Session, event *discordgo.Ready) {
-	fmt.Println("Bot is ready")
+	fmt.Println("Discord : Bot is ready")
 }
 
 func getMessageHistory(s *discordgo.Session, channelID string) ([]*discordgo.Message, error) {
@@ -71,7 +78,8 @@ func getMessageHistory(s *discordgo.Session, channelID string) ([]*discordgo.Mes
 	for {
 		messages, err := s.ChannelMessages(channelID, 100, lastMessageID, "", "")
 		if err != nil {
-			return nil, fmt.Errorf("error getting messages: %w", err)
+			log.Printf("Discord : Error getting messages: %v", err)
+			return nil, nil
 		}
 		if len(messages) == 0 {
 			break
