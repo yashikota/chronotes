@@ -2,7 +2,6 @@ package upload
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"path/filepath"
 
@@ -64,7 +63,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Resize the photo
 	resizedImg := utils.Resize(img, 720)
-	convertedFileName, err := utils.SaveFile(resizedImg, convertedPhotoUploadDir, ".png")
+	convertedFileName, err := utils.SaveFile(resizedImg, convertedPhotoUploadDir, "png")
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
@@ -75,8 +74,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		"original":  originalFilePath,
 		"converted": convertedFilePath,
 	}
-	log.Println(uploadLog)
 
-	res := map[string]string{"message": "photo uploaded"}
+	res := map[string]interface{}{"message": uploadLog}
 	utils.SuccessJSONResponse(w, res)
 }
