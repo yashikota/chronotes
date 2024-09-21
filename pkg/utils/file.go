@@ -1,4 +1,4 @@
-package util
+package utils
 
 import (
 	"bytes"
@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/oklog/ulid/v2"
 )
@@ -30,7 +31,7 @@ func DeleteDir(dirName string) error {
 }
 
 func SaveFile(data []byte, path string, extension string) (string, error) {
-	filename := ulid.Make().String() + extension
+	filename := ulid.Make().String() + strings.Split(extension, "/")[1]
 
 	// Save the file
 	file, err := os.Create(filepath.Join(path, filename))

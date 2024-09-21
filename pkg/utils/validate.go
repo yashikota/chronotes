@@ -5,7 +5,6 @@ import (
 	"net/http"
 )
 
-
 func ValidateMaxFileSize(r *http.Request) error {
 	const maxFileSize = 5 * 1024 * 1024 // 5MB
 

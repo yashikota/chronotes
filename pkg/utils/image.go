@@ -6,12 +6,13 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
+	"net/http"
 
 	"golang.org/x/image/draw"
 )
 
-// Readable image formats: jpeg, png
 func LoadImage(data []byte, fileType string) (image.Image, error) {
+	// Readable image formats: jpeg, png
 	var img image.Image
 	var err error
 
@@ -31,8 +32,8 @@ func LoadImage(data []byte, fileType string) (image.Image, error) {
 	return img, nil
 }
 
-// Aspect ratio preserving image resizing
 func Resize(data []byte, maxHeight int) []byte {
+	// Aspect ratio preserving image resizing
 	mimeType := http.DetectContentType(data)
 	img, err := LoadImage(data, mimeType)
 	if err != nil {
@@ -57,7 +58,7 @@ func Resize(data []byte, maxHeight int) []byte {
 
 	// Encode the image
 	buf := new(bytes.Buffer)
-	png.Encode(buf, dst, nil)
+	png.Encode(buf, dst)
 
 	return buf.Bytes()
 }
