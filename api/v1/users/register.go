@@ -8,7 +8,6 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/oklog/ulid/v2"
 
 	model "github.com/yashikota/chronotes/model/v1/db"
 	users "github.com/yashikota/chronotes/pkg/users"
@@ -58,7 +57,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Validation passed")
 
 	// Generate a new UserID
-	user.ID = ulid.MustNew(ulid.Now(), nil).String()
+	user.ID = utils.GenerateULID()
 
 	log.Println("Generated UserID: " + user.ID)
 

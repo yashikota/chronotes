@@ -27,7 +27,7 @@ func FakeHandler(w http.ResponseWriter, r *http.Request) {
 ログイン機能の実装は順調に進んでいる。
 今後、ログアウト機能やユーザーの情報を取得する機能などを追加していく予定だ。
 `
-	html := utils.Md2HTML([]byte(content))
+	html := utils.Md2HTML(content)
 
 	// Create the structure
 	structure := struct {
