@@ -22,6 +22,13 @@ type Note struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+type NoteResponse struct {
+	Date	string `json:"date"`
+	Title	string `json:"title"`
+	Content	string `json:"content"`
+	Tags	string `json:"tags"`
+}
+
 type Account struct {
 	ID       string `json:"id" gorm:"primaryKey"`
 	Provider string `json:"provider"`

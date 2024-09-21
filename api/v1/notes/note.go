@@ -84,5 +84,11 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Generate note passed")
 
 	// Response
-	utils.SuccessJSONResponse(w, n)
+	res := modelDB.NoteResponse{
+		Date:   dateTime.String(),
+		Title:  n.Title,
+		Content: n.Content,
+		Tags:   n.Tags,
+	}
+	utils.SuccessJSONResponseWithoutEscape(w, res)
 }
