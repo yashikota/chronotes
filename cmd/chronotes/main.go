@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/cors"
 
 	"github.com/yashikota/chronotes/api/v1/debug"
+	"github.com/yashikota/chronotes/api/v1/notes"
 	"github.com/yashikota/chronotes/api/v1/upload"
 	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/pkg/db"
@@ -58,12 +59,12 @@ func main() {
 		r.HandleFunc("POST /users/logout", users.LogoutHandler)
 		r.HandleFunc("DELETE /users/{id}", users.DeleteHandler)
 
+		// Notes
+		r.HandleFunc("GET /notes/note", notes.GetNoteHandler)
+		r.HandleFunc("GET /notes/list", notes.GetNoteListHandler)
+
 		// Upload
 		r.HandleFunc("POST /upload/image", upload.UploadHandler)
-
-		// Providers
-		// r.HandleFunc("GET /provider/github", provider.GithubHandler)
-		// r.HandleFunc("GET /provider/discord", provider.DiscordHandler)
 	})
 
 	// Photo Preview
