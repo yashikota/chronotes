@@ -31,7 +31,11 @@ func DeleteDir(dirName string) error {
 }
 
 func SaveFile(data []byte, path string, extension string) (string, error) {
-	filename := ulid.Make().String() + strings.Split(extension, "/")[1]
+	if strings.Contains(extension, "/") {
+		extension = strings.Split(extension, "/")[1]
+	}
+
+	filename := ulid.Make().String() + "." + extension
 
 	// Save the file
 	file, err := os.Create(filepath.Join(path, filename))

@@ -3,14 +3,15 @@ package main
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
 	"github.com/yashikota/chronotes/api/v1/debug"
-	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/api/v1/upload"
+	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/pkg/db"
 	"github.com/yashikota/chronotes/pkg/redis"
 	"github.com/yashikota/chronotes/pkg/utils"
@@ -34,8 +35,9 @@ func main() {
 	// Connect to database
 	db.Connect()
 
-	// Connect to Redis
+	// Initialize Redis
 	redis.Connect()
+	redis.Initialize()
 
 	// Setup JWT
 	utils.SetupPrivateKey()
@@ -62,6 +64,16 @@ func main() {
 		// Providers
 		// r.HandleFunc("GET /provider/github", provider.GithubHandler)
 		// r.HandleFunc("GET /provider/discord", provider.DiscordHandler)
+	})
+
+	// Photo Preview
+	photoServer := http.StripPrefix("/img/", http.FileServer(http.Dir("./img")))
+	r.Get("/img/*", func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, ".jpg") || strings.HasSuffix(r.URL.Path, ".jpeg") || strings.HasSuffix(r.URL.Path, ".png") {
+			photoServer.ServeHTTP(w, r)
+		} else {
+			http.NotFound(w, r)
+		}
 	})
 
 	// Start server

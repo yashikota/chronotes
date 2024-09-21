@@ -6,7 +6,7 @@ import (
 )
 
 func ValidateMaxFileSize(r *http.Request) error {
-	const maxFileSize = 5 * 1024 * 1024 // 5MB
+	const maxFileSize = 10 * 1024 * 1024 // 10MB
 
 	r.Body = http.MaxBytesReader(nil, r.Body, maxFileSize)
 	if err := r.ParseMultipartForm(maxFileSize); err != nil {
