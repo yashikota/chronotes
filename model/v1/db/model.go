@@ -13,3 +13,8 @@ type Note struct {
 	Content string `json:"content"`
 	Tags    string `json:"tags"`
 }
+
+type Account struct {
+	ID       string `json:"id" gorm:"primaryKey"`
+	Provider string `json:"provider"`
+}
