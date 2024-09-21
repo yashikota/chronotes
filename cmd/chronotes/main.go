@@ -10,6 +10,7 @@ import (
 
 	"github.com/yashikota/chronotes/api/v1/debug"
 	"github.com/yashikota/chronotes/api/v1/users"
+	"github.com/yashikota/chronotes/api/v1/upload"
 	"github.com/yashikota/chronotes/pkg/db"
 	"github.com/yashikota/chronotes/pkg/redis"
 	"github.com/yashikota/chronotes/pkg/utils"
@@ -53,7 +54,7 @@ func main() {
 
 		// User
 		r.HandleFunc("POST /users/logout", users.LogoutHandler)
-		// r.HandleFunc("DELETE /users/{user_id}", users.DeleteUserHandler)
+		r.HandleFunc("POST /upload/image", upload.UploadHandler)
 
 		// Providers
 		// r.HandleFunc("GET /provider/github", provider.GithubHandler)
