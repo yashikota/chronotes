@@ -16,9 +16,11 @@ require (
 )
 
 require (
+	github.com/gomarkdown/markdown v0.0.0-20240730141124-034f12af3bf6
 	github.com/google/generative-ai-go v0.18.0
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/slack-go/slack v0.14.0
+	golang.org/x/image v0.20.0
 	google.golang.org/api v0.198.0
 )
 

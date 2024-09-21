@@ -3,12 +3,14 @@ package main
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
 	"github.com/yashikota/chronotes/api/v1/debug"
+	"github.com/yashikota/chronotes/api/v1/upload"
 	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/pkg/db"
 	"github.com/yashikota/chronotes/pkg/redis"
@@ -33,8 +35,9 @@ func main() {
 	// Connect to database
 	db.Connect()
 
-	// Connect to Redis
+	// Initialize Redis
 	redis.Connect()
+	redis.Initialize()
 
 	// Setup JWT
 	utils.SetupPrivateKey()
@@ -45,6 +48,7 @@ func main() {
 
 	// Debug
 	r.HandleFunc("GET /api/v1/health", debug.HealthHandler)
+	r.HandleFunc("GET /api/v1/fake", debug.FakeHandler)
 
 	// Routes with JWT middleware
 	r.Route("/api/v1", func(r chi.Router) {
@@ -52,7 +56,24 @@ func main() {
 
 		// User
 		r.HandleFunc("POST /users/logout", users.LogoutHandler)
-		// r.HandleFunc("DELETE /users/{user_id}", users.DeleteUserHandler)
+		r.HandleFunc("DELETE /users/{id}", users.DeleteHandler)
+
+		// Upload
+		r.HandleFunc("POST /upload/image", upload.UploadHandler)
+
+		// Providers
+		// r.HandleFunc("GET /provider/github", provider.GithubHandler)
+		// r.HandleFunc("GET /provider/discord", provider.DiscordHandler)
+	})
+
+	// Photo Preview
+	photoServer := http.StripPrefix("/img/", http.FileServer(http.Dir("./img")))
+	r.Get("/img/*", func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, ".jpg") || strings.HasSuffix(r.URL.Path, ".jpeg") || strings.HasSuffix(r.URL.Path, ".png") {
+			photoServer.ServeHTTP(w, r)
+		} else {
+			http.NotFound(w, r)
+		}
 	})
 
 	// Start server
