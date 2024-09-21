@@ -85,10 +85,10 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Response
 	res := modelDB.NoteResponse{
-		Date:   dateTime.String(),
-		Title:  n.Title,
+		Date:    dateTime.String(),
+		Title:   n.Title,
 		Content: n.Content,
-		Tags:   n.Tags,
+		Tags:    n.Tags,
 	}
 	utils.SuccessJSONResponseWithoutEscape(w, res)
 }

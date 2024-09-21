@@ -6,5 +6,5 @@ import (
 
 // GenerateULID generates a new ULID
 func GenerateULID() string {
-    return ulid.Make().String()
+	return ulid.Make().String()
 }
