@@ -7,6 +7,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+  SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
   GEMINI_TOKEN: ${{ secrets.GEMINI_TOKEN }}
 
 jobs:
