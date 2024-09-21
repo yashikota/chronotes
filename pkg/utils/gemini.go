@@ -13,7 +13,7 @@ import (
 // SummarizeText は、複数のテキストを要約し、その要約を []string 型で返します。
 func SummarizeText(texts []string) ([]string, error) {
 	ctx := context.Background()
-	token := os.Getenv("GEMINI_TOKEN")
+	token := os.Getenv("GEMINITOKEN")
 	if token == "" {
 		return nil, fmt.Errorf("GITHUB_TOKEN が環境変数に設定されていません")
 	}
