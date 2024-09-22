@@ -23,8 +23,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate username
-	// Rule: Required, Min 3, Max 32, Alphanumeric
-	if err := validation.Validate(user.Name, validation.Required, validation.Length(3, 32), is.Alphanumeric); err != nil {
+	// Rule: Required, Min 1, Max 32
+	if err := validation.Validate(user.Name, validation.Required, validation.Length(1, 32)); err != nil {
 		log.Printf("name error: %+v", err)
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
