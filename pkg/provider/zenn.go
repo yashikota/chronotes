@@ -41,7 +41,6 @@ func ZennProvider(username string) ([]string, error) {
 
 	var todaysArticles []string
 	for _, article := range articles {
-		// Zenn の `published_at` は UTC であることを想定し、フォーマットを合わせる
 		publishedTime, err := time.Parse(time.RFC3339, article.PublishedAt)
 		if err != nil {
 			log.Printf("ZennProvider: error parsing date: %v\n", err)
@@ -58,6 +57,6 @@ func ZennProvider(username string) ([]string, error) {
 		log.Printf("ZennProvider: no articles found for today")
 		return []string{}, nil
 	}
-	
+
 	return todaysArticles, nil
 }
