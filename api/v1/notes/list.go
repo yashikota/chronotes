@@ -79,7 +79,7 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("to: ", to.StdTime())
 
 	// Get notes from database
-	notes, err := note.GetNoteContents(user.ID, from.StdTime(), to.StdTime())
+	notes, err := note.GetNoteList(user.ID, from.StdTime(), to.StdTime())
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
