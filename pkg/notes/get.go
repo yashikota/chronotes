@@ -77,3 +77,27 @@ func GetNoteContents(userID string, startDate time.Time, endDate time.Time) ([]s
 
 	return contents, nil
 }
+
+func GetNoteList(userID string, startDate time.Time, endDate time.Time) ([]map[string]string, error) {
+	query := db.DB.Where("user_id = ? AND created_at::date BETWEEN ? AND ?",
+		userID, startDate, endDate)
+
+	var noteList []map[string]string
+	rows, err := query.Model(&model.Note{}).Select("title, tags, created_at").Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var title, tags, date string
+		rows.Scan(&title, &tags, &date)
+		noteList = append(noteList, map[string]string{
+			"title": title,
+			"tags":  tags,
+			"date":  date,
+		})
+	}
+
+	return noteList, nil
+}
