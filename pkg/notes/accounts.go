@@ -3,7 +3,7 @@ package notes
 import (
 	"errors"
 
-	"github.com/yashikota/chronotes/model/v1/provider"
+	model "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 

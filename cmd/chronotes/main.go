@@ -58,6 +58,7 @@ func main() {
 		// User
 		r.HandleFunc("POST /users/logout", users.LogoutHandler)
 		r.HandleFunc("DELETE /users/me", users.DeleteHandler)
+		r.HandleFunc("PUT /users/accounts", users.UpdateAccountsHandler)
 
 		// Notes
 		r.HandleFunc("GET /notes/note", notes.GetNoteHandler)
