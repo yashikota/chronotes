@@ -3,7 +3,7 @@ package provider
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -25,7 +25,7 @@ func ZennProvider(username string) ([]string, error) {
 		return []string{}, nil
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Printf("ZennProvider: error reading response: %v\n", err)
 		return []string{}, nil
