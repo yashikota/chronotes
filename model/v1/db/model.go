@@ -35,3 +35,13 @@ type Account struct {
 	UserID string `json:"user_id" gorm:"column:user_id"`
 	model.Gemini
 }
+
+type Summary struct {
+        ID        string    `json:"summary_id" gorm:"column:id;primaryKey"`
+        UserID    string    `json:"user_id" gorm:"column:user_id"`
+        Content   string    `json:"content"`
+        StartDate time.Time `json:"start_date"`
+        EndDate   time.Time `json:"end_date"`
+        DaysCount int       `json:"days_count"`
+        CreatedAt time.Time `json:"created_at"`
+}
