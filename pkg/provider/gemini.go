@@ -35,6 +35,11 @@ func Gemini(input model.Gemini) (model.Response, error) {
 	} else {
 		log.Printf("QiitaProvider error for user %s: %v\n", input.QiitaUserID, err)
 	}
+	if zennText, err := ZennProvider(input.ZennUsername); err == nil {
+		text = append(text, zennText...)
+	} else {
+		log.Printf("ZennProvider error for user %s: %v\n", input.ZennUsername, err)
+	}
 	day = utils.GetDay()
 
 	if len(text) == 0 {

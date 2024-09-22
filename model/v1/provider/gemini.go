@@ -5,6 +5,7 @@ type Gemini struct {
 	DiscordChannelID string `json:"discord_channel_id"`
 	SlackChannelID   string `json:"slack_channel_id"`
 	QiitaUserID      string `json:"qiita_user_id"`
+	ZennUsername     string `json:"zenn_username"`
 }
 
 type Response struct {
