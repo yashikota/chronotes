@@ -44,3 +44,21 @@ func GetNoteIgnoreContent(userID string, dateTime time.Time) (model.Note, error)
 
 	return note, nil
 }
+
+func GetSummary(userID string, startDate time.Time, endDate time.Time, daysCount int) (model.Summary, error) {
+        if db.DB == nil {
+                return model.Summary{}, errors.New("database connection is not initialized")
+        }
+
+        summary := model.Summary{}
+        result := db.DB.Where("user_id = ? AND start_date = ? AND end_date = ? AND days_count = ?", 
+                              userID, startDate, endDate, daysCount).First(&summary)
+        
+        if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+                return model.Summary{}, nil
+        } else if result.Error != nil {
+                return model.Summary{}, result.Error
+        }
+
+        return summary, nil
+}
