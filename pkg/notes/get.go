@@ -27,7 +27,7 @@ func GetNote(userID string, dateTime time.Time) (model.Note, error) {
 	return note, nil
 }
 
-func GetNoteIgnoreContent(userID string, date string) (model.Note, error) {
+func GetNoteIgnoreContent(userID string, dateTime time.Time) (model.Note, error) {
 	if db.DB == nil {
 		return model.Note{}, errors.New("database connection is not initialized")
 	}
@@ -35,7 +35,9 @@ func GetNoteIgnoreContent(userID string, date string) (model.Note, error) {
 	// Get note from database
 	note := model.Note{}
 	result := db.DB.Where("user_id = ? AND created_at::date = ?::date", userID, dateTime).First(&note)
-	if result.Error != nil {
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return model.Note{}, nil
+	} else if result.Error != nil {
 		return model.Note{}, result.Error
 	}
 	note.Content = ""
