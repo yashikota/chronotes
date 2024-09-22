@@ -24,9 +24,9 @@ func Seed(db *gorm.DB) {
 	// 	log.Println("Users already exist, skipping seeding")
 	// }
 
-	baseDate, _ := time.Parse("2006-01-02", "2021-09-01")
+	baseDate, _ := time.Parse("2006-01-02", "2024-09-01")
 	id := "01J8BQ16DXVJYJDSPGNKTHSCDV" // 本番環境のデモユーザーID
-	// id := "01J8BVCYYJ0SYQ2SC4HXHSFH0N" // ローカル環境のデモユーザーID
+	// id := "01J8BYQT08N9VTN6989PTNS9HG" // ローカル環境のデモユーザーID
 
 	notes := []model.Note{
 		{Title: "プロジェクト設計の開始", Content: "新しいプロジェクトの設計を始めるにあたり、まずはユーザーのニーズを徹底的に分析した。その結果、UI/UXの改善が重要だと気づき、デザインに力を入れることにした。この過程で、多くのアイデアが浮かび上がり、実現可能なものをピックアップしていった。", UserID: id, ID: "01J8BQ16DXVJYJDSXFAKXKTHSCDA", Tags: "ui,ux,javascript", CreatedAt: baseDate, UpdatedAt: time.Now()},

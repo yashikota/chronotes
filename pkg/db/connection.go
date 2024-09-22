@@ -34,7 +34,7 @@ func Connect() {
 	log.Println("Migrated the database")
 
 	// Seed the database
-	// Seed(DB)
+	Seed(DB)
 
 	log.Println("Database connection initialized")
 }
