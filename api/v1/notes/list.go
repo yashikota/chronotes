@@ -44,8 +44,7 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 	// Get notes from database
 	var notes []model.Note
 	for c := from; c.Before(to) || c.Equal(to); c = c.Add(24 * time.Hour) {
-		date := c.Format("2006-01-02")
-		note, err := note.GetNoteIgnoreContent(user.ID, date)
+		note, err := note.GetNoteIgnoreContent(user.ID, c)
 		if err != nil {
 			utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 			return
