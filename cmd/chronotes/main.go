@@ -63,6 +63,7 @@ func main() {
 		// Notes
 		r.HandleFunc("GET /notes/note", notes.GetNoteHandler)
 		r.HandleFunc("GET /notes/list", notes.GetNoteListHandler)
+		r.HandleFunc("GET /notes/summary", notes.GetNoteSummaryHandler)
 
 		// Upload
 		r.HandleFunc("POST /upload/image", upload.UploadHandler)

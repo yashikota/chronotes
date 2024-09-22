@@ -2,9 +2,12 @@ package notes
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/joho/godotenv"
 	model "github.com/yashikota/chronotes/model/v1/db"
 	note "github.com/yashikota/chronotes/pkg/notes"
 	"github.com/yashikota/chronotes/pkg/utils"
@@ -13,7 +16,7 @@ import (
 	"github.com/Code-Hex/synchro/tz"
 )
 
-func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
+func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
 	user := model.User{}
 	user.ID = r.Context().Value(utils.TokenKey).(utils.Token).ID
@@ -87,7 +90,19 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("notes: ", notes)
 
+	err = godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
+	token := os.Getenv("GEMINI_TOKEN")
+	if err != nil && !os.IsNotExist(err) {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+	result, err := utils.Summary(notes, token)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
 	// Response
-	res := map[string]interface{}{"notes": notes}
+	res := map[string]interface{}{"result": result}
 	utils.SuccessJSONResponse(w, res)
 }
