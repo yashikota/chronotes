@@ -16,6 +16,16 @@ tasks:
       - task docker-lint
       - task api-lint
 
+  dev:
+    desc: "Run development environment"
+    cmds:
+      - docker compose up --build
+
+  build:
+    desc: "Build Docker image"
+    cmds:
+      - docker build -t chronotes .
+
   # Go
   go:lint:
     desc: "Lint Go code"
@@ -38,16 +48,6 @@ tasks:
       - find . -print | grep --regex '.*\.go' | xargs goimports -w -local "github.com/yashikota/chronotes"
 
   # Docker
-  docker:dev:
-    desc: "Run development environment"
-    cmds:
-      - docker compose up --build
-
-  docker:build:
-    desc: "Build Docker image"
-    cmds:
-      - docker build -t chronotes .
-
   docker:lint:
     desc: "Lint Dockerfile"
     cmds:
@@ -62,14 +62,14 @@ tasks:
   api:lint:
     desc: "Lint API documentation"
     cmds:
-      - task: tsp
+      - task: api:tsp
       - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 lint --config docs/api/redoc.yaml docs/api/bundled.yaml
 
   api:tsp:
     desc: "Generate Open API from TypeSpec"
     cmds:
       - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
-      - task: split
+      - task: api:split
 
   api:split:
     desc: "Split OpenAPI specification"
