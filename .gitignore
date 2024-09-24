@@ -48,4 +48,7 @@ report/
 # air
 tmp/
 
+# basic auth
+.htpasswd
+
 # End of https://www.toptal.com/developers/gitignore/api/go
