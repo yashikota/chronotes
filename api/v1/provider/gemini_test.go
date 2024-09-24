@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
+
 	model "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/provider"
 )
@@ -21,6 +22,7 @@ func TestGeminiHandler(t *testing.T) {
 		GitHubUserID:     os.Getenv("GITHUB_USER_ID"),
 		SlackChannelID:   os.Getenv("SLACK_CHANNEL_ID"),
 		DiscordChannelID: os.Getenv("DISCORD_CHANNEL_ID"),
+		QiitaUserID:      os.Getenv("QIITA_USER_ID"),
 	}
 
 	// 環境変数が設定されていない場合のデフォルト値
@@ -34,13 +36,17 @@ func TestGeminiHandler(t *testing.T) {
 		input.DiscordChannelID = "DISCORD_CHANNEL_ID"
 	}
 
+	if input.QiitaUserID == "" {
+		input.QiitaUserID = "QIITA_USER_ID"
+	}
+
 	response, err := provider.Gemini(input)
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	if response.Result == nil {
+	if response.Result == "" {
 		t.Error("could not fetch commits")
 	}
 
@@ -48,6 +54,4 @@ func TestGeminiHandler(t *testing.T) {
 		t.Error("could not fetch day")
 	}
 
-	fmt.Println("result", response.Result)
-	fmt.Println("day", response.Day)
 }

@@ -20,6 +20,7 @@
 **/*.jfm
 **/bin
 **/charts
+**/docs
 **/docker-compose*
 **/compose.y*ml
 **/Dockerfile*

@@ -8,8 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/oklog/ulid/v2"
 )
 
 func MakeDir(dirName string) error {
@@ -35,7 +33,7 @@ func SaveFile(data []byte, path string, extension string) (string, error) {
 		extension = strings.Split(extension, "/")[1]
 	}
 
-	filename := ulid.Make().String() + "." + extension
+	filename := GenerateULID() + "." + extension
 
 	// Save the file
 	file, err := os.Create(filepath.Join(path, filename))

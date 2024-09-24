@@ -34,12 +34,7 @@ func Connect() {
 	log.Println("Migrated the database")
 
 	// Seed the database
-	// err = Seed()
-	// if err != nil {
-	// 	log.Fatal("Failed to seed database:", err)
-	// }
+	// Seed(DB)
 
-	// log.Println("Seeded the database")
-
-	// log.Println("Database connection initialized")
+	log.Println("Database connection initialized")
 }

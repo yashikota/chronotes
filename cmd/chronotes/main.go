@@ -10,6 +10,7 @@ import (
 	"github.com/go-chi/cors"
 
 	"github.com/yashikota/chronotes/api/v1/debug"
+	"github.com/yashikota/chronotes/api/v1/notes"
 	"github.com/yashikota/chronotes/api/v1/upload"
 	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/pkg/db"
@@ -25,7 +26,7 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
-		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
@@ -56,14 +57,16 @@ func main() {
 
 		// User
 		r.HandleFunc("POST /users/logout", users.LogoutHandler)
-		r.HandleFunc("DELETE /users/{id}", users.DeleteHandler)
+		r.HandleFunc("DELETE /users/me", users.DeleteHandler)
+		r.HandleFunc("PUT /users/accounts", users.UpdateAccountsHandler)
+
+		// Notes
+		r.HandleFunc("GET /notes/note", notes.GetNoteHandler)
+		r.HandleFunc("GET /notes/list", notes.GetNoteListHandler)
+		r.HandleFunc("GET /notes/summary", notes.GetNoteSummaryHandler)
 
 		// Upload
 		r.HandleFunc("POST /upload/image", upload.UploadHandler)
-
-		// Providers
-		// r.HandleFunc("GET /provider/github", provider.GithubHandler)
-		// r.HandleFunc("GET /provider/discord", provider.DiscordHandler)
 	})
 
 	// Photo Preview

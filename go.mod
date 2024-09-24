@@ -16,8 +16,10 @@ require (
 )
 
 require (
+	github.com/Code-Hex/synchro v0.5.2
 	github.com/gomarkdown/markdown v0.0.0-20240730141124-034f12af3bf6
 	github.com/google/generative-ai-go v0.18.0
+	github.com/ktsujichan/qiita-sdk-go v1.0.1
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/slack-go/slack v0.14.0
 	golang.org/x/image v0.20.0
@@ -44,6 +46,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.4 // indirect
 	github.com/googleapis/gax-go/v2 v2.13.0 // indirect
+	github.com/itchyny/timefmt-go v0.1.5 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.5.5 // indirect

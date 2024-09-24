@@ -2,6 +2,8 @@ package provider
 
 import (
 	"fmt"
+	"log"
+	"strings"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/utils"
@@ -9,30 +11,82 @@ import (
 
 func Gemini(input model.Gemini) (model.Response, error) {
 	var text []string
-	var result []string
+	var summary []string
+	var result string
 	var day string
-	// GitHubプロバイダーからのテキストを追加
+
 	if githubText, err := GitHubProvider(input.GitHubUserID); err == nil {
 		text = append(text, githubText...)
+	} else {
+		log.Printf("GitHubProvider error for user %s: %v\n", input.GitHubUserID, err)
 	}
-
-	// Slackプロバイダーからのテキストを追加
 	if slackText, err := SlackProvider(input.SlackChannelID); err == nil {
 		text = append(text, slackText...)
+	} else {
+		log.Printf("SlackProvider error for channel %s: %v\n", input.SlackChannelID, err)
 	}
-
-	// Discordプロバイダーからのテキストを追加
 	if discordText, err := DiscordProvider(input.DiscordChannelID); err == nil {
 		text = append(text, discordText...)
+	} else {
+		log.Printf("DiscordProvider error for channel %s: %v\n", input.DiscordChannelID, err)
+	}
+	if qiitaText, err := QiitaProvider(input.QiitaUserID); err == nil {
+		text = append(text, qiitaText...)
+	} else {
+		log.Printf("QiitaProvider error for user %s: %v\n", input.QiitaUserID, err)
+	}
+	if zennText, err := ZennProvider(input.ZennUsername); err == nil {
+		text = append(text, zennText...)
+	} else {
+		log.Printf("ZennProvider error for user %s: %v\n", input.ZennUsername, err)
 	}
 	day = utils.GetDay()
-	fmt.Println(day)
-	result, err := utils.SummarizeText(text)
-	if err != nil {
-		return model.Response{}, fmt.Errorf("error summarizing text: %v", err)
+
+	if len(text) == 0 {
+		return model.Response{
+			Result: "",
+			Title:  "",
+			Day:    day,
+		}, nil
 	}
+
+	summary, err := utils.SummarizeText(text)
+	if err != nil {
+		log.Printf("Gemini : error summarizing text: %v\n", err)
+		return model.Response{
+			Result: "",
+			Title:  "",
+			Day:    day,
+			Tag:    "",
+		}, nil
+	}
+	result = strings.Join(summary, "\n")
+	title, err := utils.MakeTitle(summary)
+	if err != nil {
+		log.Printf("Gemini : error making title: %v\n", err)
+		return model.Response{
+			Result: result,
+			Title:  day,
+			Day:    day,
+			Tag:    "",
+		}, nil
+	}
+
+	tag, err := utils.MakeTag(summary)
+	if err != nil {
+		log.Printf("Gemini : error making tag: %v\n", err)
+		return model.Response{
+			Result: result,
+			Title:  title,
+			Day:    day,
+			Tag:    "",
+		}, nil
+	}
+	fmt.Printf("Gemini : result: %s, title: %s, day: %s, tag: %s\n", result, title, day, tag)
 	return model.Response{
 		Result: result,
+		Title:  title,
 		Day:    day,
+		Tag:    tag,
 	}, nil
 }

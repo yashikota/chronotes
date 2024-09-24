@@ -31,7 +31,7 @@ func TestMd2HTML(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := utils.Md2HTML([]byte(tc.input))
+			result := utils.Md2HTML(tc.input)
 			if string(result) != tc.expected {
 				t.Errorf("Expected:\n%s\nGot:\n%s", tc.expected, string(result))
 			}

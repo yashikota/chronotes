@@ -45,4 +45,7 @@ dist/
 logs/
 report/
 
+# air
+tmp/
+
 # End of https://www.toptal.com/developers/gitignore/api/go
