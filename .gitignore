@@ -41,6 +41,10 @@ dist/
 *.jpg
 *.png
 
+# log analytics
+logs/
+report/
+
 # air
 tmp/
 
