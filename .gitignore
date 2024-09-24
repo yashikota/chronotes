@@ -42,7 +42,7 @@ dist/
 *.png
 
 # log analytics
-log/
+logs/
 report/
 
 # End of https://www.toptal.com/developers/gitignore/api/go

@@ -11,8 +11,18 @@ services:
         source: "./nginx.conf"
         target: "/etc/nginx/nginx.conf"
         read_only: true
-      - "./log:/var/log/nginx"
-      - "./report:/usr/share/nginx/html"
+      - type: bind
+        source: "./logs"
+        target: "/var/log/nginx"
+      - type: bind
+        source: "./report"
+        target: "/usr/share/goaccess/report"
+        read_only: true
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     depends_on:
       - api
       # - prism
@@ -20,7 +30,6 @@ services:
       - redoc
       - pgweb
       - redis-commander
-      - goaccess
 
   api:
     container_name: api
@@ -90,8 +99,6 @@ services:
     environment:
       - REDIS_HOSTS=redis
       - TZ=Asia/Tokyo
-    ports:
-      - "8082:8081"
     depends_on:
       redis:
         condition: service_healthy
@@ -111,8 +118,6 @@ services:
   redoc:
     image: redocly/redoc:v2.1.5
     container_name: redoc
-    ports:
-      - "3032:80"
     environment:
       - SPEC_URL=/redoc/openapi/bundled.yaml
       - TZ=Asia/Tokyo
@@ -125,12 +130,22 @@ services:
   goaccess:
     image: allinurl/goaccess:1.9.3
     container_name: goaccess
-    command: "--log-format=COMBINED --real-time-html /var/log/nginx/access.log --output /usr/share/nginx/html/report.html"
+    command: "--log-format=COMBINED --real-time-html /srv/logs/access.log --output /srv/report/index.html"
+    environment:
+      - TZ=Asia/Tokyo
     volumes:
-      - "./log:/var/log/nginx"
-      - "./report:/usr/share/nginx/html"
+      - type: bind
+        source: "./logs"
+        target: "/srv/logs"
+        read_only: true
+      - type: bind
+        source: "./report"
+        target: "/srv/report"
     ports:
-      - "8083:7890"
+      - "7890:7890"
+    depends_on:
+      nginx:
+        condition: service_healthy
 
   # prism:
   #   image: stoplight/prism:5.11.2
