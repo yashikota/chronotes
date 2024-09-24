@@ -31,9 +31,11 @@ services:
       - GEMINI_TOKEN=${GEMINI_TOKEN}
     build:
       context: .
-      target: final
+      target: dev
     volumes:
-      - server-data:/img
+      - type: bind
+        source: "."
+        target: "/app"
     depends_on:
       db:
         condition: service_healthy
@@ -138,4 +140,3 @@ services:
 volumes:
   db-data:
   redis-data:
-  server-data:
