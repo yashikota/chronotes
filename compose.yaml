@@ -18,6 +18,10 @@ services:
         source: "./report"
         target: "/usr/share/goaccess/report"
         read_only: true
+      - type: bind
+        source: ".htpasswd"
+        target: "/etc/nginx/.htpasswd"
+        read_only: true
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost" ]
       interval: 30s
