@@ -17,20 +17,20 @@ tasks:
       - task api-lint
 
   # Go
-  lint:
-    desc: "Run Go linters"
+  go:lint:
+    desc: "Lint Go code"
     cmds:
       - go install honnef.co/go/tools/cmd/staticcheck@latest
       - go vet ./...
       - staticcheck ./...
 
-  test:
+  go:test:
     desc: "Run Go tests"
     cmds:
       - go build ./...
       - go test -v ./...
 
-  fmt:
+  go:fmt:
     desc: "Format Go code"
     cmds:
       - go fmt ./...
@@ -38,46 +38,46 @@ tasks:
       - find . -print | grep --regex '.*\.go' | xargs goimports -w -local "github.com/yashikota/chronotes"
 
   # Docker
-  dev:
+  docker:dev:
     desc: "Run development environment"
     cmds:
       - docker compose up --build
 
-  build:
+  docker:build:
     desc: "Build Docker image"
     cmds:
       - docker build -t chronotes .
 
-  docker-lint:
+  docker:lint:
     desc: "Lint Dockerfile"
     cmds:
       - docker run --rm -i hadolint/hadolint < Dockerfile
 
   # API
-  # ogen:
+  # api:ogen:
   #   desc: "Generate OpenAPI specification"
   #   cmds:
   #     - docker run --rm -v {{.PWD}}:/wd ghcr.io/ogen-go/ogen:v1.4.1 --target wd/pkg/ogen --clean wd/docs/api/bundled.yaml
 
-  api-lint:
+  api:lint:
     desc: "Lint API documentation"
     cmds:
       - task: tsp
       - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 lint --config docs/api/redoc.yaml docs/api/bundled.yaml
 
-  tsp:
+  api:tsp:
     desc: "Generate Open API from TypeSpec"
     cmds:
       - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
       - task: split
 
-  split:
+  api:split:
     desc: "Split OpenAPI specification"
     cmds:
       - rm -rf docs/spec/components docs/spec/paths
       - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 split docs/api/bundled.yaml --outDir=docs/api
 
-  # bundle:
+  # api:bundle:
   #   desc: "Bundle OpenAPI specification"
   #   cmds:
   #     - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 bundle docs/api/openapi.yaml -o docs/api/bundled.yaml
