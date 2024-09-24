@@ -39,8 +39,8 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Please run `task lint`" > /tmp/comment
+          echo "Please run `task api:lint`" > /tmp/comment
           gh pr comment "${PR_NUMBER}" -F /tmp/comment
 
       - name: API lint
-        run: task api-lint
+        run: task api:lint
