@@ -1,0 +1,31 @@
+name: GitHub Actions lint
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  job:
+    name: GitHub Actions lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm test
