@@ -89,3 +89,9 @@ tasks:
     cmds:
       - go install github.com/rhysd/actionlint/cmd/actionlint@latest
       - actionlint
+
+  # Markdown
+  md:lint:
+    desc: "Lint Markdown files"
+    cmds:
+      - docker run --rm -v {{.PWD}}:/wd -w /wd -t markdownlint/markdownlint:latest *.md docs/*.md
