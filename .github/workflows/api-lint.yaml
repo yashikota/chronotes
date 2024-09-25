@@ -25,9 +25,38 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Cache Node.js modules
+        uses: actions/cache@v4
+        with:
+          path: docs/spec/node_modules
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+
+      - name: Cache Docker images
+        uses: actions/cache@v4
+        with:
+          path: /tmp/docker-images
+          key: ${{ runner.OS }}-docker-images-${{ hashFiles('**/Taskfile.yml') }}
+
+      - name: Load cached Docker images
+        run: |
+          if [ -d "/tmp/docker-images" ]; then
+            docker load < /tmp/docker-images/redocly-cli.tar || true
+            docker load < /tmp/docker-images/typespec.tar || true
+          fi
+
+      - name: Pull Docker images
+        run: |
+          docker pull redocly/cli:1.25.2
+          docker pull azsdkengsys.azurecr.io/typespec
+          mkdir -p /tmp/docker-images
+          docker save redocly/cli:1.25.2 > /tmp/docker-images/redocly-cli.tar
+          docker save azsdkengsys.azurecr.io/typespec > /tmp/docker-images/typespec.tar
+
       - name: Install Dependencies
         working-directory: docs/spec
-        run: npm install
+        run: npm ci
 
       - name: Check for changes
         continue-on-error: true
