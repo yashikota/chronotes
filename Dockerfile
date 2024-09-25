@@ -1,7 +1,7 @@
 ### ----------------- ###
 ### Development image ###
 ### ----------------- ###
-ARG GO_VERSION=latest
+ARG GO_VERSION=1.22
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION} AS dev
 
 WORKDIR /app
@@ -19,7 +19,7 @@ CMD ["air", "-c", ".air.toml"]
 ### ---------------- ###
 ### Production image ###
 ### ---------------- ###
-ARG GO_VERSION=latest
+ARG GO_VERSION=1.22
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION} AS build
 
 WORKDIR /app
