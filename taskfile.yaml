@@ -15,6 +15,7 @@ tasks:
       - task fmt
       - task docker-lint
       - task api-lint
+      - task actions-lint
 
   dev:
     desc: "Run development environment"
@@ -81,3 +82,10 @@ tasks:
   #   desc: "Bundle OpenAPI specification"
   #   cmds:
   #     - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 bundle docs/api/openapi.yaml -o docs/api/bundled.yaml
+
+  # GitHub Actions
+  actions:lint:
+    desc: "Lint GitHub Actions"
+    cmds:
+      - go install github.com/rhysd/actionlint/cmd/actionlint@latest
+      - actionlint

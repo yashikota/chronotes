@@ -34,12 +34,12 @@ jobs:
         run: git diff --name-only --exit-code
 
       - name: Error check
-        if: ${{ steps.error_execution.outcome == 'failure' }}
+        if: ${{ 'steps.error_execution.outcome' == 'failure' }}
         env:
           PR_NUMBER: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Please run `task api:lint`" > /tmp/comment
+          echo "Please run $(task api:lint)" > /tmp/comment
           gh pr comment "${PR_NUMBER}" -F /tmp/comment
 
       - name: API lint

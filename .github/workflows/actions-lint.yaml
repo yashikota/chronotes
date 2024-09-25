@@ -1,0 +1,31 @@
+name: GitHub Actions lint
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  job:
+    name: GitHub Actions lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: lint
+        run: task actions:lint
