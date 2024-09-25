@@ -43,5 +43,5 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Please run `task go:fmt`" > /tmp/comment
+          echo "Please run $(task go:fmt)" > /tmp/comment
           gh pr comment "${PR_NUMBER}" -F /tmp/comment
