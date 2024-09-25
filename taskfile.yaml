@@ -10,12 +10,12 @@ tasks:
   all:
     desc: "Run all tasks"
     cmds:
-      - task lint
-      - task test
-      - task fmt
-      - task docker-lint
-      - task api-lint
-      - task actions-lint
+      - task go:lint
+      - task go:test
+      - task go:fmt
+      - task docker:lint
+      - task api:lint
+      - task actions:lint
 
   dev:
     desc: "Run development environment"

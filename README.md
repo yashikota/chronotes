@@ -14,15 +14,17 @@ go install github.com/go-task/task/v3/cmd/task@latest
 
 ```txt
 task: Available tasks for this project:
-* all:               Run all tasks
-* build:             Build Docker image
-* default:           Display this help message
-* dev:               Run development environment
-* api:lint:          Lint API documentation
-* api:split:         Split OpenAPI specification
-* api:tsp:           Generate Open API from TypeSpec
-* docker:lint:       Lint Dockerfile
-* go:fmt:            Format Go code
-* go:lint:           Lint Go code
-* go:test:           Run Go tests
+* all:                Run all tasks
+* build:              Build Docker image
+* default:            Display this help message
+* dev:                Run development environment
+* actions:lint:       Lint GitHub Actions
+* api:lint:           Lint API documentation
+* api:split:          Split OpenAPI specification
+* api:tsp:            Generate Open API from TypeSpec
+* docker:lint:        Lint Dockerfile
+* go:fmt:             Format Go code
+* go:lint:            Lint Go code
+* go:test:            Run Go tests
+* md:lint:            Lint Markdown files
 ```
