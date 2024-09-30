@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"log"
+	"log/slog"
 	"os"
 	"strconv"
 	"time"
@@ -16,7 +16,7 @@ func SlackProvider(channelID string) ([]string, error) {
 	token := os.Getenv("SLACK_TOKEN")
 
 	if token == "" {
-		log.Printf("SLACK_TOKEN environment variable is not set")
+		slog.Warn("SLACK_TOKEN environment variable is not set")
 		return []string{}, nil
 	}
 
@@ -28,7 +28,7 @@ func SlackProvider(channelID string) ([]string, error) {
 	})
 
 	if err != nil {
-		log.Printf("Slack : error fetching channel history: %v", err)
+		slog.Warn("Slack : error fetching channel history", slog.Any("error", err))
 		return []string{}, nil
 	}
 
@@ -69,14 +69,14 @@ func SlackProvider(channelID string) ([]string, error) {
 	contens := extractContentSlack(todayMessages)
 
 	if contens == nil {
-		log.Printf("Slack : could not fetch commits")
+		slog.Warn("Slack : could not fetch commits")
 		return []string{}, nil
 	}
 
 	// fmt.Println("Contents:", contens)
 	summaries, err := utils.SummarizeText(contens)
 	if err != nil {
-		log.Printf("Slack : error summarizing text: %v", err)
+		slog.Warn("Slack : error summarizing text", slog.Any("error", err))
 		return []string{}, nil
 	}
 	// fmt.Println("Summarized texts:", summaries)
