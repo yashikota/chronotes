@@ -6,6 +6,7 @@ type Gemini struct {
 	SlackChannelID   string `json:"slack_channel_id"`
 	QiitaUserID      string `json:"qiita_user_id"`
 	ZennUsername     string `json:"zenn_username"`
+	WakatimeToken    string `json:"wakatime_token"`
 }
 
 type Response struct {
