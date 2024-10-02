@@ -35,7 +35,7 @@ func GenerateNote(userID string, date string, accounts noteModel.Gemini) (dbMode
 
 	// Generate note
 	note := dbModel.Note{
-		ID:      utils.GenerateULID(),
+		NoteID:      utils.GenerateULID(),
 		UserID:  userID,
 		Title:   response.Title,
 		Content: content,
