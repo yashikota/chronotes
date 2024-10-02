@@ -3,11 +3,6 @@ required:
   - tags
 properties:
   tags:
-    type: array
-    items:
-      type: string
+    type: string
 example:
-  tags:
-    - important
-    - urgent
-    - project
+  tags: important, urgent, project

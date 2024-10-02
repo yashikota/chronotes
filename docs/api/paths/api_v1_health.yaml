@@ -8,8 +8,7 @@ get:
       content:
         application/json:
           schema:
-            type: string
-          example: pong
+            $ref: ../components/schemas/SuccessResponse.yaml
     default:
       description: An unexpected error response.
       content:

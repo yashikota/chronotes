@@ -1,20 +1,30 @@
-post:
-  operationId: saveNoteDraft
-  summary: Save a note as draft
+get:
+  operationId: getNoteList
+  summary: Get a note list
   parameters:
-    - name: noteId
-      in: path
+    - name: from
+      in: query
       required: true
       schema:
         type: string
+        format: date-time
+      explode: false
+    - name: to
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+      explode: false
   responses:
     '200':
       description: The request has succeeded.
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Note.yaml
-          example: {}
+            type: array
+            items:
+              $ref: ../components/schemas/Note.yaml
     default:
       description: An unexpected error response.
       content:

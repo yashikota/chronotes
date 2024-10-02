@@ -1,15 +1,21 @@
 get:
-  operationId: getQuarterlySummary
-  summary: Get quarterly note summary
-  parameters: []
+  operationId: getNote
+  summary: Get a note
+  parameters:
+    - name: date
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+      explode: false
   responses:
     '200':
       description: The request has succeeded.
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/NoteSummary.yaml
-          example: {}
+            $ref: ../components/schemas/Note.yaml
     default:
       description: An unexpected error response.
       content:
@@ -17,6 +23,6 @@ get:
           schema:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
-    - Analytics
+    - Notes
   security:
     - BearerAuth: []

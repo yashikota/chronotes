@@ -8,15 +8,15 @@ properties:
       $ref: ./Note.yaml
 example:
   notes:
-    - id: note3
-      title: Matching Note
-      content: This note matches the search query
-      tags:
-        - search
-        - result
-      images:
-        - id: img2
-          url: https://example.com/image2.jpg
-      isDraft: false
-      createdAt: '2023-01-03T09:15:00Z'
-      updatedAt: '2023-01-03T09:15:00Z'
+    - note_id: note123
+      title: My First Note
+      content: This is the content of my first note.
+      tags: work, project
+      createdAt: '2023-01-01T12:00:00Z'
+      updatedAt: '2023-01-01T12:30:00Z'
+    - note_id: note123
+      title: My First Note
+      content: This is the content of my first note.
+      tags: work, project
+      createdAt: '2023-01-01T12:00:00Z'
+      updatedAt: '2023-01-01T12:30:00Z'

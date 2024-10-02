@@ -5,22 +5,8 @@ properties:
   content:
     type: string
   tags:
-    type: array
-    items:
-      type: string
-  images:
-    type: array
-    items:
-      $ref: ./Image.yaml
-  isDraft:
-    type: boolean
+    type: string
 example:
   title: Updated Note Title
   content: This is the updated content of my note.
-  tags:
-    - personal
-    - updated
-  images:
-    - id: img3
-      url: https://example.com/image3.jpg
-  isDraft: false
+  tags: go, python

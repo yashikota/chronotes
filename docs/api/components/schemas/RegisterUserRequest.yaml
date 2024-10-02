@@ -1,16 +1,20 @@
 type: object
 required:
-  - username
+  - user_id
+  - user_name
   - email
   - password
 properties:
-  username:
+  user_id:
+    type: string
+  user_name:
     type: string
   email:
     type: string
   password:
     type: string
 example:
-  username: JohnDoe
-  email: john.doe@example.com
+  user_id: test123
+  user_name: hoge太郎
+  email: test@example.com
   password: password
