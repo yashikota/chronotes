@@ -18,27 +18,27 @@ func Gemini(input model.Gemini) (model.Response, error) {
 	if githubText, err := GitHubProvider(input.GitHubUserID); err == nil {
 		text = append(text, githubText...)
 	} else {
-		slog.Warn("GitHubProvider error for user %s: %v\n", input.GitHubUserID, err)
+		slog.Error("GitHubProvider error for user %s: %v\n", input.GitHubUserID, err)
 	}
 	if slackText, err := SlackProvider(input.SlackChannelID); err == nil {
 		text = append(text, slackText...)
 	} else {
-		slog.Warn("SlackProvider error for channel %s: %v\n", input.SlackChannelID, err)
+		slog.Error("SlackProvider error for channel %s: %v\n", input.SlackChannelID, err)
 	}
 	if discordText, err := DiscordProvider(input.DiscordChannelID); err == nil {
 		text = append(text, discordText...)
 	} else {
-		slog.Warn("DiscordProvider error for channel %s: %v\n", input.DiscordChannelID, err)
+		slog.Error("DiscordProvider error for channel %s: %v\n", input.DiscordChannelID, err)
 	}
 	if qiitaText, err := QiitaProvider(input.QiitaUserID); err == nil {
 		text = append(text, qiitaText...)
 	} else {
-		slog.Warn("QiitaProvider error for user %s: %v\n", input.QiitaUserID, err)
+		slog.Error("QiitaProvider error for user %s: %v\n", input.QiitaUserID, err)
 	}
 	if zennText, err := ZennProvider(input.ZennUsername); err == nil {
 		text = append(text, zennText...)
 	} else {
-		slog.Warn("ZennProvider error for user %s: %v\n", input.ZennUsername, err)
+		slog.Error("ZennProvider error for user %s: %v\n", input.ZennUsername, err)
 	}
 	day = utils.GetDay()
 
@@ -52,7 +52,7 @@ func Gemini(input model.Gemini) (model.Response, error) {
 
 	summary, err := utils.SummarizeText(text)
 	if err != nil {
-		slog.Warn("Error summarizing text", "error", err)
+		slog.Error("Error summarizing text", "error", err)
 		return model.Response{
 			Result: "",
 			Title:  "",
@@ -63,7 +63,7 @@ func Gemini(input model.Gemini) (model.Response, error) {
 	result = strings.Join(summary, "\n")
 	title, err := utils.MakeTitle(summary)
 	if err != nil {
-		slog.Warn("Error making title", "error", err)
+		slog.Error("Error making title", "error", err)
 		return model.Response{
 			Result: result,
 			Title:  day,
@@ -74,7 +74,7 @@ func Gemini(input model.Gemini) (model.Response, error) {
 
 	tag, err := utils.MakeTag(summary)
 	if err != nil {
-		slog.Warn("Error making tag", "error", err)
+		slog.Error("Error making tag", "error", err)
 		return model.Response{
 			Result: result,
 			Title:  title,

@@ -3,7 +3,7 @@ package utils
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"strings"
 
@@ -21,7 +21,7 @@ func SummarizeText(texts []string) ([]string, error) {
 
 	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
 	if err != nil {
-		log.Printf("SummarizeText : error creating Gemini client: %v\n", err) // エラーメッセージの出力
+		slog.Warn("SummarizeText : error creating Gemini client: %v\n", err.Error()) // エラーメッセージの出力
 		summary := "進捗なし"
 		return []string{summary}, nil
 	}
@@ -45,7 +45,7 @@ func SummarizeText(texts []string) ([]string, error) {
 	summary := extractSummary(resp)
 
 	if summary == "" {
-		log.Printf("SummarizeText : summary is empty") // エラーメッセージの出力
+		slog.Warn("SummarizeText : summary is empty") // エラーメッセージの出力
 		return []string{"進捗なし"}, nil
 	}
 

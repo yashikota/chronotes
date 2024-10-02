@@ -2,7 +2,7 @@ package users
 
 import (
 	"errors"
-	"log"
+	"log/slog"
 
 	"gorm.io/gorm"
 
@@ -15,7 +15,7 @@ func UpdateAccounts(newAccounts *model.Account) error {
 		return errors.New("database connection is not initialized")
 	}
 
-	log.Println("Updating accounts: ", newAccounts)
+	slog.Info("Updating accounts: ", newAccounts)
 
 	oldAccounts := model.Account{}
 	result := db.DB.Where("user_id = ?", newAccounts.UserID).First(&oldAccounts)

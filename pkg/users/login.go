@@ -2,7 +2,7 @@ package users
 
 import (
 	"errors"
-	"log"
+	"log/slog"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -22,14 +22,14 @@ func LoginUser(u *model.User) error {
 		return result.Error
 	}
 
-	log.Println("User found")
+	slog.Info("User found")
 
 	// Compare the hashed password
 	if err := bcrypt.CompareHashAndPassword([]byte(r.Password), []byte(u.Password)); err != nil {
 		return errors.New("password does not match")
 	}
 
-	log.Println("Password matched")
+	slog.Info("Password matched")
 
 	u.UserID = r.UserID
 	u.UserName = r.UserName

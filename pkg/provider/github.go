@@ -17,12 +17,12 @@ func GitHubProvider(userID string) ([]string, error) {
 	ctx := context.Background()
 	token := os.Getenv("GITHUB_TOKEN")
 	if token == "" {
-		slog.Warn("GitHub : GITHUB_TOKEN environment variable is not set")
+		slog.Error("GitHub : GITHUB_TOKEN environment variable is not set")
 		return []string{}, nil
 	}
 
 	if userID == "" {
-		slog.Warn("GitHub : userID is not set")
+		slog.Error("GitHub : userID is not set")
 		return []string{}, nil
 	}
 	ts := oauth2.StaticTokenSource(
@@ -37,13 +37,13 @@ func GitHubProvider(userID string) ([]string, error) {
 
 	repos, _, err := client.Repositories.List(ctx, userID, nil)
 	if err != nil {
-		slog.Warn("GitHub : Error fetching repositories\n")
+		slog.Error("GitHub : Error fetching repositories\n")
 		return []string{}, nil
 	}
 
 	for _, repo := range repos {
 		if repo == nil || repo.Owner == nil || repo.Name == nil {
-			slog.Warn("GitHub : Skipping repository due to nil Owner or Name")
+			slog.Error("GitHub : Skipping repository due to nil Owner or Name")
 			continue
 		}
 
@@ -54,7 +54,7 @@ func GitHubProvider(userID string) ([]string, error) {
 
 		filteredCommits, err := filterCommitsByCategories(commits, filterCategories, client, repo)
 		if err != nil {
-			slog.Warn("GitHub : Error filtering commits by categories\n")
+			slog.Error("GitHub : Error filtering commits by categories\n")
 			continue
 		}
 
@@ -67,7 +67,7 @@ func GitHubProvider(userID string) ([]string, error) {
 
 	finalSummary, err := utils.SummarizeText(summaries)
 	if err != nil {
-		slog.Warn("GitHub : Error summarizing text", "error", err)
+		slog.Error("GitHub : Error summarizing text", "error", err)
 		return []string{}, nil
 	}
 	return finalSummary, nil
@@ -79,7 +79,7 @@ func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []
 
 	for _, commit := range commits {
 		if commit == nil || commit.Author == nil || commit.Commit == nil || commit.Commit.Author == nil || commit.Commit.Author.Date == nil {
-			slog.Warn("GitHub : Skipping invalid commit")
+			slog.Error("GitHub : Skipping invalid commit")
 			continue
 		}
 		date := *commit.Commit.Author.Date
@@ -89,7 +89,7 @@ func filterCommitsByCategories(commits []*github.RepositoryCommit, categories []
 
 				detailedCommit, _, err := client.Repositories.GetCommit(ctx, *repo.Owner.Login, *repo.Name, *commit.SHA)
 				if err != nil {
-					slog.Warn("GitHub : Error getting commit details for SHA %s: %v", *commit.SHA, err)
+					slog.Error("GitHub : Error getting commit details for SHA %s: %v", *commit.SHA, err)
 					return nil, nil
 				}
 

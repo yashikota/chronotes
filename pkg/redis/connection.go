@@ -2,7 +2,7 @@ package redis
 
 import (
 	"context"
-	"log"
+	"log/slog"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -17,8 +17,8 @@ func Connect() {
 
 	_, err := Client.Ping(Ctx).Result()
 	if err != nil {
-		log.Fatal(err)
+		slog.Error(err.Error())
 	}
 
-	log.Println("Connected to Redis")
+	slog.Info("Connected to Redis")
 }

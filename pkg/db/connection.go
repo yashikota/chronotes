@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -15,7 +15,7 @@ var DB *gorm.DB
 func Connect() {
 	err := godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
 	if err != nil && !os.IsNotExist(err) {
-		log.Fatal("Failed to load .env file:", err)
+		slog.Error("Failed to load .env file:", err.Error())
 	}
 
 	// Connect to the database
@@ -23,18 +23,18 @@ func Connect() {
 	dsn := fmt.Sprintf("postgres://postgres:%s@db:5432/chronotes?sslmode=disable", pgpw)
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		slog.Error("Failed to connect to database:", err.Error())
 	}
 
-	log.Println("Connected to database")
+	slog.Info("Connected to database")
 
 	// Migrate the database
 	Migration(DB)
 
-	log.Println("Migrated the database")
+	slog.Info("Migrated the database")
 
 	// Seed the database
 	// Seed(DB)
 
-	log.Println("Database connection initialized")
+	slog.Info("Database connection initialized")
 }

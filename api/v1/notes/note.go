@@ -1,7 +1,7 @@
 package notes
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
 	modelDB "github.com/yashikota/chronotes/model/v1/db"
@@ -22,7 +22,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Validation passed")
+	slog.Info("Validation passed")
 
 	// Get date from request
 	date := r.URL.Query().Get("date")
@@ -34,8 +34,8 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("URL Decode passed")
-	log.Println("date:", date)
+	slog.Info("URL Decode passed")
+	slog.Info("date:", date)
 
 	// Parse ISO8601 date
 	dateTime, err := utils.Iso8601ToDate(date)
@@ -44,8 +44,8 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Parse ISO8601 date passed")
-	log.Println("date:", dateTime)
+	slog.Info("Parse ISO8601 date passed")
+	slog.Info("date:", dateTime)
 
 	// Get note from database
 	n, err := note.GetNote(user.UserID, dateTime)
@@ -54,7 +54,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Get note from database passed")
+	slog.Info("Get note from database passed")
 
 	// Get accounts from database
 	// accounts, err := note.GetAccounts(user.UserID)
@@ -68,11 +68,11 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 		GitHubUserID: "yashikota",
 	}
 
-	log.Println("Get accounts from database passed")
+	slog.Info("Get accounts from database passed")
 
 	// Check if note exists
 	if n.UserID == "" {
-		log.Println("Note does not exist")
+		slog.Info("Note does not exist")
 		// Generate note
 		n, err = note.GenerateNote(user.UserID, date, accounts)
 		if err != nil {
@@ -81,7 +81,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	log.Println("Generate note passed")
+	slog.Info("Generate note passed")
 
 	// Response
 	res := modelDB.NoteResponse{

@@ -1,7 +1,7 @@
 package db
 
 import (
-	"log"
+	"log/slog"
 
 	"gorm.io/gorm"
 
@@ -16,6 +16,6 @@ func Migration(db *gorm.DB) {
 	)
 
 	if err != nil {
-		log.Fatal("Failed to migrate database:", err)
+		slog.Error("Failed to migrate database:", err.Error())
 	}
 }

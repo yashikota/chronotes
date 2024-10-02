@@ -3,7 +3,7 @@ package utils
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"strings"
 
@@ -16,13 +16,13 @@ func MakeTitle(texts []string) (string, error) {
 	ctx := context.Background()
 	token := os.Getenv("GEMINI_TOKEN")
 	if token == "" {
-		log.Printf("MakeTitle : GEMINI_TOKEN が環境変数に設定されていません")
+		slog.Error("MakeTitle : GEMINI_TOKEN が環境変数に設定されていません")
 		return "", nil
 	}
 
 	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
 	if err != nil {
-		log.Printf("MakeTitle : error creating Gemini client: %v\n", err)
+		slog.Error("MakeTitle : error creating Gemini client: %v\n", err)
 		return "", nil
 	}
 	defer client.Close()
@@ -48,7 +48,7 @@ func MakeTitle(texts []string) (string, error) {
 	title := strings.Join(titleParts, "\n")
 
 	if title == "" {
-		log.Printf("MakeTitle : title is empty")
+		slog.Warn("MakeTitle : title is empty")
 		return "", nil
 	}
 

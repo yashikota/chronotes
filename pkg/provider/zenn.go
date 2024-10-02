@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"log/slog"
 	"net/http"
 	"time"
@@ -16,19 +15,19 @@ func ZennProvider(username string) ([]string, error) {
 	url := fmt.Sprintf("https://zenn.dev/api/articles?username=%s", username)
 	resp, err := http.Get(url)
 	if err != nil {
-		slog.Warn("ZennProvider: error getting articles", slog.Any("error", err))
+		slog.Error("ZennProvider: error getting articles" + err.Error())
 		return []string{}, nil
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		slog.Warn("ZennProvider: error getting articles", slog.Any("status", resp.Status))
+		slog.Error("ZennProvider: error getting articles" + resp.Status)
 		return []string{}, nil
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		slog.Warn("ZennProvider: error reading response", slog.Any("error", err))
+		slog.Error("ZennProvider: error reading response" + err.Error())
 		return []string{}, nil
 	}
 
@@ -36,8 +35,7 @@ func ZennProvider(username string) ([]string, error) {
 		Articles []model.Article `json:"articles"`
 	}
 	if err := json.Unmarshal(body, &result); err != nil {
-		slog.Warn("ZennProvider: error unmarshalling response", slog.Any("error", err))
-		log.Printf("ZennProvider: error unmarshalling response: %v\n", err)
+		slog.Error("ZennProvider: error unmarshalling response" + err.Error())
 		return []string{}, nil
 	}
 
@@ -50,7 +48,7 @@ func ZennProvider(username string) ([]string, error) {
 	for _, article := range result.Articles {
 		publishedTime, err := time.Parse(time.RFC3339, article.PublishedAt)
 		if err != nil {
-			slog.Warn("ZennProvider: error parsing date", slog.Any("error", err))
+			slog.Error("ZennProvider: error parsing date" + err.Error())
 			continue
 		}
 		// タイムゾーンを考慮して比較
@@ -60,9 +58,10 @@ func ZennProvider(username string) ([]string, error) {
 		}
 	}
 	if len(todaysArticles) == 0 {
-		slog.Warn("ZennProvider: no articles found for today")
+		slog.Error("ZennProvider: no articles found for today")
 		return []string{}, nil
 	}
-	// fmt.Println("Today's articles on Zenn", todaysArticles)
+	slog.Debug("ZennProvider: today's articles", "articles", todaysArticles)
+
 	return todaysArticles, nil
 }

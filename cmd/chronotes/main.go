@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/go-chi/chi/v5"
@@ -19,6 +20,9 @@ import (
 )
 
 func main() {
+	// Initialize slog
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stderr, nil)))
+
 	r := chi.NewRouter()
 
 	// Middleware
@@ -80,8 +84,8 @@ func main() {
 	})
 
 	// Start server
-	log.Println("Starting server on http://localhost:8080")
+	slog.Info("Starting server on http://localhost:8080")
 	if err := http.ListenAndServe(":8080", r); err != nil {
-		log.Fatal(err)
+		slog.Error(err.Error())
 	}
 }
