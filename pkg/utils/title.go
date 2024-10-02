@@ -22,7 +22,7 @@ func MakeTitle(texts []string) (string, error) {
 
 	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
 	if err != nil {
-		slog.Error("MakeTitle : error creating Gemini client: %v\n", err)
+		slog.Error("MakeTitle : error creating Gemini client: %v\n" + err.Error())
 		return "", nil
 	}
 	defer client.Close()

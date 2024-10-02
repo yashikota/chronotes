@@ -33,7 +33,7 @@ func UpdateAccountsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	slog.Info("Parsed request: ", accounts)
+	slog.Info("Parsed request: ", slog.Any("%v", accounts))
 
 	// Update accounts
 	err = users.UpdateAccounts(&accounts)

@@ -20,7 +20,7 @@ func MakeTag(texts []string) (string, error) {
 	}
 	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
 	if err != nil {
-		slog.Error("MakeTag : error creating Gemini client: %v\n", err)
+		slog.Error("MakeTag : error creating Gemini client: %v\n" + err.Error())
 		return "", nil
 	}
 	defer client.Close()

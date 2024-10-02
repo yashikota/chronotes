@@ -53,7 +53,7 @@ func Seed(db *gorm.DB) {
 		{Title: "新しい機能のテスト", Content: "新しい機能の実装後、テストを行った。特に、ユーザーの操作をシミュレートし、機能が正常に動作するか確認した。この作業を通じて、品質管理の重要性を再認識し、ユーザーにとって価値のある機能を提供することが重要だと感じた。", UserID: id, NoteID: "01J8BQ16DXVJYJDSPGNKTHS020", Tags: "feature,test,quality", Model: gorm.Model{CreatedAt: baseDate}},
 	}
 	if err := db.Create(&notes).Error; err != nil {
-		slog.Error("Failed to seed posts: %v", err.Error())
+		slog.Error("Failed to seed posts: %v" + err.Error())
 	}
 	slog.Info("Seeded posts successfully")
 }

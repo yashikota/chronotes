@@ -48,8 +48,8 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	slog.Info("iso8601formattedFrom: ", iso8601formattedFrom)
-	slog.Info("iso8601formattedTo: ", iso8601formattedTo)
+	slog.Info("iso8601formattedFrom: " + iso8601formattedFrom)
+	slog.Info("iso8601formattedTo: " + iso8601formattedTo)
 
 	// URL Decode
 	iso8601formattedFrom, err = utils.URLDecode(iso8601formattedFrom)
@@ -64,8 +64,8 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	slog.Info("URL Decode passed")
-	slog.Info("iso8601formattedFrom:", iso8601formattedFrom)
-	slog.Info("iso8601formattedTo:", iso8601formattedTo)
+	slog.Info("iso8601formattedFrom:" + iso8601formattedFrom)
+	slog.Info("iso8601formattedTo:" + iso8601formattedTo)
 
 	// Parse ISO8601 date
 	from, err := synchro.ParseISO[tz.AsiaTokyo](iso8601formattedFrom)
@@ -79,8 +79,8 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	slog.Info("from: ", from.StdTime())
-	slog.Info("to: ", to.StdTime())
+	slog.Info("from: " + from.StdTime().String())
+	slog.Info("to: " + to.StdTime().String())
 
 	// Get notes from database
 	notes, err := note.GetNoteContents(user.UserID, from.StdTime(), to.StdTime())
@@ -89,7 +89,7 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	slog.Info("notes: ", notes)
+	slog.Info("notes: ", slog.Any("%v", notes))
 
 	err = godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
 	token := os.Getenv("GEMINI_TOKEN")

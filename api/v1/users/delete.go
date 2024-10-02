@@ -34,7 +34,7 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Delete user successful")
 
 	// Delete token
-	slog.Info("Logout user.UserID: ", user.UserID)
+	slog.Info("Logout user.UserID: " + user.UserID)
 	if err := utils.DeleteToken(key); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

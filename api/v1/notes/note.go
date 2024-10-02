@@ -35,7 +35,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	slog.Info("URL Decode passed")
-	slog.Info("date:", date)
+	slog.Info("date:" + date)
 
 	// Parse ISO8601 date
 	dateTime, err := utils.Iso8601ToDate(date)
@@ -45,7 +45,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	slog.Info("Parse ISO8601 date passed")
-	slog.Info("date:", dateTime)
+	slog.Info("date:" + dateTime.String())
 
 	// Get note from database
 	n, err := note.GetNote(user.UserID, dateTime)

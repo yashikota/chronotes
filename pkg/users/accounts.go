@@ -15,7 +15,7 @@ func UpdateAccounts(newAccounts *model.Account) error {
 		return errors.New("database connection is not initialized")
 	}
 
-	slog.Info("Updating accounts: ", newAccounts)
+	slog.Info("Updating accounts: " + newAccounts.UserID)
 
 	oldAccounts := model.Account{}
 	result := db.DB.Where("user_id = ?", newAccounts.UserID).First(&oldAccounts)

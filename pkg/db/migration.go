@@ -16,6 +16,6 @@ func Migration(db *gorm.DB) {
 	)
 
 	if err != nil {
-		slog.Error("Failed to migrate database:", err.Error())
+		slog.Error("Failed to migrate database:" + err.Error())
 	}
 }

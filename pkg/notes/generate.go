@@ -21,17 +21,17 @@ func GenerateNote(userID string, date string, accounts noteModel.Gemini) (dbMode
 		return dbModel.Note{}, err
 	}
 
-	slog.Info("Gemini response:", response)
+	slog.Info("Gemini response:" + response.Result)
 
 	contentHTML := utils.Md2HTML(response.Result)
-	slog.Info("Gemini contentHTML:", contentHTML)
+	slog.Info("Gemini contentHTML:" + contentHTML)
 	content, err := utils.CustomJSONEncoder(contentHTML)
-	slog.Info("Gemini content:", content)
+	slog.Info("Gemini content:" + content)
 	if err != nil {
 		return dbModel.Note{}, err
 	}
 
-	slog.Info("Gemini content:", content)
+	slog.Info("Gemini content:" + content)
 
 	// Generate note
 	note := dbModel.Note{
@@ -42,7 +42,7 @@ func GenerateNote(userID string, date string, accounts noteModel.Gemini) (dbMode
 		Tags:    response.Tag,
 	}
 
-	slog.Info("Note:", note)
+	slog.Info("Note:" + note.Title)
 
 	// Save note to database
 	result := db.DB.Create(&note)

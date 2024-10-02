@@ -15,7 +15,7 @@ var DB *gorm.DB
 func Connect() {
 	err := godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
 	if err != nil && !os.IsNotExist(err) {
-		slog.Error("Failed to load .env file:", err.Error())
+		slog.Error("Failed to load .env file:" + err.Error())
 	}
 
 	// Connect to the database
@@ -23,7 +23,7 @@ func Connect() {
 	dsn := fmt.Sprintf("postgres://postgres:%s@db:5432/chronotes?sslmode=disable", pgpw)
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		slog.Error("Failed to connect to database:", err.Error())
+		slog.Error("Failed to connect to database:" + err.Error())
 	}
 
 	slog.Info("Connected to database")

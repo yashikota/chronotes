@@ -21,7 +21,7 @@ func SummarizeText(texts []string) ([]string, error) {
 
 	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
 	if err != nil {
-		slog.Warn("SummarizeText : error creating Gemini client: %v\n", err.Error()) // エラーメッセージの出力
+		slog.Warn("SummarizeText : error creating Gemini client: %v\n" + err.Error()) // エラーメッセージの出力
 		summary := "進捗なし"
 		return []string{summary}, nil
 	}
