@@ -1,7 +1,7 @@
 package users
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
 	model "github.com/yashikota/chronotes/model/v1/db"
@@ -20,16 +20,16 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Validation passed")
+	slog.Info("Validation passed")
 
 	// Delete token
-	log.Println("Logout user.UserID: ", user.UserID)
+	slog.Info("Logout user.UserID: " + user.UserID)
 	if err := utils.DeleteToken(key); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	log.Println("Logout successful")
+	slog.Info("Logout successful")
 
 	// Response
 	res := map[string]interface{}{"message": "Logout successful"}

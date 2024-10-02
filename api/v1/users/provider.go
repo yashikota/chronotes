@@ -2,7 +2,7 @@ package users
 
 import (
 	"encoding/json"
-	"log"
+	"log/slog"
 	"net/http"
 
 	model "github.com/yashikota/chronotes/model/v1/db"
@@ -22,7 +22,7 @@ func UpdateAccountsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Validation passed")
+	slog.Info("Validation passed")
 
 	// Parse request
 	var accounts model.Account
@@ -33,17 +33,17 @@ func UpdateAccountsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Parsed request: ", accounts)
+	slog.Info("Parsed request: ", slog.Any("%v", accounts))
 
 	// Update accounts
 	err = users.UpdateAccounts(&accounts)
 	if err != nil {
-		log.Println("Update accounts failed")
+		slog.Error("Update accounts failed")
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	log.Println("Update accounts successful")
+	slog.Info("Update accounts successful")
 
 	// Response
 	res := map[string]interface{}{"message": "update accounts successful"}

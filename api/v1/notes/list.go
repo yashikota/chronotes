@@ -2,7 +2,7 @@ package notes
 
 import (
 	"errors"
-	"log"
+	"log/slog"
 	"net/http"
 
 	model "github.com/yashikota/chronotes/model/v1/db"
@@ -25,7 +25,7 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Validation passed")
+	slog.Info("Validation passed")
 
 	// Get date from request
 	iso8601formattedFrom, err := utils.GetQueryParam(r, "from", true)
@@ -44,8 +44,8 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("iso8601formattedFrom: ", iso8601formattedFrom)
-	log.Println("iso8601formattedTo: ", iso8601formattedTo)
+	slog.Info("iso8601formattedFrom: " + iso8601formattedFrom)
+	slog.Info("iso8601formattedTo: " + iso8601formattedTo)
 
 	// URL Decode
 	iso8601formattedFrom, err = utils.URLDecode(iso8601formattedFrom)
@@ -59,9 +59,9 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("URL Decode passed")
-	log.Println("iso8601formattedFrom:", iso8601formattedFrom)
-	log.Println("iso8601formattedTo:", iso8601formattedTo)
+	slog.Info("URL Decode passed")
+	slog.Info("iso8601formattedFrom:" + iso8601formattedFrom)
+	slog.Info("iso8601formattedTo:" + iso8601formattedTo)
 
 	// Parse ISO8601 date
 	from, err := synchro.ParseISO[tz.AsiaTokyo](iso8601formattedFrom)
@@ -75,8 +75,8 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("from: ", from.StdTime())
-	log.Println("to: ", to.StdTime())
+	slog.Info("from: " + from.StdTime().String())
+	slog.Info("to: " + to.StdTime().String())
 
 	// Get notes from database
 	notes, err := note.GetNoteList(user.UserID, from.StdTime(), to.StdTime())
@@ -85,7 +85,7 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("notes: ", notes)
+	slog.Info("notes: ", slog.Any("%v", notes))
 
 	// Response
 	res := map[string]interface{}{"notes": notes}

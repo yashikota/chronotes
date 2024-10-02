@@ -3,7 +3,7 @@ package utils
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"strings"
 
@@ -15,12 +15,12 @@ func MakeTag(texts []string) (string, error) {
 	ctx := context.Background()
 	token := os.Getenv("GEMINI_TOKEN")
 	if token == "" {
-		log.Printf("MakeTitle : GEMINI_TOKEN が環境変数に設定されていません")
+		slog.Error("MakeTitle : GEMINI_TOKEN が環境変数に設定されていません")
 		return "", nil
 	}
 	client, err := genai.NewClient(ctx, option.WithAPIKey(token))
 	if err != nil {
-		log.Printf("MakeTag : error creating Gemini client: %v\n", err)
+		slog.Error("MakeTag : error creating Gemini client: %v\n" + err.Error())
 		return "", nil
 	}
 	defer client.Close()

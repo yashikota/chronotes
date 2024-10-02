@@ -14,13 +14,13 @@ func QiitaProvider(userID string) ([]string, error) {
 	var todayItems []string
 	token := os.Getenv("QIITA_TOKEN")
 	if token == "" {
-		slog.Warn("Qiita: QIITA_TOKEN environment variable is not set")
+		slog.Error("Qiita: QIITA_TOKEN environment variable is not set")
 		return []string{}, nil
 	}
 	config := qiita.NewConfig()
 	c, err := qiita.NewClient(token, *config)
 	if err != nil {
-		slog.Warn("Qiita: Error creating client", slog.Any("error", err))
+		slog.Error("Qiita: Error creating client" + err.Error())
 		return []string{}, nil
 	}
 
@@ -32,14 +32,14 @@ func QiitaProvider(userID string) ([]string, error) {
 
 	items, err := c.ListItems(ctx, 1, 100, "user:"+userID)
 	if err != nil {
-		slog.Warn("Qiita: Error fetching items", slog.Any("error", err))
+		slog.Error("Qiita: Error fetching items" + err.Error())
 		return []string{}, nil
 	}
 
 	for _, item := range *items {
 		createdAt, err := time.Parse(time.RFC3339, item.CreatedAt)
 		if err != nil {
-			slog.Warn("Qiita: Error parsing created_at", slog.Any("error", err))
+			slog.Error("Qiita: Error parsing created_at" + err.Error())
 			return []string{}, nil
 		}
 
@@ -51,7 +51,7 @@ func QiitaProvider(userID string) ([]string, error) {
 	}
 
 	if len(todayItems) == 0 {
-		slog.Warn("Qiita: No items found for today")
+		slog.Error("Qiita: No items found for today")
 		return []string{}, nil
 	}
 

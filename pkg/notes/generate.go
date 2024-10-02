@@ -2,7 +2,7 @@ package notes
 
 import (
 	"errors"
-	"log"
+	"log/slog"
 
 	dbModel "github.com/yashikota/chronotes/model/v1/db"
 	noteModel "github.com/yashikota/chronotes/model/v1/provider"
@@ -21,28 +21,28 @@ func GenerateNote(userID string, date string, accounts noteModel.Gemini) (dbMode
 		return dbModel.Note{}, err
 	}
 
-	log.Println("Gemini response:", response)
+	slog.Info("Gemini response:" + response.Result)
 
 	contentHTML := utils.Md2HTML(response.Result)
-	log.Println("Gemini contentHTML:", contentHTML)
+	slog.Info("Gemini contentHTML:" + contentHTML)
 	content, err := utils.CustomJSONEncoder(contentHTML)
-	log.Println("Gemini content:", content)
+	slog.Info("Gemini content:" + content)
 	if err != nil {
 		return dbModel.Note{}, err
 	}
 
-	log.Println("Gemini content:", content)
+	slog.Info("Gemini content:" + content)
 
 	// Generate note
 	note := dbModel.Note{
-		NoteID:      utils.GenerateULID(),
+		NoteID:  utils.GenerateULID(),
 		UserID:  userID,
 		Title:   response.Title,
 		Content: content,
 		Tags:    response.Tag,
 	}
 
-	log.Println("Note:", note)
+	slog.Info("Note:" + note.Title)
 
 	// Save note to database
 	result := db.DB.Create(&note)
@@ -50,7 +50,7 @@ func GenerateNote(userID string, date string, accounts noteModel.Gemini) (dbMode
 		return dbModel.Note{}, result.Error
 	}
 
-	log.Println("Save note to database passed")
+	slog.Info("Save note to database passed")
 
 	return note, nil
 }
