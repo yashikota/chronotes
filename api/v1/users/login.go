@@ -56,17 +56,17 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Login user.ID: ", user.ID)
+	log.Println("Login user.UserID: ", user.UserID)
 
 	// Generate a new token
-	token, err := utils.GenerateToken(user.ID)
+	token, err := utils.GenerateToken(user.UserID)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	// Save the token in Redis
-	key := "jwt:" + user.ID
+	key := "jwt:" + user.UserID
 	if err := utils.SaveToken(key, token); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

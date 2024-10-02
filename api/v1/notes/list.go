@@ -16,10 +16,10 @@ import (
 func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
 	user := model.User{}
-	user.ID = r.Context().Value(utils.TokenKey).(utils.Token).ID
+	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
 
 	// Check if token exists
-	key := "jwt:" + user.ID
+	key := "jwt:" + user.UserID
 	if _, err := utils.GetToken(key); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
@@ -79,7 +79,7 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("to: ", to.StdTime())
 
 	// Get notes from database
-	notes, err := note.GetNoteList(user.ID, from.StdTime(), to.StdTime())
+	notes, err := note.GetNoteList(user.UserID, from.StdTime(), to.StdTime())
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

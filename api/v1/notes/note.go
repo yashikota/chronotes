@@ -13,10 +13,10 @@ import (
 func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
 	user := modelDB.User{}
-	user.ID = r.Context().Value(utils.TokenKey).(utils.Token).ID
+	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
 
 	// Check if token exists
-	key := "jwt:" + user.ID
+	key := "jwt:" + user.UserID
 	if _, err := utils.GetToken(key); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
@@ -48,7 +48,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("date:", dateTime)
 
 	// Get note from database
-	n, err := note.GetNote(user.ID, dateTime)
+	n, err := note.GetNote(user.UserID, dateTime)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
@@ -57,7 +57,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Get note from database passed")
 
 	// Get accounts from database
-	// accounts, err := note.GetAccounts(user.ID)
+	// accounts, err := note.GetAccounts(user.UserID)
 	// if err != nil {
 	// 	utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 	// 	return
@@ -71,10 +71,10 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Get accounts from database passed")
 
 	// Check if note exists
-	if n.ID == "" {
+	if n.UserID == "" {
 		log.Println("Note does not exist")
 		// Generate note
-		n, err = note.GenerateNote(user.ID, date, accounts)
+		n, err = note.GenerateNote(user.UserID, date, accounts)
 		if err != nil {
 			utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 			return

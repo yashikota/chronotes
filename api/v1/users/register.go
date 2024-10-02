@@ -24,7 +24,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Validate username
 	// Rule: Required, Min 1, Max 32
-	if err := validation.Validate(user.Name, validation.Required, validation.Length(1, 32)); err != nil {
+	if err := validation.Validate(user.UserName, validation.Required, validation.Length(1, 32)); err != nil {
 		log.Printf("name error: %+v", err)
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
@@ -57,9 +57,9 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Validation passed")
 
 	// Generate a new UserID
-	user.ID = utils.GenerateULID()
+	user.UserID = utils.GenerateULID()
 
-	log.Println("Generated UserID: " + user.ID)
+	log.Println("Generated UserID: " + user.UserID)
 
 	// Create a new user
 	if err := users.CreateUser(&user); err != nil {
@@ -67,18 +67,18 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Created User: " + user.ID)
+	log.Println("Created User: " + user.UserID)
 
 	// Generate a new token
-	token, err := utils.GenerateToken(user.ID)
+	token, err := utils.GenerateToken(user.UserID)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	// Save the token in Redis
-	log.Println("Register user.ID: ", user.ID)
-	key := "jwt:" + user.ID
+	log.Println("Register user.UserID: ", user.UserID)
+	key := "jwt:" + user.UserID
 	if err := utils.SaveToken(key, token); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
