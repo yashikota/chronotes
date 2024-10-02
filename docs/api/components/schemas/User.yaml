@@ -1,21 +1,26 @@
 type: object
 required:
-  - id
-  - username
+  - user_id
+  - user_name
   - email
   - createdAt
+  - updatedAt
 properties:
-  id:
+  user_id:
     type: string
-  username:
+  user_name:
     type: string
   email:
     type: string
   createdAt:
     type: string
     format: date-time
+  updatedAt:
+    type: string
+    format: date-time
 example:
-  id: '1'
-  username: JohnDoe
-  email: john.doe@example.com
-  createdAt: '2021-01-01T00:00:00Z'
+  user_id: test123
+  user_name: hoge太郎
+  email: test@example.com
+  createdAt: '2024-10-01T19:30:06Z'
+  updatedAt: '2024-10-02T03:34:56Z'

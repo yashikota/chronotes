@@ -1,12 +1,7 @@
-delete:
-  operationId: disconnectService
-  summary: Disconnect from an external service
-  parameters:
-    - name: service
-      in: path
-      required: true
-      schema:
-        type: string
+put:
+  operationId: connectService
+  summary: Connect to an external service
+  parameters: []
   responses:
     '204':
       description: >-
@@ -19,6 +14,6 @@ delete:
           schema:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
-    - Integrations
+    - Users
   security:
     - BearerAuth: []

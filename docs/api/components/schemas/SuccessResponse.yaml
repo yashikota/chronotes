@@ -1,8 +1,8 @@
 type: object
 required:
-  - shareWith
+  - message
 properties:
-  shareWith:
+  message:
     type: string
 example:
-  shareWith: jane.doe@example.com
+  message: 'message: Success'

@@ -9,7 +9,6 @@ post:
         application/json:
           schema:
             $ref: ../components/schemas/RegisterUserResponse.yaml
-          example: {}
     default:
       description: An unexpected error response.
       content:
@@ -24,9 +23,5 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/RegisterUserRequest.yaml
-        example:
-          username: JohnDoe
-          email: john.doe@example.com
-          password: password
   security:
     - {}

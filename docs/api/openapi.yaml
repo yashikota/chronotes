@@ -5,57 +5,28 @@ info:
 tags:
   - name: Users
   - name: Notes
-  - name: Analytics
-  - name: Integrations
-  - name: Tags
   - name: Health
 paths:
-  /api/v1/analytics/daily:
-    $ref: paths/api_v1_analytics_daily.yaml
-  /api/v1/analytics/monthly:
-    $ref: paths/api_v1_analytics_monthly.yaml
-  /api/v1/analytics/quarterly:
-    $ref: paths/api_v1_analytics_quarterly.yaml
-  /api/v1/analytics/tags:
-    $ref: paths/api_v1_analytics_tags.yaml
-  /api/v1/analytics/weekly:
-    $ref: paths/api_v1_analytics_weekly.yaml
-  /api/v1/analytics/yearly:
-    $ref: paths/api_v1_analytics_yearly.yaml
   /api/v1/health:
     $ref: paths/api_v1_health.yaml
-  /api/v1/integrations/{service}/connect:
-    $ref: paths/api_v1_integrations_{service}_connect.yaml
-  /api/v1/integrations/{service}/data:
-    $ref: paths/api_v1_integrations_{service}_data.yaml
-  /api/v1/integrations/{service}/disconnect:
-    $ref: paths/api_v1_integrations_{service}_disconnect.yaml
-  /api/v1/note-templates:
-    $ref: paths/api_v1_note-templates.yaml
   /api/v1/notes:
     $ref: paths/api_v1_notes.yaml
+  /api/v1/notes/list:
+    $ref: paths/api_v1_notes_list.yaml
+  /api/v1/notes/note:
+    $ref: paths/api_v1_notes_note.yaml
   /api/v1/notes/search:
     $ref: paths/api_v1_notes_search.yaml
-  /api/v1/notes/{noteId}:
-    $ref: paths/api_v1_notes_{noteId}.yaml
-  /api/v1/notes/{noteId}/draft:
-    $ref: paths/api_v1_notes_{noteId}_draft.yaml
-  /api/v1/notes/{noteId}/images:
-    $ref: paths/api_v1_notes_{noteId}_images.yaml
-  /api/v1/notes/{noteId}/share:
-    $ref: paths/api_v1_notes_{noteId}_share.yaml
-  /api/v1/notes/{noteId}/tags:
-    $ref: paths/api_v1_notes_{noteId}_tags.yaml
-  /api/v1/tags:
-    $ref: paths/api_v1_tags.yaml
+  /api/v1/users/accounts:
+    $ref: paths/api_v1_users_accounts.yaml
   /api/v1/users/login:
     $ref: paths/api_v1_users_login.yaml
   /api/v1/users/logout:
     $ref: paths/api_v1_users_logout.yaml
+  /api/v1/users/me:
+    $ref: paths/api_v1_users_me.yaml
   /api/v1/users/register:
     $ref: paths/api_v1_users_register.yaml
-  /api/v1/users/{userId}:
-    $ref: paths/api_v1_users_{userId}.yaml
 components:
   securitySchemes:
     BearerAuth:
@@ -64,9 +35,6 @@ components:
 servers:
   - url: https://chronotes.yashikota.com
     description: prd
-    variables: {}
-  - url: https://chronotes.yashikota.com/mock
-    description: mock
     variables: {}
   - url: http://localhost:5678
     description: dev

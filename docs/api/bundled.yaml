@@ -5,149 +5,8 @@ info:
 tags:
   - name: Users
   - name: Notes
-  - name: Analytics
-  - name: Integrations
-  - name: Tags
   - name: Health
 paths:
-  /api/v1/analytics/daily:
-    get:
-      operationId: getDailySummary
-      summary: Get daily note summary
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NoteSummary'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Analytics
-      security:
-        - BearerAuth: []
-  /api/v1/analytics/monthly:
-    get:
-      operationId: getMonthlySummary
-      summary: Get monthly note summary
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NoteSummary'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Analytics
-      security:
-        - BearerAuth: []
-  /api/v1/analytics/quarterly:
-    get:
-      operationId: getQuarterlySummary
-      summary: Get quarterly note summary
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NoteSummary'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Analytics
-      security:
-        - BearerAuth: []
-  /api/v1/analytics/tags:
-    get:
-      operationId: getTagAnalytics
-      summary: Get tag usage analytics
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetTagAnalyticsResponse'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Analytics
-      security:
-        - BearerAuth: []
-  /api/v1/analytics/weekly:
-    get:
-      operationId: getWeeklySummary
-      summary: Get weekly note summary
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NoteSummary'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Analytics
-      security:
-        - BearerAuth: []
-  /api/v1/analytics/yearly:
-    get:
-      operationId: getYearlySummary
-      summary: Get yearly note summary
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NoteSummary'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Analytics
-      security:
-        - BearerAuth: []
   /api/v1/health:
     get:
       operationId: healthCheck
@@ -159,8 +18,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-              example: pong
+                $ref: '#/components/schemas/SuccessResponse'
         default:
           description: An unexpected error response.
           content:
@@ -171,108 +29,6 @@ paths:
         - Health
       security:
         - {}
-  /api/v1/integrations/{service}/connect:
-    post:
-      operationId: connectService
-      summary: Connect to an external service
-      parameters:
-        - name: service
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Integrations
-      security:
-        - BearerAuth: []
-  /api/v1/integrations/{service}/data:
-    get:
-      operationId: getServiceData
-      summary: Get data from a connected service
-      parameters:
-        - name: service
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IntegrationService'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Integrations
-      security:
-        - BearerAuth: []
-  /api/v1/integrations/{service}/disconnect:
-    delete:
-      operationId: disconnectService
-      summary: Disconnect from an external service
-      parameters:
-        - name: service
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Integrations
-      security:
-        - BearerAuth: []
-  /api/v1/note-templates:
-    get:
-      operationId: getNoteTemplates
-      summary: Get note templates
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-              example:
-                - Meeting Notes
-                - Daily Journal
-                - Project Plan
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      security:
-        - BearerAuth: []
   /api/v1/notes:
     post:
       operationId: createNote
@@ -285,7 +41,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Note'
-              example: {}
         default:
           description: An unexpected error response.
           content:
@@ -299,17 +54,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateNoteRequest'
-            example:
-              title: My New Note
-              content: This is the content of my new note.
-              tags:
-                - work
-                - project
-              images:
-                - id: img2
-                  url: https://example.com/image2.jpg
-              isDraft: true
+              $ref: '#/components/schemas/Note'
       security:
         - BearerAuth: []
     get:
@@ -336,8 +81,74 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetNotesResponse'
-              example: {}
+                $ref: '#/components/schemas/Note'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Notes
+      security:
+        - BearerAuth: []
+  /api/v1/notes/list:
+    get:
+      operationId: getNoteList
+      summary: Get a note list
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          explode: false
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Note'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Notes
+      security:
+        - BearerAuth: []
+  /api/v1/notes/note:
+    get:
+      operationId: getNote
+      summary: Get a note
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
         default:
           description: An unexpected error response.
           content:
@@ -366,7 +177,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchNotesResponse'
-              example: {}
         default:
           description: An unexpected error response.
           content:
@@ -377,270 +187,14 @@ paths:
         - Notes
       security:
         - BearerAuth: []
-  /api/v1/notes/{noteId}:
+  /api/v1/users/accounts:
     put:
-      operationId: updateNote
-      summary: Update an existing note
-      parameters:
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Note'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateNoteRequest'
-            example:
-              title: Updated Note Title
-              content: This is the updated content of my note.
-              tags:
-                - personal
-                - updated
-              images:
-                - id: img3
-                  url: https://example.com/image3.jpg
-              isDraft: false
-      security:
-        - BearerAuth: []
-    delete:
-      operationId: deleteNote
-      summary: Delete a note
-      parameters:
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      security:
-        - BearerAuth: []
-    get:
-      operationId: getNote
-      summary: Get a specific note
-      parameters:
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Note'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      security:
-        - BearerAuth: []
-  /api/v1/notes/{noteId}/draft:
-    post:
-      operationId: saveNoteDraft
-      summary: Save a note as draft
-      parameters:
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Note'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      security:
-        - BearerAuth: []
-  /api/v1/notes/{noteId}/images:
-    post:
-      operationId: uploadNoteImage
-      summary: Upload an image to a note
-      parameters:
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Note'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UploadImageRequest'
-            example:
-              image:
-                id: img4
-                url: https://example.com/image4.jpg
-      security:
-        - BearerAuth: []
-  /api/v1/notes/{noteId}/share:
-    post:
-      operationId: shareNote
-      summary: Share a note with another user
-      parameters:
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ShareNoteRequest'
-            example:
-              shareWith: jane.doe@example.com
-      security:
-        - BearerAuth: []
-    delete:
-      operationId: unshareNote
-      summary: Unshare a previously shared note
-      parameters:
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      security:
-        - BearerAuth: []
-  /api/v1/notes/{noteId}/tags:
-    post:
-      operationId: addTagsToNote
-      summary: Add tags to a note
-      parameters:
-        - name: noteId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Note'
-              example: {}
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AddTagsRequest'
-            example:
-              tags:
-                - important
-                - urgent
-                - project
-      security:
-        - BearerAuth: []
-  /api/v1/tags:
-    get:
-      operationId: getAllTags
-      summary: Get all tags
+      operationId: connectService
+      summary: Connect to an external service
       parameters: []
       responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetAllTagsResponse'
-              example: {}
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
         default:
           description: An unexpected error response.
           content:
@@ -648,7 +202,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       tags:
-        - Tags
+        - Users
       security:
         - BearerAuth: []
   /api/v1/users/login:
@@ -663,7 +217,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RegisterUserResponse'
-              example: {}
         default:
           description: An unexpected error response.
           content:
@@ -678,9 +231,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LoginRequest'
-            example:
-              email: john.doe@example.com
-              password: password123
       security:
         - BearerAuth: []
   /api/v1/users/logout:
@@ -689,8 +239,34 @@ paths:
       summary: Logout user
       parameters: []
       responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+  /api/v1/users/me:
+    delete:
+      operationId: deleteUser
+      summary: Delete a user
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         default:
           description: An unexpected error response.
           content:
@@ -713,7 +289,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RegisterUserResponse'
-              example: {}
         default:
           description: An unexpected error response.
           content:
@@ -728,35 +303,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterUserRequest'
-            example:
-              username: JohnDoe
-              email: john.doe@example.com
-              password: password
       security:
         - {}
-  /api/v1/users/{userId}:
-    delete:
-      operationId: deleteUser
-      summary: Delete a user
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Users
-      security:
-        - BearerAuth: []
 components:
   schemas:
     AddTagsRequest:
@@ -765,44 +313,9 @@ components:
         - tags
       properties:
         tags:
-          type: array
-          items:
-            type: string
-      example:
-        tags:
-          - important
-          - urgent
-          - project
-    CreateNoteRequest:
-      type: object
-      required:
-        - title
-        - content
-      properties:
-        title:
           type: string
-        content:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image'
-        isDraft:
-          type: boolean
       example:
-        title: My New Note
-        content: This is the content of my new note.
-        tags:
-          - work
-          - project
-        images:
-          - id: img2
-            url: https://example.com/image2.jpg
-        isDraft: true
+        tags: important, urgent, project
     ErrorResponse:
       type: object
       required:
@@ -811,148 +324,42 @@ components:
         message:
           type: string
       example:
-        message: Error message
-    GetAllTagsResponse:
-      type: object
-      required:
-        - tags
-      properties:
-        tags:
-          type: array
-          items:
-            type: string
-      example:
-        tags:
-          - work
-          - personal
-          - ideas
-          - project
-          - urgent
-    GetNotesResponse:
-      type: object
-      required:
-        - notes
-        - totalCount
-      properties:
-        notes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Note'
-        totalCount:
-          type: integer
-          format: int32
-      example:
-        notes:
-          - id: note1
-            title: First Note
-            content: Content of first note
-            tags:
-              - personal
-            images:
-              - id: img2
-                url: https://example.com/image2.jpg
-            isDraft: false
-            createdAt: 2023-01-01T10:00:00Z
-            updatedAt: 2023-01-01T10:00:00Z
-          - id: note2
-            title: Second Note
-            content: Content of second note
-            tags:
-              - work
-            images:
-              - id: img2
-                url: https://example.com/image2.jpg
-            isDraft: true
-            createdAt: 2023-01-02T14:30:00Z
-            updatedAt: 2023-01-02T14:30:00Z
-        totalCount: 2
-    GetTagAnalyticsResponse:
-      type: object
-      required:
-        - tags
-      properties:
-        tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/TagAnalytics'
-      example:
-        tags:
-          - tag: work
-            count: 10
-          - tag: personal
-            count: 5
-          - tag: ideas
-            count: 3
-    Image:
-      type: object
-      required:
-        - id
-        - url
-      properties:
-        id:
-          type: string
-        url:
-          type: string
-      example:
-        id: img5
-        url: https://example.com/image5.jpg
-    IntegrationService:
-      type: object
-      required:
-        - serviceName
-        - isConnected
-      properties:
-        serviceName:
-          type: string
-        isConnected:
-          type: boolean
-        data:
-          type: string
-      example:
-        serviceName: Google Drive
-        isConnected: true
-        data: 'Last synced: 2023-01-15T14:30:00Z'
+        message: 'message: Error'
+    LoginIdentifier:
+      anyOf:
+        - type: string
+        - type: string
     LoginRequest:
       type: object
       required:
-        - email
+        - identifier
         - password
       properties:
-        email:
-          type: string
+        identifier:
+          $ref: '#/components/schemas/LoginIdentifier'
         password:
           type: string
       example:
-        email: john.doe@example.com
-        password: password123
+        identifier: test@example.com or test123
+        password: password
     Note:
       type: object
       required:
-        - id
+        - note_id
         - title
         - content
         - tags
-        - images
-        - isDraft
         - createdAt
         - updatedAt
       properties:
-        id:
+        note_id:
           type: string
         title:
           type: string
         content:
           type: string
         tags:
-          type: array
-          items:
-            type: string
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image'
-        isDraft:
-          type: boolean
+          type: string
         createdAt:
           type: string
           format: date-time
@@ -960,72 +367,32 @@ components:
           type: string
           format: date-time
       example:
-        id: note123
+        note_id: note123
         title: My First Note
         content: This is the content of my first note.
-        tags:
-          - personal
-          - ideas
-        images:
-          - id: img1
-            url: https://example.com/image1.jpg
-        isDraft: false
+        tags: work, project
         createdAt: 2023-01-01T12:00:00Z
         updatedAt: 2023-01-01T12:30:00Z
-    NoteSummary:
-      type: object
-      required:
-        - count
-        - notes
-      properties:
-        count:
-          type: integer
-          format: int32
-        notes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Note'
-      example:
-        count: 5
-        notes:
-          - id: note1
-            title: Summary Note 1
-            content: Content of summary note 1
-            tags:
-              - summary
-            images:
-              - id: img2
-                url: https://example.com/image2.jpg
-            isDraft: false
-            createdAt: 2023-01-01T08:00:00Z
-            updatedAt: 2023-01-01T08:00:00Z
-          - id: note2
-            title: Summary Note 2
-            content: Content of summary note 2
-            tags:
-              - summary
-            images:
-              - id: img2
-                url: https://example.com/image2.jpg
-            isDraft: false
-            createdAt: 2023-01-02T10:30:00Z
-            updatedAt: 2023-01-02T10:30:00Z
     RegisterUserRequest:
       type: object
       required:
-        - username
+        - user_id
+        - user_name
         - email
         - password
       properties:
-        username:
+        user_id:
+          type: string
+        user_name:
           type: string
         email:
           type: string
         password:
           type: string
       example:
-        username: JohnDoe
-        email: john.doe@example.com
+        user_id: test123
+        user_name: hoge太郎
+        email: test@example.com
         password: password
     RegisterUserResponse:
       type: object
@@ -1037,13 +404,6 @@ components:
           $ref: '#/components/schemas/User'
         token:
           type: string
-      example:
-        user:
-          id: '1'
-          username: JohnDoe
-          email: john.doe@example.com
-          createdAt: 2021-01-01T00:00:00Z
-        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4uZG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
     SearchNotesResponse:
       type: object
       required:
@@ -1055,41 +415,27 @@ components:
             $ref: '#/components/schemas/Note'
       example:
         notes:
-          - id: note3
-            title: Matching Note
-            content: This note matches the search query
-            tags:
-              - search
-              - result
-            images:
-              - id: img2
-                url: https://example.com/image2.jpg
-            isDraft: false
-            createdAt: 2023-01-03T09:15:00Z
-            updatedAt: 2023-01-03T09:15:00Z
-    ShareNoteRequest:
+          - note_id: note123
+            title: My First Note
+            content: This is the content of my first note.
+            tags: work, project
+            createdAt: 2023-01-01T12:00:00Z
+            updatedAt: 2023-01-01T12:30:00Z
+          - note_id: note123
+            title: My First Note
+            content: This is the content of my first note.
+            tags: work, project
+            createdAt: 2023-01-01T12:00:00Z
+            updatedAt: 2023-01-01T12:30:00Z
+    SuccessResponse:
       type: object
       required:
-        - shareWith
+        - message
       properties:
-        shareWith:
+        message:
           type: string
       example:
-        shareWith: jane.doe@example.com
-    TagAnalytics:
-      type: object
-      required:
-        - tag
-        - count
-      properties:
-        tag:
-          type: string
-        count:
-          type: integer
-          format: int32
-      example:
-        tag: project
-        count: 7
+        message: 'message: Success'
     UpdateNoteRequest:
       type: object
       properties:
@@ -1098,58 +444,38 @@ components:
         content:
           type: string
         tags:
-          type: array
-          items:
-            type: string
-        images:
-          type: array
-          items:
-            $ref: '#/components/schemas/Image'
-        isDraft:
-          type: boolean
+          type: string
       example:
         title: Updated Note Title
         content: This is the updated content of my note.
-        tags:
-          - personal
-          - updated
-        images:
-          - id: img3
-            url: https://example.com/image3.jpg
-        isDraft: false
-    UploadImageRequest:
-      type: object
-      required:
-        - image
-      properties:
-        image:
-          $ref: '#/components/schemas/Image'
-      example:
-        image:
-          id: img4
-          url: https://example.com/image4.jpg
+        tags: go, python
     User:
       type: object
       required:
-        - id
-        - username
+        - user_id
+        - user_name
         - email
         - createdAt
+        - updatedAt
       properties:
-        id:
+        user_id:
           type: string
-        username:
+        user_name:
           type: string
         email:
           type: string
         createdAt:
           type: string
           format: date-time
+        updatedAt:
+          type: string
+          format: date-time
       example:
-        id: '1'
-        username: JohnDoe
-        email: john.doe@example.com
-        createdAt: 2021-01-01T00:00:00Z
+        user_id: test123
+        user_name: hoge太郎
+        email: test@example.com
+        createdAt: 2024-10-01T19:30:06Z
+        updatedAt: 2024-10-02T03:34:56Z
     Versions:
       type: string
       enum:
@@ -1161,9 +487,6 @@ components:
 servers:
   - url: https://chronotes.yashikota.com
     description: prd
-    variables: {}
-  - url: https://chronotes.yashikota.com/mock
-    description: mock
     variables: {}
   - url: http://localhost:5678
     description: dev

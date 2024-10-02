@@ -1,12 +1,12 @@
 type: object
 required:
-  - email
+  - identifier
   - password
 properties:
-  email:
-    type: string
+  identifier:
+    $ref: ./LoginIdentifier.yaml
   password:
     type: string
 example:
-  email: john.doe@example.com
-  password: password123
+  identifier: test@example.com or test123
+  password: password
