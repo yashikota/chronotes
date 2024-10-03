@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	dbmodel "github.com/yashikota/chronotes/model/v1/db"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 

@@ -29,9 +29,8 @@ func Connect() {
 	slog.Info("Connected to database")
 
 	// Migrate the database
-	Migration(DB)
-
-	slog.Info("Migrated the database")
+	// Migration(DB)
+	// slog.Info("Migrated the database")
 
 	// Seed the database
 	// Seed(DB)
