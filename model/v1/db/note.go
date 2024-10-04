@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -18,7 +20,7 @@ func NewNote() *Note {
 }
 
 type NoteResponse struct {
-	Date    string `json:"date"`
+	Date    time.Time `json:"date"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Tags    string `json:"tags"`

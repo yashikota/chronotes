@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 
@@ -16,7 +16,7 @@ func LoginUser(u *model.User) error {
 	}
 
 	// Find the user by email
-	r := model.User{}
+	r := model.NewUser()
 	result := db.DB.Where("email = ?", u.Email).First(&r)
 	if result.Error != nil {
 		return result.Error

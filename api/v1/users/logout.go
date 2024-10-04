@@ -4,13 +4,13 @@ import (
 	"log/slog"
 	"net/http"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
-	user := model.User{}
+	user := model.NewUser()
 	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
 
 	// Check if token exists

@@ -18,7 +18,7 @@ func TestGeminiHandler(t *testing.T) {
 	}
 
 	// 環境変数からのデータ取得
-	input := model.Gemini{
+	input := model.Accounts{
 		GitHubUserID:     os.Getenv("GITHUB_USER_ID"),
 		SlackChannelID:   os.Getenv("SLACK_CHANNEL_ID"),
 		DiscordChannelID: os.Getenv("DISCORD_CHANNEL_ID"),

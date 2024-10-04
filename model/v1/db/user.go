@@ -22,6 +22,6 @@ type User struct {
 
 func NewUser() *User {
 	return &User{
-		Role: Normal,
+		Role: Normal, // default role
 	}
 }

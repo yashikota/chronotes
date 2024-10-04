@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 )
 
 func Seed(db *gorm.DB) {

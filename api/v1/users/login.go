@@ -9,14 +9,14 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	users "github.com/yashikota/chronotes/pkg/users"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse request body
-	user := model.User{}
+	user := model.NewUser()
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
@@ -49,7 +49,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Validation passed")
 
 	// Login user
-	err := users.LoginUser(&user)
+	err := users.LoginUser(user)
 	if err != nil {
 		slog.Error("Login failed")
 		utils.ErrorJSONResponse(w, http.StatusUnauthorized, err)

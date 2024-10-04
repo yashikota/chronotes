@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log/slog"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 
@@ -14,7 +14,7 @@ func DeleteUser(u *model.User) error {
 	}
 
 	// Find the user by ID
-	user := model.User{}
+	user := model.NewUser()
 	result := db.DB.Where("user_id = ?", u.UserID).First(&user)
 	if result.Error != nil {
 		return result.Error

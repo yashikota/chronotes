@@ -11,7 +11,7 @@ import (
 
 // GeminiHandler handles the Gemini API requests.
 func GeminiHandler(w http.ResponseWriter, r *http.Request) {
-	var input model.Gemini
+	var input model.Accounts
 	// リクエストボディからデータをデコード
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)

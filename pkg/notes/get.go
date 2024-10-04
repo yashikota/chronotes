@@ -6,54 +6,54 @@ import (
 
 	"gorm.io/gorm"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 
-func GetNote(userID string, dateTime time.Time) (model.Note, error) {
+func GetNote(userID string, dateTime time.Time) (*model.Note, error) {
 	if db.DB == nil {
-		return model.Note{}, errors.New("database connection is not initialized")
+		return nil, errors.New("database connection is not initialized")
 	}
 
 	// Get note from database
-	note := model.Note{}
+	note := model.NewNote()
 	result := db.DB.Where("user_id = ? AND created_at::date = ?::date", userID, dateTime).First(&note)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return model.Note{}, nil
+		return nil, nil
 	} else if result.Error != nil {
-		return model.Note{}, result.Error
+		return nil, result.Error
 	}
 
 	return note, nil
 }
 
-func GetNoteIgnoreContent(userID string, dateTime time.Time) (model.Note, error) {
+func GetNoteIgnoreContent(userID string, dateTime time.Time) (*model.Note, error) {
 	if db.DB == nil {
-		return model.Note{}, errors.New("database connection is not initialized")
+		return nil, errors.New("database connection is not initialized")
 	}
 
 	// Get note from database
-	note := model.Note{}
+	note := model.NewNote()
 	result := db.DB.Where("user_id = ? AND created_at::date = ?::date", userID, dateTime).First(&note)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return model.Note{}, nil
+		return nil, nil
 	} else if result.Error != nil {
-		return model.Note{}, result.Error
+		return nil, result.Error
 	}
 	note.Content = ""
 
 	return note, nil
 }
 
-func GetSummary(userID string, startDate time.Time, endDate time.Time, daysCount int) (model.Summary, error) {
+func GetSummary(userID string, startDate time.Time, endDate time.Time, daysCount int) (*model.Summary, error) {
+	summary := model.NewSummary()
 	result := db.DB.Where("user_id = ? AND start_date = ? AND end_date = ? AND days_count = ?",
-		userID, startDate, endDate, daysCount).First(&model.Summary{})
+		userID, startDate, endDate, daysCount).First(summary)
 
-	var summary model.Summary
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return model.Summary{}, nil
+		return nil, nil
 	} else if result.Error != nil {
-		return model.Summary{}, result.Error
+		return nil, result.Error
 	}
 
 	return summary, nil
@@ -83,7 +83,8 @@ func GetNoteList(userID string, startDate time.Time, endDate time.Time) ([]map[s
 		userID, startDate, endDate)
 
 	var noteList []map[string]string
-	rows, err := query.Model(&model.Note{}).Select("title, tags, created_at").Rows()
+	note := model.NewNote()
+	rows, err := query.Model(note).Select("title, tags, created_at").Rows()
 	if err != nil {
 		return nil, err
 	}
