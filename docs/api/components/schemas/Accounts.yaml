@@ -1,0 +1,14 @@
+type: object
+properties:
+  github_user_id:
+    type: string
+  discord_channel_id:
+    type: string
+  slack_channel_id:
+    type: string
+  qiita_user_id:
+    type: string
+  zenn_username:
+    type: string
+  wakatime_token:
+    type: string

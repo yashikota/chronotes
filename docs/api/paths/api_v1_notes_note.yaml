@@ -1,5 +1,5 @@
 get:
-  operationId: getNote
+  operationId: Notes_getNote
   summary: Get a note
   parameters:
     - name: date

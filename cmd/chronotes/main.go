@@ -14,6 +14,7 @@ import (
 	"github.com/yashikota/chronotes/api/v1/notes"
 	"github.com/yashikota/chronotes/api/v1/upload"
 	"github.com/yashikota/chronotes/api/v1/users"
+	"github.com/yashikota/chronotes/api/v1/auth"
 	"github.com/yashikota/chronotes/pkg/db"
 	"github.com/yashikota/chronotes/pkg/redis"
 	"github.com/yashikota/chronotes/pkg/utils"
@@ -49,8 +50,8 @@ func main() {
 
 	r.Route("/api/v1", func(r chi.Router) {
 		// Public Routes
-		r.HandleFunc("POST /users/register", users.RegisterHandler)
-		r.HandleFunc("POST /users/login", users.LoginHandler)
+		r.HandleFunc("POST /auth/register", auth.RegisterHandler)
+		r.HandleFunc("POST /auth/login", auth.LoginHandler)
 
 		// Debug Routes
 		r.HandleFunc("GET /health", debug.HealthHandler)
@@ -60,10 +61,11 @@ func main() {
 			r.Use(utils.JwtMiddleware)
 
 			// User routes
-			r.HandleFunc("POST /users/logout", users.LogoutHandler)
+			r.HandleFunc("POST /auth/logout", auth.LogoutHandler)
+            // r.HandleFunc("GET /users/me", users.GetAccountHandler)
+			r.HandleFunc("PUT /users/me", users.UpdateAccountsHandler)
 			r.HandleFunc("DELETE /users/me", users.DeleteHandler)
-			r.HandleFunc("PUT /users/accounts", users.UpdateAccountsHandler)
-			// r.HandleFunc("PUT /users/promote", users.PromoteHandler)
+			r.HandleFunc("PUT /users/promote", users.PromoteHandler)
 
 			// Notes routes
 			r.HandleFunc("GET /notes/note", notes.GetNoteHandler)

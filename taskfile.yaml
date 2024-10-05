@@ -69,7 +69,7 @@ tasks:
   api:tsp:
     desc: "Generate Open API from TypeSpec"
     cmds:
-      - rm -rf docs/api/paths
+      - sudo rm -rf docs/api/paths
       - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
       - task: api:split
 

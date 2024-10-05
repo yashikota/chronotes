@@ -5,34 +5,36 @@ import (
 	"log/slog"
 
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 
 	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 
-func LoginUser(u *model.User) error {
+func LoginUser(u *model.Login, identity model.Identity) (r *model.User, err error) {
 	if db.DB == nil {
-		return errors.New("database connection is not initialized")
+		return nil, errors.New("database connection is not initialized")
 	}
 
-	// Find the user by email
-	r := model.NewUser()
-	result := db.DB.Where("email = ?", u.Email).First(&r)
+	var result *gorm.DB
+	if identity == model.Email {
+		result = db.DB.Where("email = ?", u.Email).First(&r)
+	} else {
+		result = db.DB.Where("user_id = ?", u.UserID).First(&r)
+	}
+
 	if result.Error != nil {
-		return result.Error
+		return nil, result.Error
 	}
 
 	slog.Info("User found")
 
 	// Compare the hashed password
 	if err := bcrypt.CompareHashAndPassword([]byte(r.Password), []byte(u.Password)); err != nil {
-		return errors.New("password does not match")
+		return nil, errors.New("password does not match")
 	}
 
 	slog.Info("Password matched")
 
-	u.UserID = r.UserID
-	u.UserName = r.UserName
-
-	return nil
+	return r, nil
 }

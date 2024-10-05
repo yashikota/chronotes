@@ -1,5 +1,5 @@
-get:
-  operationId: searchNotes
+post:
+  operationId: Notes_searchNotes
   summary: Search notes
   parameters:
     - name: query

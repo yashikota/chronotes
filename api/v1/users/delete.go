@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/yashikota/chronotes/model/v1"
-	users "github.com/yashikota/chronotes/pkg/users"
+	"github.com/yashikota/chronotes/pkg/users"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 

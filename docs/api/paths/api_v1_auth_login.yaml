@@ -1,6 +1,6 @@
 post:
-  operationId: registerUser
-  summary: Register a new user
+  operationId: Auth_login
+  summary: Login user
   parameters: []
   responses:
     '200':
@@ -16,12 +16,12 @@ post:
           schema:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
-    - Users
+    - Auth
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/RegisterUserRequest.yaml
+          $ref: ../components/schemas/LoginRequest.yaml
   security:
     - {}

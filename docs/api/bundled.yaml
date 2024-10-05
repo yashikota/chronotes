@@ -3,10 +3,89 @@ info:
   title: Chronotes API
   version: v1
 tags:
+  - name: Health
+  - name: Auth
   - name: Users
   - name: Notes
-  - name: Health
 paths:
+  /api/v1/auth/login:
+    post:
+      operationId: Auth_login
+      summary: Login user
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterUserResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      security:
+        - {}
+  /api/v1/auth/logout:
+    post:
+      operationId: Auth_logout
+      summary: Logout user
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Auth
+      security:
+        - BearerAuth: []
+  /api/v1/auth/register:
+    post:
+      operationId: Auth_register
+      summary: Register a new user
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterUserResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUserRequest'
+      security:
+        - {}
   /api/v1/health:
     get:
       operationId: healthCheck
@@ -29,73 +108,10 @@ paths:
         - Health
       security:
         - {}
-  /api/v1/notes:
-    post:
-      operationId: createNote
-      summary: Create a new note
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Note'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Note'
-      security:
-        - BearerAuth: []
-    get:
-      operationId: getNotes
-      summary: Get a list of notes
-      parameters:
-        - name: page
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-          explode: false
-        - name: pageSize
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-          explode: false
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Note'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Notes
-      security:
-        - BearerAuth: []
   /api/v1/notes/list:
     get:
-      operationId: getNoteList
-      summary: Get a note list
+      operationId: Notes_getNotes
+      summary: Get a list of notes
       parameters:
         - name: from
           in: query
@@ -132,7 +148,7 @@ paths:
         - BearerAuth: []
   /api/v1/notes/note:
     get:
-      operationId: getNote
+      operationId: Notes_getNote
       summary: Get a note
       parameters:
         - name: date
@@ -160,8 +176,8 @@ paths:
       security:
         - BearerAuth: []
   /api/v1/notes/search:
-    get:
-      operationId: searchNotes
+    post:
+      operationId: Notes_searchNotes
       summary: Search notes
       parameters:
         - name: query
@@ -187,14 +203,18 @@ paths:
         - Notes
       security:
         - BearerAuth: []
-  /api/v1/users/accounts:
-    put:
-      operationId: connectService
-      summary: Connect to an external service
+  /api/v1/users/me:
+    get:
+      operationId: Users_get
+      summary: Get user information
       parameters: []
       responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         default:
           description: An unexpected error response.
           content:
@@ -205,10 +225,9 @@ paths:
         - Users
       security:
         - BearerAuth: []
-  /api/v1/users/login:
-    post:
-      operationId: login
-      summary: Login user
+    put:
+      operationId: Users_update
+      summary: Update user information
       parameters: []
       responses:
         '200':
@@ -216,7 +235,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterUserResponse'
+                $ref: '#/components/schemas/User'
         default:
           description: An unexpected error response.
           content:
@@ -230,34 +249,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: '#/components/schemas/UpdateUserRequest'
       security:
         - BearerAuth: []
-  /api/v1/users/logout:
-    post:
-      operationId: logout
-      summary: Logout user
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-        default:
-          description: An unexpected error response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-      tags:
-        - Users
-      security:
-        - BearerAuth: []
-  /api/v1/users/me:
     delete:
-      operationId: deleteUser
+      operationId: Users_delete
       summary: Delete a user
       parameters: []
       responses:
@@ -277,10 +273,10 @@ paths:
         - Users
       security:
         - BearerAuth: []
-  /api/v1/users/register:
-    post:
-      operationId: registerUser
-      summary: Register a new user
+  /api/v1/users/promote:
+    put:
+      operationId: UsersPromote_promote
+      summary: Promote a user
       parameters: []
       responses:
         '200':
@@ -288,7 +284,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterUserResponse'
+                $ref: '#/components/schemas/SuccessResponse'
         default:
           description: An unexpected error response.
           content:
@@ -302,11 +298,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterUserRequest'
+              $ref: '#/components/schemas/PromoteUserRequest'
       security:
-        - {}
+        - BearerAuth: []
 components:
   schemas:
+    Accounts:
+      type: object
+      properties:
+        github_user_id:
+          type: string
+        discord_channel_id:
+          type: string
+        slack_channel_id:
+          type: string
+        qiita_user_id:
+          type: string
+        zenn_username:
+          type: string
+        wakatime_token:
+          type: string
     AddTagsRequest:
       type: object
       required:
@@ -324,23 +335,21 @@ components:
         message:
           type: string
       example:
-        message: 'message: Error'
-    LoginIdentifier:
-      anyOf:
-        - type: string
-        - type: string
+        message: Error
     LoginRequest:
       type: object
       required:
-        - identifier
         - password
       properties:
-        identifier:
-          $ref: '#/components/schemas/LoginIdentifier'
+        user_id:
+          type: string
+        email:
+          type: string
         password:
           type: string
       example:
-        identifier: test@example.com or test123
+        email: test@example.com
+        user_id: test123
         password: password
     Note:
       type: object
@@ -373,6 +382,13 @@ components:
         tags: work, project
         createdAt: 2023-01-01T12:00:00Z
         updatedAt: 2023-01-01T12:30:00Z
+    PromoteUserRequest:
+      type: object
+      required:
+        - password
+      properties:
+        password:
+          type: string
     RegisterUserRequest:
       type: object
       required:
@@ -435,7 +451,7 @@ components:
         message:
           type: string
       example:
-        message: 'message: Success'
+        message: Success
     UpdateNoteRequest:
       type: object
       properties:
@@ -449,6 +465,17 @@ components:
         title: Updated Note Title
         content: This is the updated content of my note.
         tags: go, python
+    UpdateUserRequest:
+      type: object
+      properties:
+        user_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        accounts:
+          $ref: '#/components/schemas/Accounts'
     User:
       type: object
       required:
@@ -470,6 +497,8 @@ components:
         updatedAt:
           type: string
           format: date-time
+        accounts:
+          $ref: '#/components/schemas/Accounts'
       example:
         user_id: test123
         user_name: hoge太郎

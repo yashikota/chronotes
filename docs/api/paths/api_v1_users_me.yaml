@@ -1,5 +1,53 @@
+get:
+  operationId: Users_get
+  summary: Get user information
+  parameters: []
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/User.yaml
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Users
+  security:
+    - BearerAuth: []
+put:
+  operationId: Users_update
+  summary: Update user information
+  parameters: []
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/User.yaml
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Users
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/UpdateUserRequest.yaml
+  security:
+    - BearerAuth: []
 delete:
-  operationId: deleteUser
+  operationId: Users_delete
   summary: Delete a user
   parameters: []
   responses:

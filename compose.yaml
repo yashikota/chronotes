@@ -45,6 +45,7 @@ services:
       - SLACK_TOKEN=${SLACK_TOKEN}
       - QIITA_TOKEN=${QIITA_TOKEN}
       - GEMINI_TOKEN=${GEMINI_TOKEN}
+      - ADMIN_PASS=${ADMIN_PASS}
     build:
       context: .
       target: dev
