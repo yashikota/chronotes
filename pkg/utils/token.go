@@ -16,8 +16,8 @@ import (
 
 type tokenContextKey struct{}
 type Token struct {
-	ID  string
-	Exp time.Time
+	ID      string
+	Exp     time.Time
 	IsAdmin bool
 }
 
@@ -38,7 +38,7 @@ func GenerateToken(id string, isAdmin bool) (string, error) {
 	// Build a new token
 	tok, err := jwt.NewBuilder().
 		Subject(id).
-		Expiration(time.Now().Add(time.Hour * 3)).
+		Expiration(time.Now().Add(time.Hour*3)).
 		Claim("isAdmin", isAdmin).
 		Build()
 	if err != nil {
@@ -75,8 +75,8 @@ func ValidateToken(ctx context.Context, tokenString string) (context.Context, er
 	}
 
 	token := Token{
-		ID:  id,
-		Exp: exp,
+		ID:      id,
+		Exp:     exp,
 		IsAdmin: isAdmin,
 	}
 

@@ -3,26 +3,26 @@ package main
 import (
 	"log/slog"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
+	"github.com/yashikota/chronotes/api/v1/auth"
 	"github.com/yashikota/chronotes/api/v1/debug"
 	"github.com/yashikota/chronotes/api/v1/notes"
 	"github.com/yashikota/chronotes/api/v1/upload"
 	"github.com/yashikota/chronotes/api/v1/users"
-	"github.com/yashikota/chronotes/api/v1/auth"
 	"github.com/yashikota/chronotes/pkg/db"
 	"github.com/yashikota/chronotes/pkg/redis"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func main() {
-	// Initialize slog
-	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stderr, nil)))
+	// Initialize logger
+    logger := utils.Logger()
+	slog.SetDefault(logger)
 
 	r := chi.NewRouter()
 
@@ -62,7 +62,7 @@ func main() {
 
 			// User routes
 			r.HandleFunc("POST /auth/logout", auth.LogoutHandler)
-            // r.HandleFunc("GET /users/me", users.GetAccountHandler)
+			// r.HandleFunc("GET /users/me", users.GetAccountHandler)
 			r.HandleFunc("PUT /users/me", users.UpdateAccountsHandler)
 			r.HandleFunc("DELETE /users/me", users.DeleteHandler)
 			r.HandleFunc("PUT /users/promote", users.PromoteHandler)
@@ -76,12 +76,12 @@ func main() {
 			r.HandleFunc("POST /upload/image", upload.UploadHandler)
 		})
 
-        // Admin routes
+		// Admin routes
 		r.Route("/admin", func(r chi.Router) {
-            r.Use(utils.JwtMiddleware)
+			r.Use(utils.JwtMiddleware)
 			r.Use(utils.AdminMiddleware)
 
-            r.HandleFunc("POST /notes", notes.CreateNoteHandler)
+			r.HandleFunc("POST /notes", notes.CreateNoteHandler)
 		})
 	})
 

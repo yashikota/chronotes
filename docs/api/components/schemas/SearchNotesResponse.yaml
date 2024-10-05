@@ -8,13 +8,15 @@ properties:
       $ref: ./Note.yaml
 example:
   notes:
-    - note_id: note123
+    - user_id: test123
+      note_id: FHNWFLAQN
       title: My First Note
       content: This is the content of my first note.
       tags: work, project
       createdAt: '2023-01-01T12:00:00Z'
       updatedAt: '2023-01-01T12:30:00Z'
-    - note_id: note123
+    - user_id: test123
+      note_id: FHNWFLAQN
       title: My First Note
       content: This is the content of my first note.
       tags: work, project

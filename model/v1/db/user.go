@@ -34,9 +34,9 @@ const (
 )
 
 type Login struct {
-	UserID	   string `json:"user_id"`
-	Email 	   string `json:"email"`
-	Password   string `json:"password"`
+	UserID   string `json:"user_id"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func NewLogin() *Login {

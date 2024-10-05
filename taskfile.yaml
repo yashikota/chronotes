@@ -46,7 +46,12 @@ tasks:
     cmds:
       - go fmt ./...
       - go install golang.org/x/tools/cmd/goimports@latest
-      - find . -print | grep --regex '.*\.go' | xargs goimports -w -local "github.com/yashikota/chronotes"
+      - go install github.com/u-root/u-root/cmds/core/find@latest
+      - |
+        find . -name "*.go" | \
+        while read file; do
+          goimports -w -local "github.com/yashikota/chronotes" "$file"
+        done
 
   # Docker
   docker:lint:
