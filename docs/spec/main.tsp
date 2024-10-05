@@ -177,7 +177,8 @@ interface UsersPromote {
 }
 
 const noteExample = #{
-  note_id: "note123",
+  user_id: "test123",
+  note_id: "FHNWFLAQN",
   title: "My First Note",
   content: "This is the content of my first note.",
   tags: "work, project",
@@ -186,6 +187,7 @@ const noteExample = #{
 };
 @example(noteExample)
 model Note {
+  user_id: string;
   note_id: string;
   title: string;
   content: string;
@@ -247,6 +249,18 @@ interface Notes {
     searchNotes(
       @query query: string
     ): SearchNotesResponse | ErrorResponse;
+}
+
+@route("/api/v1/admin")
+@tag("Admin")
+@useAuth(BearerAuth)
+interface Admin {
+    @route("/notes")
+    @post
+    @summary("Add notes")
+    addNotes(
+      @body requestBody: Note[]
+    ): SuccessResponse | ErrorResponse;
 }
 
 @route("/api/v1/health")

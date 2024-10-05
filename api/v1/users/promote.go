@@ -52,7 +52,28 @@ func PromoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	slog.Info("Promote successful")
 
+	// Delete token
+	if err := utils.DeleteToken(key); err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	// New token
+	token, err := utils.GenerateToken(user.UserID, true)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	// Save the token in Redis
+	if err := utils.SaveToken(key, token); err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	slog.Info("Generated Token: " + token)
+
 	// Response
-	res := map[string]interface{}{"message": "Promote successful"}
+	res := map[string]interface{}{"new token": token}
 	utils.SuccessJSONResponse(w, res)
 }

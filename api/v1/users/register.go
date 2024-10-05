@@ -1,4 +1,4 @@
-package auth
+package users
 
 import (
 	"encoding/json"
@@ -22,18 +22,10 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate user_id
-	// Rule: Required, Min 4, Max 32
-	if err := validation.Validate(user.UserID, validation.Required, validation.Length(4, 32)); err != nil {
-		slog.Error("user_id error: " + err.Error())
-		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
-		return
-	}
-
 	// Validate username
 	// Rule: Required, Min 1, Max 32
 	if err := validation.Validate(user.UserName, validation.Required, validation.Length(1, 32)); err != nil {
-		slog.Error("name error: " + err.Error())
+		slog.Error("name error: %+v" + err.Error())
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
@@ -41,7 +33,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate email
 	// Rule: Required, Email, Unique
 	if err := validation.Validate(user.Email, validation.Required, is.Email); err != nil {
-		slog.Error("email error: " + err.Error())
+		slog.Error("email error: %+v" + err.Error())
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
@@ -57,12 +49,17 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate password
 	// Rule: Required, Min 8, Max 32
 	if err := validation.Validate(user.Password, validation.Required, validation.Length(8, 32)); err != nil {
-		slog.Error("password error: " + err.Error())
+		slog.Error("password error: %+v" + err.Error())
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
 	slog.Info("Validation passed")
+
+	// Generate a new UserID
+	user.UserID = utils.GenerateULID()
+
+	slog.Info("Generated UserID: " + user.UserID)
 
 	// Create a new user
 	if err := users.CreateUser(user); err != nil {

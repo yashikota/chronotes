@@ -25,7 +25,6 @@ func Connect() {
 	if err != nil {
 		slog.Error("Failed to connect to database:" + err.Error())
 	}
-
 	slog.Info("Connected to database")
 
 	Migration(DB)

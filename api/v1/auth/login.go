@@ -10,6 +10,7 @@ import (
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 
 	"github.com/yashikota/chronotes/model/v1"
+	"github.com/yashikota/chronotes/pkg/admin"
 	"github.com/yashikota/chronotes/pkg/users"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
@@ -24,7 +25,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	var identity model.Identity
 
-	if (user.UserID == "") {
+	if user.UserID == "" {
 		identity = model.Email
 		// Validate email
 		// Rule: Required, Email, Unique
@@ -75,7 +76,19 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Login user.UserID: " + loginUser.UserID)
 
 	// Generate a new token
-	token, err := utils.GenerateToken(loginUser.UserID)
+	isAdmin, err := admin.IsAdmin(loginUser.UserID)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+	var token string
+	if isAdmin {
+		slog.Info("Admin user.UserID: " + loginUser.UserID)
+		token, err = utils.GenerateToken(loginUser.UserID, true)
+	} else {
+		slog.Info("Normal user.UserID: " + loginUser.UserID)
+		token, err = utils.GenerateToken(loginUser.UserID, false)
+	}
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

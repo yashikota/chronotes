@@ -76,14 +76,13 @@ func main() {
 			r.HandleFunc("POST /upload/image", upload.UploadHandler)
 		})
 
-		// r.Route("/admin", func(r chi.Router) {
-		// 	r.Use(utils.AdminMiddleware)
+        // Admin routes
+		r.Route("/admin", func(r chi.Router) {
+            r.Use(utils.JwtMiddleware)
+			r.Use(utils.AdminMiddleware)
 
-		// 	// Admin-specific routes
-		// 	r.HandleFunc("GET /dashboard", admin.DashboardHandler)
-		// 	r.HandleFunc("POST /users/manage", admin.ManageUsersHandler)
-		// 	r.HandleFunc("DELETE /users/{userID}", admin.DeleteUserHandler)
-		// })
+            r.HandleFunc("POST /notes", notes.CreateNoteHandler)
+		})
 	})
 
 	// Photo Preview

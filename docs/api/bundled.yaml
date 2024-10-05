@@ -7,7 +7,38 @@ tags:
   - name: Auth
   - name: Users
   - name: Notes
+  - name: Admin
 paths:
+  /api/v1/admin/notes:
+    post:
+      operationId: Admin_addNotes
+      summary: Add notes
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Note'
+      security:
+        - BearerAuth: []
   /api/v1/auth/login:
     post:
       operationId: Auth_login
@@ -354,6 +385,7 @@ components:
     Note:
       type: object
       required:
+        - user_id
         - note_id
         - title
         - content
@@ -361,6 +393,8 @@ components:
         - createdAt
         - updatedAt
       properties:
+        user_id:
+          type: string
         note_id:
           type: string
         title:
@@ -376,7 +410,8 @@ components:
           type: string
           format: date-time
       example:
-        note_id: note123
+        user_id: test123
+        note_id: FHNWFLAQN
         title: My First Note
         content: This is the content of my first note.
         tags: work, project
@@ -431,13 +466,15 @@ components:
             $ref: '#/components/schemas/Note'
       example:
         notes:
-          - note_id: note123
+          - user_id: test123
+            note_id: FHNWFLAQN
             title: My First Note
             content: This is the content of my first note.
             tags: work, project
             createdAt: 2023-01-01T12:00:00Z
             updatedAt: 2023-01-01T12:30:00Z
-          - note_id: note123
+          - user_id: test123
+            note_id: FHNWFLAQN
             title: My First Note
             content: This is the content of my first note.
             tags: work, project

@@ -9,7 +9,7 @@ import (
 type Note struct {
 	gorm.Model
 	NoteID  string `json:"note_id" gorm:"uniqueIndex"`
-	UserID  string `json:"user_id" gorm:"uniqueIndex"`
+	UserID  string `json:"user_id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Tags    string `json:"tags"`

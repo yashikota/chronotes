@@ -18,6 +18,7 @@ type tokenContextKey struct{}
 type Token struct {
 	ID  string
 	Exp time.Time
+	IsAdmin bool
 }
 
 var (
@@ -33,11 +34,12 @@ func SetupPrivateKey() {
 	}
 }
 
-func GenerateToken(id string) (string, error) {
+func GenerateToken(id string, isAdmin bool) (string, error) {
 	// Build a new token
 	tok, err := jwt.NewBuilder().
 		Subject(id).
 		Expiration(time.Now().Add(time.Hour * 3)).
+		Claim("isAdmin", isAdmin).
 		Build()
 	if err != nil {
 		return "", err
@@ -63,10 +65,19 @@ func ValidateToken(ctx context.Context, tokenString string) (context.Context, er
 	if time.Now().After(exp) {
 		return ctx, errors.New("token expired")
 	}
+	isAdminValue, ok := verifiedToken.Get("isAdmin")
+	if !ok {
+		return ctx, errors.New("isAdmin not found in token")
+	}
+	isAdmin, ok := isAdminValue.(bool)
+	if !ok {
+		return ctx, errors.New("isAdmin is not a boolean")
+	}
 
 	token := Token{
 		ID:  id,
 		Exp: exp,
+		IsAdmin: isAdmin,
 	}
 
 	ctx = context.WithValue(ctx, TokenKey, token)
