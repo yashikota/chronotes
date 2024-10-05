@@ -18,6 +18,8 @@ properties:
   updatedAt:
     type: string
     format: date-time
+  accounts:
+    $ref: ./Accounts.yaml
 example:
   user_id: test123
   user_name: hoge太郎

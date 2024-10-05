@@ -25,16 +25,10 @@ func Connect() {
 	if err != nil {
 		slog.Error("Failed to connect to database:" + err.Error())
 	}
-
 	slog.Info("Connected to database")
 
-	// Migrate the database
 	Migration(DB)
-
 	slog.Info("Migrated the database")
-
-	// Seed the database
-	// Seed(DB)
 
 	slog.Info("Database connection initialized")
 }

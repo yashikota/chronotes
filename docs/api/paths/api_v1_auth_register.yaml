@@ -1,5 +1,5 @@
 post:
-  operationId: registerUser
+  operationId: Auth_register
   summary: Register a new user
   parameters: []
   responses:
@@ -16,7 +16,7 @@ post:
           schema:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
-    - Users
+    - Auth
   requestBody:
     required: true
     content:

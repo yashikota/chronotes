@@ -3,10 +3,9 @@ package users
 import (
 	"errors"
 
-	"golang.org/x/crypto/bcrypt"
-
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func CreateUser(user *model.User) error {
@@ -14,12 +13,10 @@ func CreateUser(user *model.User) error {
 		return errors.New("database connection is not initialized")
 	}
 
-	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	err := utils.GeneratePassword(user)
 	if err != nil {
 		return err
 	}
-	user.Password = string(hashedPassword)
 
 	// Create the user in the database using the existing connection
 	result := db.DB.Create(user)
@@ -32,7 +29,8 @@ func CreateUser(user *model.User) error {
 
 func IsEmailTaken(email string) (bool, error) {
 	var count int64
-	if err := db.DB.Model(&model.User{}).Where("email = ?", email).Count(&count).Error; err != nil {
+	user := model.NewUser()
+	if err := db.DB.Model(user).Where("email = ?", email).Count(&count).Error; err != nil {
 		return false, err
 	}
 	return count > 0, nil

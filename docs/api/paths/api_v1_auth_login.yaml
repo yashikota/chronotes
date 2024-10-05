@@ -1,20 +1,14 @@
 post:
-  operationId: Notes_searchNotes
-  summary: Search notes
-  parameters:
-    - name: query
-      in: query
-      required: true
-      schema:
-        type: string
-      explode: false
+  operationId: Auth_login
+  summary: Login user
+  parameters: []
   responses:
     '200':
       description: The request has succeeded.
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/SearchNotesResponse.yaml
+            $ref: ../components/schemas/RegisterUserResponse.yaml
     default:
       description: An unexpected error response.
       content:
@@ -22,6 +16,12 @@ post:
           schema:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
-    - Notes
+    - Auth
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/LoginRequest.yaml
   security:
-    - BearerAuth: []
+    - {}

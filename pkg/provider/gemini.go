@@ -9,7 +9,7 @@ import (
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func Gemini(input model.Gemini) (model.Response, error) {
+func Gemini(input model.Accounts) (model.Response, error) {
 	var text []string
 	var summary []string
 	var result string

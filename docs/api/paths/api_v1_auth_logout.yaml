@@ -1,12 +1,14 @@
-put:
-  operationId: connectService
-  summary: Connect to an external service
+post:
+  operationId: Auth_logout
+  summary: Logout user
   parameters: []
   responses:
-    '204':
-      description: >-
-        There is no content to send for this request, but the headers may be
-        useful. 
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SuccessResponse.yaml
     default:
       description: An unexpected error response.
       content:
@@ -14,6 +16,6 @@ put:
           schema:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
-    - Users
+    - Auth
   security:
     - BearerAuth: []

@@ -35,6 +35,7 @@ model User {
   email: string;
   createdAt: utcDateTime;
   updatedAt: utcDateTime;
+  accounts?: Accounts;
 }
 
 const RegisterUserRequestExample = #{
@@ -51,17 +52,15 @@ model RegisterUserRequest {
   password: string;
 }
 
-union LoginIdentifier {
-    email: string;
-    user_id: string;
-}
 const LoginRequestExample = #{
-  identifier: "test@example.com or test123",
+  email: "test@example.com",
+  user_id: "test123",
   password: "password",
 };
 @example(LoginRequestExample)
 model LoginRequest {
-  identifier: LoginIdentifier;
+  user_id?: string;
+  email?: string;
   password: string;
 }
 
@@ -74,8 +73,39 @@ model RegisterUserResponse {
   token: string;
 }
 
+const PromoteUserRequestExample = #{
+  password: "password",
+};
+model PromoteUserRequest {
+  password: string;
+}
+
+const AccountsExample = #{
+  github: "yashikota",
+  discord: "9419543265265028",
+  slack: "HG824ORHQ250",
+  qiita: "yashikota",
+  zenn: "yashikota",
+  wakatime: "yashikota",
+};
+model Accounts {
+    github_user_id?: string;
+    discord_channel_id?: string;
+    slack_channel_id?: string;
+    qiita_user_id?: string;
+    zenn_username?: string;
+    wakatime_token?: string;
+}
+
+model UpdateUserRequest {
+  user_name?: string;
+  email?: string;
+  password?: string;
+  accounts?: Accounts;
+}
+
 const SuccessResponseExample = #{
-  message: "message: Success"
+  message: "Success"
 };
 @example(SuccessResponseExample)
 model SuccessResponse {
@@ -83,7 +113,7 @@ model SuccessResponse {
 }
 
 const ErrorResponseExample = #{
-  message: "message: Error"
+  message: "Error"
 };
 @example(ErrorResponseExample)
 @error
@@ -91,47 +121,64 @@ model ErrorResponse {
   message: string;
 }
 
-@route("/api/v1/users/register")
-@post
-@summary("Register a new user")
-@tag("Users")
+@route("/api/v1/auth")
+@tag("Auth")
 @useAuth(NoAuth)
-op registerUser(
-  @body requestBody: RegisterUserRequest
-): RegisterUserResponse | ErrorResponse;
+interface Auth {
+    @route("/register")
+    @post
+    @summary("Register a new user")
+    register(
+      @body requestBody: RegisterUserRequest
+    ): RegisterUserResponse | ErrorResponse;
+
+    @route("/login")
+    @post
+    @summary("Login user")
+    login(
+      @body requestBody: LoginRequest
+    ): RegisterUserResponse | ErrorResponse;
+
+    @route("/logout")
+    @post
+    @summary("Logout user")
+    @useAuth(BearerAuth)
+    logout(): SuccessResponse | ErrorResponse;
+}
 
 @route("/api/v1/users/me")
-@delete
-@summary("Delete a user")
 @tag("Users")
 @useAuth(BearerAuth)
-op deleteUser(): SuccessResponse | ErrorResponse;
+interface Users {
+    @get
+    @summary("Get user information")
+    get(): User | ErrorResponse;
 
-@route("/api/v1/users/login")
-@post
-@summary("Login user")
-@tag("Users")
-@useAuth(BearerAuth)
-op login(
-  @body requestBody: LoginRequest
-): RegisterUserResponse | ErrorResponse;
+    @put
+    @summary("Update user information")
+    update(
+      @body requestBody: UpdateUserRequest
+    ): User | ErrorResponse;
 
-@route("/api/v1/users/logout")
-@post
-@summary("Logout user")
-@tag("Users")
-@useAuth(BearerAuth)
-op logout(): SuccessResponse | ErrorResponse;
+    @delete
+    @summary("Delete a user")
+    delete(): SuccessResponse | ErrorResponse;
+}
 
-@route("/api/v1/users/accounts")
-@put
-@summary("Connect to an external service")
+@route("/api/v1/users/promote")
 @tag("Users")
 @useAuth(BearerAuth)
-op connectService(): void | ErrorResponse;
+interface UsersPromote {
+    @put
+    @summary("Promote a user")
+    promote(
+      @body requestBody: PromoteUserRequest
+    ): SuccessResponse | ErrorResponse;
+}
 
 const noteExample = #{
-  note_id: "note123",
+  user_id: "test123",
+  note_id: "FHNWFLAQN",
   title: "My First Note",
   content: "This is the content of my first note.",
   tags: "work, project",
@@ -140,6 +187,7 @@ const noteExample = #{
 };
 @example(noteExample)
 model Note {
+  user_id: string;
   note_id: string;
   title: string;
   content: string;
@@ -177,51 +225,43 @@ model AddTagsRequest {
 }
 
 @route("/api/v1/notes")
-@post
-@summary("Create a new note")
 @tag("Notes")
 @useAuth(BearerAuth)
-op createNote(
-  @body requestBody: Note
-): Note | ErrorResponse;
+interface Notes {
+    @route("/list")
+    @get
+    @summary("Get a list of notes")
+    getNotes(
+      @query from: utcDateTime;
+      @query to: utcDateTime;
+    ): Note[] | ErrorResponse;
 
-@route("/api/v1/notes")
-@get
-@summary("Get a list of notes")
-@tag("Notes")
-@useAuth(BearerAuth)
-op getNotes(
-  @query page?: int32,
-  @query pageSize?: int32
-): Note | ErrorResponse;
+    @route("/note")
+    @get
+    @summary("Get a note")
+    getNote(
+      @query date: utcDateTime;
+    ): Note | ErrorResponse;
 
-@route("/api/v1/notes/note")
-@get
-@summary("Get a note")
-@tag("Notes")
-@useAuth(BearerAuth)
-op getNote(
-  @query date: utcDateTime;
-): Note | ErrorResponse;
+    @route("/search")
+    @post
+    @summary("Search notes")
+    searchNotes(
+      @query query: string
+    ): SearchNotesResponse | ErrorResponse;
+}
 
-@route("/api/v1/notes/list")
-@get
-@summary("Get a note list")
-@tag("Notes")
+@route("/api/v1/admin")
+@tag("Admin")
 @useAuth(BearerAuth)
-op getNoteList(
-  @query from: utcDateTime;
-  @query to: utcDateTime;
-): Note[] | ErrorResponse;
-
-@route("/api/v1/notes/search")
-@get
-@summary("Search notes")
-@tag("Notes")
-@useAuth(BearerAuth)
-op searchNotes(
-  @query query: string
-): SearchNotesResponse | ErrorResponse;
+interface Admin {
+    @route("/notes")
+    @post
+    @summary("Add notes")
+    addNotes(
+      @body requestBody: Note[]
+    ): SuccessResponse | ErrorResponse;
+}
 
 @route("/api/v1/health")
 @get

@@ -4,15 +4,14 @@ import (
 	"log/slog"
 	"net/http"
 
-	modelDB "github.com/yashikota/chronotes/model/v1/db"
-	modelProvider "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/model/v1"
 	note "github.com/yashikota/chronotes/pkg/notes"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
-	user := modelDB.User{}
+	user := model.NewUser()
 	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
 
 	// Check if token exists
@@ -57,15 +56,10 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Get note from database passed")
 
 	// Get accounts from database
-	// accounts, err := note.GetAccounts(user.UserID)
-	// if err != nil {
-	// 	utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
-	// 	return
-	// }
-
-	// DEBUG
-	accounts := modelProvider.Gemini{
-		GitHubUserID: "yashikota",
+	accounts, err := note.GetAccounts(user.UserID)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
 	}
 
 	slog.Info("Get accounts from database passed")
@@ -74,7 +68,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	if n.UserID == "" {
 		slog.Info("Note does not exist")
 		// Generate note
-		n, err = note.GenerateNote(user.UserID, date, accounts)
+		n, err = note.GenerateNote(user.UserID, date, *accounts)
 		if err != nil {
 			utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 			return
@@ -84,8 +78,8 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Generate note passed")
 
 	// Response
-	res := modelDB.NoteResponse{
-		Date:    dateTime.String(),
+	res := model.NoteResponse{
+		Date:    dateTime,
 		Title:   n.Title,
 		Content: n.Content,
 		Tags:    n.Tags,

@@ -14,6 +14,7 @@ import (
 	"github.com/yashikota/chronotes/api/v1/notes"
 	"github.com/yashikota/chronotes/api/v1/upload"
 	"github.com/yashikota/chronotes/api/v1/users"
+	"github.com/yashikota/chronotes/api/v1/auth"
 	"github.com/yashikota/chronotes/pkg/db"
 	"github.com/yashikota/chronotes/pkg/redis"
 	"github.com/yashikota/chronotes/pkg/utils"
@@ -47,30 +48,41 @@ func main() {
 	// Setup JWT
 	utils.SetupPrivateKey()
 
-	// Public Routes
-	r.HandleFunc("POST /api/v1/users/register", users.RegisterHandler)
-	r.HandleFunc("POST /api/v1/users/login", users.LoginHandler)
-
-	// Debug
-	r.HandleFunc("GET /api/v1/health", debug.HealthHandler)
-	r.HandleFunc("GET /api/v1/fake", debug.FakeHandler)
-
-	// Routes with JWT middleware
 	r.Route("/api/v1", func(r chi.Router) {
-		r.Use(utils.JwtMiddleware)
+		// Public Routes
+		r.HandleFunc("POST /auth/register", auth.RegisterHandler)
+		r.HandleFunc("POST /auth/login", auth.LoginHandler)
 
-		// User
-		r.HandleFunc("POST /users/logout", users.LogoutHandler)
-		r.HandleFunc("DELETE /users/me", users.DeleteHandler)
-		r.HandleFunc("PUT /users/accounts", users.UpdateAccountsHandler)
+		// Debug Routes
+		r.HandleFunc("GET /health", debug.HealthHandler)
 
-		// Notes
-		r.HandleFunc("GET /notes/note", notes.GetNoteHandler)
-		r.HandleFunc("GET /notes/list", notes.GetNoteListHandler)
-		r.HandleFunc("GET /notes/summary", notes.GetNoteSummaryHandler)
+		// JWT-protected routes
+		r.Group(func(r chi.Router) {
+			r.Use(utils.JwtMiddleware)
 
-		// Upload
-		r.HandleFunc("POST /upload/image", upload.UploadHandler)
+			// User routes
+			r.HandleFunc("POST /auth/logout", auth.LogoutHandler)
+            // r.HandleFunc("GET /users/me", users.GetAccountHandler)
+			r.HandleFunc("PUT /users/me", users.UpdateAccountsHandler)
+			r.HandleFunc("DELETE /users/me", users.DeleteHandler)
+			r.HandleFunc("PUT /users/promote", users.PromoteHandler)
+
+			// Notes routes
+			r.HandleFunc("GET /notes/note", notes.GetNoteHandler)
+			r.HandleFunc("GET /notes/list", notes.GetNoteListHandler)
+			r.HandleFunc("GET /notes/summary", notes.GetNoteSummaryHandler)
+
+			// Upload route
+			r.HandleFunc("POST /upload/image", upload.UploadHandler)
+		})
+
+        // Admin routes
+		r.Route("/admin", func(r chi.Router) {
+            r.Use(utils.JwtMiddleware)
+			r.Use(utils.AdminMiddleware)
+
+            r.HandleFunc("POST /notes", notes.CreateNoteHandler)
+		})
 	})
 
 	// Photo Preview

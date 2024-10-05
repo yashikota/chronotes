@@ -4,14 +4,14 @@ import (
 	"log/slog"
 	"net/http"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
-	users "github.com/yashikota/chronotes/pkg/users"
+	"github.com/yashikota/chronotes/model/v1"
+	"github.com/yashikota/chronotes/pkg/users"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
-	user := model.User{}
+	user := model.NewUser()
 	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
 
 	// Check if token exists
@@ -24,7 +24,7 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Validation passed")
 
 	// Delete the user
-	err := users.DeleteUser(&user)
+	err := users.DeleteUser(user)
 	if err != nil {
 		slog.Error("Login failed")
 		utils.ErrorJSONResponse(w, http.StatusUnauthorized, err)

@@ -5,14 +5,14 @@ import (
 	"log/slog"
 	"net/http"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/users"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func UpdateAccountsHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
-	user := model.User{}
+	user := model.NewUser()
 	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
 
 	// Check if token exists
@@ -25,7 +25,7 @@ func UpdateAccountsHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Validation passed")
 
 	// Parse request
-	var accounts model.Account
+	var accounts model.Accounts
 	accounts.UserID = user.UserID
 	err := json.NewDecoder(r.Body).Decode(&accounts)
 	if err != nil {

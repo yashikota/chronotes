@@ -1,6 +1,6 @@
 get:
-  operationId: getNoteList
-  summary: Get a note list
+  operationId: Notes_getNotes
+  summary: Get a list of notes
   parameters:
     - name: from
       in: query

@@ -3,30 +3,32 @@ info:
   title: Chronotes API
   version: v1
 tags:
+  - name: Health
+  - name: Auth
   - name: Users
   - name: Notes
-  - name: Health
+  - name: Admin
 paths:
+  /api/v1/admin/notes:
+    $ref: paths/api_v1_admin_notes.yaml
+  /api/v1/auth/login:
+    $ref: paths/api_v1_auth_login.yaml
+  /api/v1/auth/logout:
+    $ref: paths/api_v1_auth_logout.yaml
+  /api/v1/auth/register:
+    $ref: paths/api_v1_auth_register.yaml
   /api/v1/health:
     $ref: paths/api_v1_health.yaml
-  /api/v1/notes:
-    $ref: paths/api_v1_notes.yaml
   /api/v1/notes/list:
     $ref: paths/api_v1_notes_list.yaml
   /api/v1/notes/note:
     $ref: paths/api_v1_notes_note.yaml
   /api/v1/notes/search:
     $ref: paths/api_v1_notes_search.yaml
-  /api/v1/users/accounts:
-    $ref: paths/api_v1_users_accounts.yaml
-  /api/v1/users/login:
-    $ref: paths/api_v1_users_login.yaml
-  /api/v1/users/logout:
-    $ref: paths/api_v1_users_logout.yaml
   /api/v1/users/me:
     $ref: paths/api_v1_users_me.yaml
-  /api/v1/users/register:
-    $ref: paths/api_v1_users_register.yaml
+  /api/v1/users/promote:
+    $ref: paths/api_v1_users_promote.yaml
 components:
   securitySchemes:
     BearerAuth:

@@ -1,6 +1,6 @@
 post:
-  operationId: logout
-  summary: Logout user
+  operationId: Admin_addNotes
+  summary: Add notes
   parameters: []
   responses:
     '200':
@@ -16,6 +16,14 @@ post:
           schema:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
-    - Users
+    - Admin
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: ../components/schemas/Note.yaml
   security:
     - BearerAuth: []

@@ -6,18 +6,18 @@ import (
 
 	"gorm.io/gorm"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 
-func UpdateAccounts(newAccounts *model.Account) error {
+func UpdateAccounts(newAccounts *model.Accounts) error {
 	if db.DB == nil {
 		return errors.New("database connection is not initialized")
 	}
 
 	slog.Info("Updating accounts: " + newAccounts.UserID)
 
-	oldAccounts := model.Account{}
+	oldAccounts := model.NewAccounts()
 	result := db.DB.Where("user_id = ?", newAccounts.UserID).First(&oldAccounts)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		// Create new account
