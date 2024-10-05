@@ -4,8 +4,9 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/yashikota/chronotes/model/v1"
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/yashikota/chronotes/model/v1"
 
 	"github.com/joho/godotenv"
 )

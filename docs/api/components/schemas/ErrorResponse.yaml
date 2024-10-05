@@ -5,4 +5,4 @@ properties:
   message:
     type: string
 example:
-  message: 'message: Error'
+  message: Error

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/yashikota/chronotes/model/v1"
-	"github.com/yashikota/chronotes/pkg/utils"
 	"github.com/yashikota/chronotes/pkg/users"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func PromoteHandler(w http.ResponseWriter, r *http.Request) {

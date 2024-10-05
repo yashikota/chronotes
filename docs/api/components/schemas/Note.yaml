@@ -1,5 +1,6 @@
 type: object
 required:
+  - user_id
   - note_id
   - title
   - content
@@ -7,6 +8,8 @@ required:
   - createdAt
   - updatedAt
 properties:
+  user_id:
+    type: string
   note_id:
     type: string
   title:
@@ -22,7 +25,8 @@ properties:
     type: string
     format: date-time
 example:
-  note_id: note123
+  user_id: test123
+  note_id: FHNWFLAQN
   title: My First Note
   content: This is the content of my first note.
   tags: work, project

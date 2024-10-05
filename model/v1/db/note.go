@@ -21,9 +21,9 @@ func NewNote() *Note {
 
 type NoteResponse struct {
 	Date    time.Time `json:"date"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Tags    string `json:"tags"`
+	Title   string    `json:"title"`
+	Content string    `json:"content"`
+	Tags    string    `json:"tags"`
 }
 
 func NewNoteResponse() *NoteResponse {
