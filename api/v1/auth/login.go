@@ -76,11 +76,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Login user.UserID: " + loginUser.UserID)
 
 	// Generate a new token
-	isAdmin, err := admin.IsAdmin(loginUser.UserID)
-	if err != nil {
-		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
-		return
-	}
+	isAdmin, _ := admin.IsAdmin(loginUser.UserID)
 	var token string
 	if isAdmin {
 		slog.Info("Admin user.UserID: " + loginUser.UserID)
