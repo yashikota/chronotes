@@ -47,7 +47,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("date:" + dateTime.String())
 
 	// Get note from database
-	n, err := note.GetNote(user.UserID, dateTime)
+	n, err := note.GetNote(*user, dateTime)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
@@ -65,7 +65,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Get accounts from database passed")
 
 	// Check if note exists
-	if n.UserID == "" {
+	if n == nil {
 		slog.Info("Note does not exist")
 		// Generate note
 		n, err = note.GenerateNote(user.UserID, date, *accounts)
