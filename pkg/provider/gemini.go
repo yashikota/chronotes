@@ -57,7 +57,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 			Result: "",
 			Title:  "",
 			Day:    day,
-			Tag:    "",
+			Tag:    []string{},
 		}, nil
 	}
 	result = strings.Join(summary, "\n")
@@ -68,18 +68,19 @@ func Gemini(input model.Accounts) (model.Response, error) {
 			Result: result,
 			Title:  day,
 			Day:    day,
-			Tag:    "",
+			Tag:    []string{},
 		}, nil
 	}
 
 	tag, err := utils.MakeTag(summary)
+
 	if err != nil {
 		slog.Error("Error making tag", "error", err)
 		return model.Response{
 			Result: result,
 			Title:  title,
 			Day:    day,
-			Tag:    "",
+			Tag:    []string{},
 		}, nil
 	}
 	fmt.Printf("Gemini : result: %s, title: %s, day: %s, tag: %s\n", result, title, day, tag)
