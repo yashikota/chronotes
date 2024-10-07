@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
@@ -62,6 +63,6 @@ func ZennProvider(username string) ([]string, error) {
 		return []string{}, nil
 	}
 	slog.Debug("ZennProvider: today's articles", "articles", todaysArticles)
-
+	todaysArticles[0] = strings.Replace(todaysArticles[0], "Title: ", "", 1)
 	return todaysArticles, nil
 }
