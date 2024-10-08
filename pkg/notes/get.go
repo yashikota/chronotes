@@ -11,10 +11,6 @@ import (
 )
 
 func GetNote(user model.User, dateTime time.Time) (*model.Note, error) {
-	if db.DB == nil {
-		return nil, errors.New("database connection is not initialized")
-	}
-
 	date := dateTime.Format("2006-01-02")
 
 	// Get note from database

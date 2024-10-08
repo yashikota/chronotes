@@ -26,7 +26,7 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 	// Delete the user
 	err := users.DeleteUser(user)
 	if err != nil {
-		slog.Error("Login failed")
+		slog.Warn("Login failed")
 		utils.ErrorJSONResponse(w, http.StatusUnauthorized, err)
 		return
 	}

@@ -2,9 +2,6 @@ package utils
 
 import (
 	"context"
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
 	"errors"
 	"time"
 
@@ -23,16 +20,7 @@ type Token struct {
 
 var (
 	TokenKey   = &tokenContextKey{}
-	privateKey *ecdsa.PrivateKey
 )
-
-func SetupPrivateKey() {
-	var err error
-	privateKey, err = ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		panic(err)
-	}
-}
 
 func GenerateToken(id string, isAdmin bool) (string, error) {
 	// Build a new token

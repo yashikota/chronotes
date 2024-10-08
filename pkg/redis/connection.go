@@ -23,10 +23,10 @@ func Connect() {
 	slog.Info("Connected to Redis")
 }
 
-func Initialize() {
-	_, err := Client.FlushAll(Ctx).Result()
-	if err != nil {
-		slog.Error("Failed to initialize Redis")
-	}
-	slog.Info("Successfully initialized Redis")
-}
+// func Initialize() {
+// 	_, err := Client.FlushAll(Ctx).Result()
+// 	if err != nil {
+// 		slog.Error("Failed to initialize Redis")
+// 	}
+// 	slog.Info("Successfully initialized Redis")
+// }

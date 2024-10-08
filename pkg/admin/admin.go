@@ -9,10 +9,6 @@ import (
 )
 
 func IsAdmin(userID string) (bool, error) {
-	if db.DB == nil {
-		return false, errors.New("database connection is not initialized")
-	}
-
 	r := model.NewUser()
 	result := db.DB.Where("user_id = ?", userID).First(&r)
 	if result.Error != nil {

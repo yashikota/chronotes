@@ -8,8 +8,6 @@ import (
 	slogmulti "github.com/samber/slog-multi"
 	"github.com/getsentry/sentry-go"
 	slogsentry "github.com/samber/slog-sentry/v2"
-
-	"github.com/joho/godotenv"
 )
 
 func slogLogger() *slog.Logger {
@@ -18,13 +16,9 @@ func slogLogger() *slog.Logger {
 }
 
 func sentryLogger() *slog.Logger {
-	err := godotenv.Load()
-	if err != nil {
-		sentry.CaptureException(err)
-	}
 	dsn := os.Getenv("SENTRY_DSN")
 
-	err = sentry.Init(sentry.ClientOptions{
+	err := sentry.Init(sentry.ClientOptions{
 		Dsn:           dsn,
 		EnableTracing: false,
 	})

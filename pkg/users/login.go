@@ -12,10 +12,6 @@ import (
 )
 
 func LoginUser(u *model.Login, identity model.Identity) (r *model.User, err error) {
-	if db.DB == nil {
-		return nil, errors.New("database connection is not initialized")
-	}
-
 	var result *gorm.DB
 	if identity == model.Email {
 		result = db.DB.Where("email = ?", u.Email).First(&r)

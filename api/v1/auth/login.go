@@ -68,8 +68,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// Login user
 	loginUser, err := users.LoginUser(user, identity)
 	if err != nil {
-		slog.Error("Login failed")
-		utils.ErrorJSONResponse(w, http.StatusUnauthorized, err)
+		slog.Warn("Login failed")
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 

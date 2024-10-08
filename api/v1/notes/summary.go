@@ -2,12 +2,9 @@ package notes
 
 import (
 	"errors"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
-
-	"github.com/joho/godotenv"
 
 	"github.com/yashikota/chronotes/model/v1"
 	note "github.com/yashikota/chronotes/pkg/notes"
@@ -91,7 +88,6 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 
 	slog.Info("notes: ", slog.Any("%v", notes))
 
-	err = godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
 	token := os.Getenv("GEMINI_TOKEN")
 	if err != nil && !os.IsNotExist(err) {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)

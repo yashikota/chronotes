@@ -20,6 +20,9 @@ import (
 )
 
 func main() {
+	// load .env file for local development
+	utils.LoadEnv()
+
 	// Initialize logger
     logger := utils.Logger()
 	slog.SetDefault(logger)
@@ -41,12 +44,11 @@ func main() {
 	// Connect to database
 	db.Connect()
 
-	// Initialize Redis
+	// Connect to Redis
 	redis.Connect()
-	redis.Initialize()
 
 	// Setup JWT
-	utils.SetupPrivateKey()
+	utils.LoadPrivateKeyFromEnv()
 
 	r.Route("/api/v1", func(r chi.Router) {
 		// Public Routes

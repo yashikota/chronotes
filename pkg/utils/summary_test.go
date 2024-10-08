@@ -5,17 +5,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/joho/godotenv"
-
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func TestSummaryHandler(t *testing.T) {
-	err := godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
 	token := os.Getenv("GEMINI_TOKEN")
-	if err != nil && !os.IsNotExist(err) {
-		t.Error(err)
-	}
+
 	// テスト用の文章
 	messages := []string{
 		"今日はとても良い天気でした。朝から太陽が燦燦と輝いていて、空も澄み渡っていました。公園に出かけて、ゆっくり散歩を楽しみました。緑の芝生の上で、子供たちが遊んでいるのを見ていると、心が癒されます。特に、犬を連れた人たちが楽しそうに遊んでいる姿が印象的でした。",
