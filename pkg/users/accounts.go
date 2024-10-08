@@ -11,10 +11,6 @@ import (
 )
 
 func UpdateAccounts(newAccounts *model.Accounts) error {
-	if db.DB == nil {
-		return errors.New("database connection is not initialized")
-	}
-
 	slog.Info("Updating accounts: " + newAccounts.UserID)
 
 	oldAccounts := model.NewAccounts()

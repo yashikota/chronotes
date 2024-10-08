@@ -1,18 +1,12 @@
 package users
 
 import (
-	"errors"
-
 	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func CreateUser(user *model.User) error {
-	if db.DB == nil {
-		return errors.New("database connection is not initialized")
-	}
-
 	err := utils.GeneratePassword(user)
 	if err != nil {
 		return err
