@@ -1,7 +1,6 @@
 package notes
 
 import (
-	"errors"
 	"log/slog"
 
 	"github.com/yashikota/chronotes/model/v1"
@@ -11,10 +10,6 @@ import (
 )
 
 func GenerateNote(userID string, date string, accounts model.Accounts) (*model.Note, error) {
-	if db.DB == nil {
-		return nil, errors.New("database connection is not initialized")
-	}
-
 	response, err := provider.Gemini(accounts)
 	if err != nil {
 		return nil, err

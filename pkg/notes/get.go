@@ -11,10 +11,6 @@ import (
 )
 
 func GetNote(user model.User, dateTime time.Time) (*model.Note, error) {
-	if db.DB == nil {
-		return nil, errors.New("database connection is not initialized")
-	}
-
 	// Get note from database
 	note := model.NewNote()
 	result := db.DB.Where("user_id = ? AND created_at::date = ?::date", user.UserID, dateTime).First(&note)

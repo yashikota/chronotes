@@ -1,22 +1,14 @@
 package provider_test
 
 import (
-	"fmt"
 	"os"
 	"testing"
-
-	"github.com/joho/godotenv"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/provider"
 )
 
 func TestGeminiHandler(t *testing.T) {
-	// 環境変数の読み込み（GO_ENVが設定されている場合）
-	if err := godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV"))); err != nil && !os.IsNotExist(err) {
-		t.Error(err)
-	}
-
 	// 環境変数からのデータ取得
 	input := model.Accounts{
 		GitHubUserID:     os.Getenv("GITHUB_USER_ID"),

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/users"
@@ -34,7 +35,7 @@ func PromoteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Password entered")
 
 	// Validate password
-	adminPassword := utils.GetAdminPassword()
+	adminPassword := os.Getenv("ADMIN_PASS")
 	if err := utils.ComparePassword(adminPassword, enter.Password); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusUnauthorized, err)
 		return

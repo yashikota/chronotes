@@ -1,11 +1,11 @@
 package db
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -13,22 +13,23 @@ import (
 var DB *gorm.DB
 
 func Connect() {
-	err := godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
-	if err != nil && !os.IsNotExist(err) {
-		slog.Error("Failed to load .env file:" + err.Error())
-	}
-
-	// Connect to the database
 	pgpw := os.Getenv("POSTGRES_PASSWORD")
 	dsn := fmt.Sprintf("postgres://postgres:%s@db:5432/chronotes?sslmode=disable", pgpw)
+	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		slog.Error("Failed to connect to database:" + err.Error())
 	}
+
+	if DB == nil {
+		slog.Error("Failed to connect to database")
+		panic(errors.New("failed to connect to database"))
+	}
+
 	slog.Info("Connected to database")
 
-	Migration(DB)
-	slog.Info("Migrated the database")
-
-	slog.Info("Database connection initialized")
+	if os.Getenv("IS_MIGRATE") == "true" {
+		Migration(DB)
+		slog.Info("Migrated the database")
+	}
 }
