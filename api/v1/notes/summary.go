@@ -89,10 +89,6 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("notes: ", slog.Any("%v", notes))
 
 	token := os.Getenv("GEMINI_TOKEN")
-	if err != nil && !os.IsNotExist(err) {
-		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
-		return
-	}
 	result, err := utils.Summary(notes, token)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
