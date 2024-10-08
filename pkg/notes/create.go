@@ -1,7 +1,6 @@
 package notes
 
 import (
-	"errors"
 	"log/slog"
 
 	"github.com/yashikota/chronotes/model/v1"
@@ -9,10 +8,6 @@ import (
 )
 
 func CreateNote(note model.Note) error {
-	if db.DB == nil {
-		return errors.New("database connection is not initialized")
-	}
-
 	slog.Info("Create note")
 
 	result := db.DB.Create(&note)
