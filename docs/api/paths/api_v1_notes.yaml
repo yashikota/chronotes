@@ -16,6 +16,12 @@ get:
         type: string
         format: date-time
       explode: false
+    - name: fields
+      in: query
+      required: true
+      schema:
+        type: string
+      explode: false
   responses:
     '200':
       description: The request has succeeded.
@@ -25,6 +31,33 @@ get:
             type: array
             items:
               $ref: ../components/schemas/Note.yaml
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Notes
+  security:
+    - BearerAuth: []
+delete:
+  operationId: Notes_deleteNote
+  summary: Delete a note
+  parameters:
+    - name: note_id
+      in: query
+      required: true
+      schema:
+        type: string
+      explode: false
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SuccessResponse.yaml
     default:
       description: An unexpected error response.
       content:

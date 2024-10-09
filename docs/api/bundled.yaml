@@ -139,7 +139,7 @@ paths:
         - Health
       security:
         - {}
-  /api/v1/notes/list:
+  /api/v1/notes:
     get:
       operationId: Notes_getNotes
       summary: Get a list of notes
@@ -157,6 +157,12 @@ paths:
           schema:
             type: string
             format: date-time
+          explode: false
+        - name: fields
+          in: query
+          required: true
+          schema:
+            type: string
           explode: false
       responses:
         '200':
@@ -177,17 +183,15 @@ paths:
         - Notes
       security:
         - BearerAuth: []
-  /api/v1/notes/note:
-    get:
-      operationId: Notes_getNote
-      summary: Get a note
+    delete:
+      operationId: Notes_deleteNote
+      summary: Delete a note
       parameters:
-        - name: date
+        - name: note_id
           in: query
           required: true
           schema:
             type: string
-            format: date-time
           explode: false
       responses:
         '200':
@@ -195,7 +199,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Note'
+                $ref: '#/components/schemas/SuccessResponse'
         default:
           description: An unexpected error response.
           content:
