@@ -14,7 +14,7 @@ import (
 
 func TestZennHandler(t *testing.T) {
 	w := httptest.NewRecorder()
-	
+
 	ZennUsername := os.Getenv("ZENN_USERNAME")
 	summaries, err := provider.ZennProvider(ZennUsername)
 	if err != nil {
