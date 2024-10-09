@@ -20,11 +20,8 @@ import (
 )
 
 func main() {
-	// load .env file for local development
-	utils.LoadEnv()
-
 	// Initialize logger
-    logger := utils.Logger()
+	logger := utils.Logger()
 	slog.SetDefault(logger)
 
 	r := chi.NewRouter()

@@ -14,7 +14,7 @@ import (
 
 func TestGithubHandler(t *testing.T) {
 	w := httptest.NewRecorder()
-	
+
 	token := os.Getenv("GITHUB_TOKEN")
 	userID := os.Getenv("GITHUB_USER_ID")
 

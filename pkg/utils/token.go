@@ -19,7 +19,7 @@ type Token struct {
 }
 
 var (
-	TokenKey   = &tokenContextKey{}
+	TokenKey = &tokenContextKey{}
 )
 
 func GenerateToken(id string, isAdmin bool) (string, error) {

@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	slogmulti "github.com/samber/slog-multi"
 	"github.com/getsentry/sentry-go"
+	slogmulti "github.com/samber/slog-multi"
 	slogsentry "github.com/samber/slog-sentry/v2"
 )
 
