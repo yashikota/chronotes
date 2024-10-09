@@ -228,20 +228,19 @@ model AddTagsRequest {
 @tag("Notes")
 @useAuth(BearerAuth)
 interface Notes {
-    @route("/list")
     @get
     @summary("Get a list of notes")
     getNotes(
       @query from: utcDateTime;
       @query to: utcDateTime;
+      @query fields: string;
     ): Note[] | ErrorResponse;
 
-    @route("/note")
-    @get
-    @summary("Get a note")
-    getNote(
-      @query date: utcDateTime;
-    ): Note | ErrorResponse;
+    @delete
+    @summary("Delete a note")
+    deleteNote(
+      @query note_id: string
+    ): SuccessResponse | ErrorResponse;
 
     @route("/search")
     @post
