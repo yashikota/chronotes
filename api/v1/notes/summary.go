@@ -12,6 +12,7 @@ import (
 	"github.com/yashikota/chronotes/model/v1"
 	note "github.com/yashikota/chronotes/pkg/notes"
 	"github.com/yashikota/chronotes/pkg/utils"
+	"github.com/yashikota/chronotes/pkg/gemini"
 
 	"github.com/Code-Hex/synchro"
 	"github.com/Code-Hex/synchro/tz"
@@ -97,7 +98,7 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
-	result, err := utils.Summary(notes, token)
+	result, err := gemini.Summary(notes, token)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

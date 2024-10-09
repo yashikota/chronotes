@@ -1,4 +1,4 @@
-package utils_test
+package gemini_test
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/yashikota/chronotes/pkg/utils"
+	"github.com/yashikota/chronotes/pkg/gemini"
 )
 
 func TestSummaryHandler(t *testing.T) {
@@ -26,7 +26,7 @@ func TestSummaryHandler(t *testing.T) {
 	}
 
 	// 関数を実行
-	result, err := utils.Summary(messages, token)
+	result, err := gemini.Summary(messages, token)
 	if err != nil {
 		t.Errorf("エラーが発生しました: %v", err)
 	}

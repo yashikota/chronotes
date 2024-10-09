@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/pkg/gemini"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
@@ -50,7 +51,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 		}, nil
 	}
 
-	summary, err := utils.SummarizeText(text)
+	summary, err := gemini.SummarizeText(text)
 	if err != nil {
 		slog.Error("Error summarizing text", "error", err)
 		return model.Response{
@@ -61,7 +62,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 		}, nil
 	}
 	result = strings.Join(summary, "\n")
-	title, err := utils.MakeTitle(summary)
+	title, err := gemini.MakeTitle(summary)
 	if err != nil {
 		slog.Error("Error making title", "error", err)
 		return model.Response{
@@ -72,7 +73,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 		}, nil
 	}
 
-	tag, err := utils.MakeTag(summary)
+	tag, err := gemini.MakeTag(summary)
 
 	if err != nil {
 		slog.Error("Error making tag", "error", err)

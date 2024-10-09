@@ -7,7 +7,7 @@ import (
 	"time"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
-	"github.com/yashikota/chronotes/pkg/utils"
+	"github.com/yashikota/chronotes/pkg/gemini"
 
 	"github.com/slack-go/slack"
 )
@@ -74,7 +74,7 @@ func SlackProvider(channelID string) ([]string, error) {
 	}
 
 	// fmt.Println("Contents:", contens)
-	summaries, err := utils.SummarizeText(contens)
+	summaries, err := gemini.SummarizeText(contens)
 	if err != nil {
 		slog.Error("Slack : error summarizing text" + err.Error())
 		return []string{}, nil
