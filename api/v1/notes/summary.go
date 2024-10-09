@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/yashikota/chronotes/model/v1"
+	"github.com/yashikota/chronotes/pkg/gemini"
 	note "github.com/yashikota/chronotes/pkg/notes"
 	"github.com/yashikota/chronotes/pkg/utils"
 
@@ -89,7 +90,7 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("notes: ", slog.Any("%v", notes))
 
 	token := os.Getenv("GEMINI_TOKEN")
-	result, err := utils.Summary(notes, token)
+	result, err := gemini.Summary(notes, token)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

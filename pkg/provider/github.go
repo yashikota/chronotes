@@ -10,6 +10,7 @@ import (
 	"golang.org/x/oauth2"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/pkg/gemini"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
@@ -65,7 +66,7 @@ func GitHubProvider(userID string) ([]string, error) {
 		return []string{}, nil
 	}
 
-	finalSummary, err := utils.SummarizeText(summaries)
+	finalSummary, err := gemini.SummarizeText(summaries)
 	if err != nil {
 		slog.Error("GitHub : Error summarizing text", "error", err)
 		return []string{}, nil
