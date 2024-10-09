@@ -46,12 +46,7 @@ tasks:
     cmds:
       - go fmt ./...
       - go install golang.org/x/tools/cmd/goimports@latest
-      - go install github.com/u-root/u-root/cmds/core/find@latest
-      - |
-        find . -name "*.go" | \
-        while read file; do
-          goimports -w -local "github.com/yashikota/chronotes" "$file"
-        done
+      - find . -print | grep --regex '.*\.go' | xargs goimports -w -local "github.com/yashikota/chronotes"
 
   # Docker
   docker:lint:
@@ -74,15 +69,14 @@ tasks:
   api:tsp:
     desc: "Generate Open API from TypeSpec"
     cmds:
-      - sudo rm -rf docs/api/paths
-      - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
+      - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t --user $(id -u):$(id -g) azsdkengsys.azurecr.io/typespec compile docs/spec
       - task: api:split
 
   api:split:
     desc: "Split OpenAPI specification"
     cmds:
       - rm -rf docs/spec/components docs/spec/paths
-      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 split docs/api/bundled.yaml --outDir=docs/api
+      - docker run --rm -v {{.PWD}}:/spec --user $(id -u):$(id -g) redocly/cli:1.25.2 split docs/api/bundled.yaml --outDir=docs/api
 
   # api:bundle:
   #   desc: "Bundle OpenAPI specification"
