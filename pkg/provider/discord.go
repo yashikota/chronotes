@@ -9,7 +9,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
-	"github.com/yashikota/chronotes/pkg/utils"
+	"github.com/yashikota/chronotes/pkg/gemini"
 )
 
 func DiscordProvider(channelID string) ([]string, error) {
@@ -34,7 +34,7 @@ func DiscordProvider(channelID string) ([]string, error) {
 	// 「Today」カテゴリのメッセージのみを取り出す
 	todayMessages := categorizedMessages["Today"]
 	contents := extractContentsDiscord(todayMessages)
-	summaries, err := utils.SummarizeText(contents)
+	summaries, err := gemini.SummarizeText(contents)
 	if err != nil {
 		slog.Error("Discord : Error summarizing text")
 		return []string{}, nil
