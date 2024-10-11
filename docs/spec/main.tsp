@@ -89,12 +89,12 @@ const AccountsExample = #{
   wakatime: "yashikota",
 };
 model Accounts {
-    github_user_id?: string;
-    discord_channel_id?: string;
-    slack_channel_id?: string;
-    qiita_user_id?: string;
-    zenn_username?: string;
-    wakatime_token?: string;
+  github_user_id?: string;
+  discord_channel_id?: string;
+  slack_channel_id?: string;
+  qiita_user_id?: string;
+  zenn_username?: string;
+  wakatime_token?: string;
 }
 
 model UpdateUserRequest {
@@ -125,55 +125,55 @@ model ErrorResponse {
 @tag("Auth")
 @useAuth(NoAuth)
 interface Auth {
-    @route("/register")
-    @post
-    @summary("Register a new user")
-    register(
-      @body requestBody: RegisterUserRequest
-    ): RegisterUserResponse | ErrorResponse;
+  @route("/register")
+  @post
+  @summary("Register a new user")
+  register(
+    @body requestBody: RegisterUserRequest
+  ): RegisterUserResponse | ErrorResponse;
 
-    @route("/login")
-    @post
-    @summary("Login user")
-    login(
-      @body requestBody: LoginRequest
-    ): RegisterUserResponse | ErrorResponse;
+  @route("/login")
+  @post
+  @summary("Login user")
+  login(
+    @body requestBody: LoginRequest
+  ): RegisterUserResponse | ErrorResponse;
 
-    @route("/logout")
-    @post
-    @summary("Logout user")
-    @useAuth(BearerAuth)
-    logout(): SuccessResponse | ErrorResponse;
+  @route("/logout")
+  @post
+  @summary("Logout user")
+  @useAuth(BearerAuth)
+  logout(): SuccessResponse | ErrorResponse;
 }
 
 @route("/api/v1/users/me")
 @tag("Users")
 @useAuth(BearerAuth)
 interface Users {
-    @get
-    @summary("Get user information")
-    get(): User | ErrorResponse;
+  @get
+  @summary("Get user information")
+  get(): User | ErrorResponse;
 
-    @put
-    @summary("Update user information")
-    update(
-      @body requestBody: UpdateUserRequest
-    ): User | ErrorResponse;
+  @put
+  @summary("Update user information")
+  update(
+    @body requestBody: UpdateUserRequest
+  ): User | ErrorResponse;
 
-    @delete
-    @summary("Delete a user")
-    delete(): SuccessResponse | ErrorResponse;
+  @delete
+  @summary("Delete a user")
+  delete(): SuccessResponse | ErrorResponse;
 }
 
 @route("/api/v1/users/promote")
 @tag("Users")
 @useAuth(BearerAuth)
 interface UsersPromote {
-    @put
-    @summary("Promote a user")
-    promote(
-      @body requestBody: PromoteUserRequest
-    ): SuccessResponse | ErrorResponse;
+  @put
+  @summary("Promote a user")
+  promote(
+    @body requestBody: PromoteUserRequest
+  ): SuccessResponse | ErrorResponse;
 }
 
 const noteExample = #{
@@ -209,8 +209,8 @@ model UpdateNoteRequest {
 
 @example(#{
   notes: #[
-    noteExample,
-    noteExample
+  noteExample,
+  noteExample
   ]
 })
 model SearchNotesResponse {
@@ -228,38 +228,52 @@ model AddTagsRequest {
 @tag("Notes")
 @useAuth(BearerAuth)
 interface Notes {
-    @get
-    @summary("Get a list of notes")
-    getNotes(
-      @query from: utcDateTime;
-      @query to: utcDateTime;
-      @query fields: string;
-    ): Note[] | ErrorResponse;
+  @get
+  @summary("Get a list of notes")
+  getNotes(
+    @query from: utcDateTime;
+    @query to: utcDateTime;
+    @query fields: string;
+  ): Note[] | ErrorResponse;
 
-    @delete
-    @summary("Delete a note")
-    deleteNote(
-      @query note_id: string
-    ): SuccessResponse | ErrorResponse;
+  @put
+  @summary("Update a note")
+  updateNote(
+    @query note_id: string;
+    @body requestBody: UpdateNoteRequest
+  ): Note | ErrorResponse;
 
-    @route("/search")
-    @post
-    @summary("Search notes")
-    searchNotes(
-      @query query: string
-    ): SearchNotesResponse | ErrorResponse;
+  @delete
+  @summary("Delete a note")
+  deleteNote(
+    @query note_id: string
+  ): SuccessResponse | ErrorResponse;
+
+  @route("/search")
+  @post
+  @summary("Search notes")
+  searchNotes(
+    @query query: string
+  ): SearchNotesResponse | ErrorResponse;
 }
 
 @route("/api/v1/admin")
 @tag("Admin")
 @useAuth(BearerAuth)
 interface Admin {
-    @route("/notes")
-    @post
-    @summary("Add notes")
-    addNotes(
-      @body requestBody: Note[]
-    ): SuccessResponse | ErrorResponse;
+  @route("/notes")
+  @post
+  @summary("Add notes")
+  addNotes(
+    @body requestBody: Note[]
+  ): SuccessResponse | ErrorResponse;
+
+  @route("/notes")
+  @delete
+  @summary("Delete notes")
+  deleteNotes(
+    @query user_id: string
+  ): SuccessResponse | ErrorResponse;
 }
 
 @route("/api/v1/health")

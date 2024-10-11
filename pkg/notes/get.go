@@ -56,27 +56,44 @@ func GetNoteContents(userID string, startDate time.Time, endDate time.Time) ([]s
 	return contents, nil
 }
 
-func GetNoteList(userID string, startDate time.Time, endDate time.Time) ([]map[string]string, error) {
+func GetNoteList(userID string, startDate time.Time, endDate time.Time, fields []string) ([]map[string]string, error) {
 	query := db.DB.Where("user_id = ? AND created_at::date BETWEEN ? AND ?",
 		userID, startDate, endDate)
 
 	var noteList []map[string]string
 	note := model.NewNote()
-	rows, err := query.Model(note).Select("title, tags, created_at").Rows()
+	rows, err := query.Model(note).Rows()
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var title, tags, date string
-		rows.Scan(&title, &tags, &date)
-		noteList = append(noteList, map[string]string{
-			"title": title,
-			"tags":  tags,
-			"date":  date,
-		})
-	}
+		var note model.Note
+		db.DB.ScanRows(rows, &note)
 
+		noteMap := make(map[string]string)
+		for _, field := range fields {
+			switch field {
+			case "note_id":
+				noteMap[field] = note.NoteID
+			case "user_id":
+				noteMap[field] = note.UserID
+			case "title":
+				noteMap[field] = note.Title
+			case "content":
+				noteMap[field] = note.Content
+			case "tags":
+				noteMap[field] = note.Tags
+			case "created_at":
+				noteMap[field] = note.CreatedAt.String()
+			case "updated_at":
+				noteMap[field] = note.UpdatedAt.String()
+			case "deleted_at":
+				noteMap[field] = note.DeletedAt.Time.String()
+			}
+		}
+		noteList = append(noteList, noteMap)
+	}
 	return noteList, nil
 }

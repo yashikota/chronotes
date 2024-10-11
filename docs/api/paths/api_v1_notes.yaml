@@ -41,6 +41,39 @@ get:
     - Notes
   security:
     - BearerAuth: []
+put:
+  operationId: Notes_updateNote
+  summary: Update a note
+  parameters:
+    - name: note_id
+      in: query
+      required: true
+      schema:
+        type: string
+      explode: false
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Note.yaml
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Notes
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/UpdateNoteRequest.yaml
+  security:
+    - BearerAuth: []
 delete:
   operationId: Notes_deleteNote
   summary: Delete a note
