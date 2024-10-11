@@ -13,7 +13,7 @@ import (
 	"github.com/Code-Hex/synchro/tz"
 )
 
-func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
+func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
 	user := model.NewUser()
 	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
@@ -44,8 +44,12 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	slog.Info("iso8601formattedFrom: " + iso8601formattedFrom)
-	slog.Info("iso8601formattedTo: " + iso8601formattedTo)
+	// Get fields from query parameters
+	formattedFields, err := utils.GetQueryParam(r, "fields", true)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
 
 	// URL Decode
 	iso8601formattedFrom, err = utils.URLDecode(iso8601formattedFrom)
@@ -58,10 +62,16 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
+	fields, err := utils.URLDecode(formattedFields)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
 
 	slog.Info("URL Decode passed")
 	slog.Info("iso8601formattedFrom:" + iso8601formattedFrom)
 	slog.Info("iso8601formattedTo:" + iso8601formattedTo)
+	slog.Info("fields:" + fields)
 
 	// Parse ISO8601 date
 	from, err := synchro.ParseISO[tz.AsiaTokyo](iso8601formattedFrom)
@@ -74,12 +84,24 @@ func GetNoteListHandler(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
+	if to.After(synchro.Now[tz.AsiaTokyo]()) {
+		to = synchro.Now[tz.AsiaTokyo]()
+	}
 
-	slog.Info("from: " + from.StdTime().String())
-	slog.Info("to: " + to.StdTime().String())
+	// Parse fields
+	fieldArray, err := utils.ParseFields(fields)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	slog.Info("Parse fields passed")
+	slog.Info("from:" + from.String())
+	slog.Info("to:" + to.String())
+	slog.Info("fields:" + fields)
 
 	// Get notes from database
-	notes, err := note.GetNoteList(user.UserID, from.StdTime(), to.StdTime())
+	notes, err := note.GetNoteList(user.UserID, from.StdTime(), to.StdTime(), fieldArray)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

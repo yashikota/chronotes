@@ -44,3 +44,7 @@ func CustomJSONEncoder(v interface{}) (string, error) {
 	result := strings.TrimSpace(resultBytes.String())
 	return result, nil
 }
+
+func ParseFields(fields string) ([]string, error) {
+	return strings.Split(fields, ","), nil
+}

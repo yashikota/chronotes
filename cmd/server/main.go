@@ -67,8 +67,10 @@ func main() {
 			r.HandleFunc("PUT /users/promote", users.PromoteHandler)
 
 			// Notes routes
-			r.HandleFunc("GET /notes/note", notes.GetNoteHandler)
-			r.HandleFunc("GET /notes/list", notes.GetNoteListHandler)
+			r.HandleFunc("GET /notes", notes.GetNoteHandler)
+			// r.HandleFunc("PUT /notes", notes.UpdateNoteHandler)
+			// r.HandleFunc("DELETE /notes", notes.DeleteNoteHandler)
+			// r.HandleFunc("POST /notes/search", notes.SearchNoteHandler)
 			r.HandleFunc("GET /notes/summary", notes.GetNoteSummaryHandler)
 
 			// Upload route
