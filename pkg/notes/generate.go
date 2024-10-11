@@ -2,7 +2,6 @@ package notes
 
 import (
 	"log/slog"
-	"strings"
 
 	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
@@ -34,7 +33,8 @@ func GenerateNote(userID string, date string, accounts model.Accounts) (*model.N
 		UserID:  userID,
 		Title:   response.Title,
 		Content: content,
-		Tags:    strings.Join(response.Tag, ","),
+		Length:  utils.GetCharacterLength(response.Result),
+		Tags:    response.Tag,
 	}
 
 	slog.Info("Note:" + note.Title)

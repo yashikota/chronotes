@@ -57,6 +57,5 @@ func MakeTag(texts []string) ([]string, error) {
 
 func removeDuplicate(tags []string) []string {
 	slices.Sort(tags)
-	uniqValue := slices.Compact(tags)
-	return uniqValue
+	return slices.Compact(tags)
 }

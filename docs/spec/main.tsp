@@ -27,6 +27,7 @@ const userExample = #{
   email: "test@example.com",
   createdAt: utcDateTime.fromISO("2024-10-01T19:30:06Z"),
   updatedAt: utcDateTime.fromISO("2024-10-02T03:34:56Z"),
+  accounts: AccountsExample
 };
 @example(userExample)
 model User {
@@ -81,12 +82,12 @@ model PromoteUserRequest {
 }
 
 const AccountsExample = #{
-  github: "yashikota",
-  discord: "9419543265265028",
-  slack: "HG824ORHQ250",
-  qiita: "yashikota",
-  zenn: "yashikota",
-  wakatime: "yashikota",
+  github_user_id: "yashikota",
+  discord_channel_id: "9419543265265028",
+  slack_channel_id: "HG824ORHQ250",
+  qiita_user_id: "yashikota",
+  zenn_username: "yashikota",
+  wakatime_token: "yashikota",
 };
 model Accounts {
   github_user_id?: string;
