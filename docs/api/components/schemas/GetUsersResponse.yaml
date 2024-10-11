@@ -1,0 +1,9 @@
+type: object
+required:
+  - users
+  - accounts
+properties:
+  users:
+    $ref: ./User.yaml
+  accounts:
+    $ref: ./Accounts.yaml

@@ -1,6 +1,7 @@
 package notes
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -47,14 +48,17 @@ func toMap(note *model.Note) map[string]string {
 	if note.Tags != "" {
 		result["tags"] = note.Tags
 	}
+	if note.Length != 0 {
+		result["length"] = fmt.Sprint(note.Length)
+	}
 	if !note.CreatedAt.IsZero() {
-		result["created_at"] = note.CreatedAt.String()
+		result["created_at"] = note.CreatedAt.Format(time.RFC3339)
 	}
 	if !note.UpdatedAt.IsZero() {
-		result["updated_at"] = note.UpdatedAt.String()
+		result["updated_at"] = note.UpdatedAt.Format(time.RFC3339)
 	}
 	if !note.DeletedAt.Time.IsZero() {
-		result["deleted_at"] = note.DeletedAt.Time.String()
+		result["deleted_at"] = note.DeletedAt.Time.Format(time.RFC3339)
 	}
 
 	return result

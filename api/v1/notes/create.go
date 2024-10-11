@@ -37,6 +37,7 @@ func CreateNoteHandler(w http.ResponseWriter, r *http.Request) {
 		if note.UserID == "" {
 			note.UserID = user.UserID
 		}
+		note.Length = utils.GetCharacterLength(note.Content)
 
 		err := n.CreateNote(note)
 		if err != nil {

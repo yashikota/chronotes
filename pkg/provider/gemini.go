@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
-	"github.com/yashikota/chronotes/pkg/utils"
 	"github.com/yashikota/chronotes/pkg/gemini"
+	"github.com/yashikota/chronotes/pkg/utils"
 )
 
 func Gemini(input model.Accounts) (model.Response, error) {
@@ -58,7 +58,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 			Result: "",
 			Title:  "",
 			Day:    day,
-			Tag:    []string{},
+			Tag:    "",
 		}, nil
 	}
 	result = strings.Join(summary, "\n")
@@ -69,7 +69,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 			Result: result,
 			Title:  day,
 			Day:    day,
-			Tag:    []string{},
+			Tag:    "",
 		}, nil
 	}
 
@@ -81,7 +81,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 			Result: result,
 			Title:  title,
 			Day:    day,
-			Tag:    []string{},
+			Tag:    "",
 		}, nil
 	}
 	fmt.Printf("Gemini : result: %s, title: %s, day: %s, tag: %s\n", result, title, day, tag)
@@ -89,6 +89,6 @@ func Gemini(input model.Accounts) (model.Response, error) {
 		Result: result,
 		Title:  title,
 		Day:    day,
-		Tag:    tag,
+		Tag:    strings.Join(tag, ","),
 	}, nil
 }
