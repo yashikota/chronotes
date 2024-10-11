@@ -101,7 +101,7 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("fields:" + fields)
 
 	// Get notes from database
-	notes, err := note.GetNoteList(user.UserID, from.StdTime(), to.StdTime(), fieldArray)
+	notes, err := note.GetNotes(user.UserID, from.StdTime(), to.StdTime(), fieldArray)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

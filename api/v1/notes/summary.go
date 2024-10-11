@@ -81,7 +81,7 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("to: " + to.StdTime().String())
 
 	// Get notes from database
-	notes, err := note.GetNoteContents(user.UserID, from.StdTime(), to.StdTime())
+	notes, err := note.GetNotes(user.UserID, from.StdTime(), to.StdTime(), []string{"content"})
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
@@ -90,7 +90,14 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("notes: ", slog.Any("%v", notes))
 
 	token := os.Getenv("GEMINI_TOKEN")
-	result, err := gemini.Summary(notes, token)
+	var noteContents []string
+	for _, note := range notes {
+		if content, ok := note["content"]; ok {
+			noteContents = append(noteContents, content)
+		}
+	}
+
+	result, err := gemini.Summary(noteContents, token)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
