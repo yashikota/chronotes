@@ -12,6 +12,7 @@ type Note struct {
 	UserID  string `json:"user_id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
+	Length  int    `json:"length"`
 	Tags    string `json:"tags"`
 }
 
@@ -23,7 +24,7 @@ type NoteResponse struct {
 	Date    time.Time `json:"date"`
 	Title   string    `json:"title"`
 	Content string    `json:"content"`
-	Tags    []string  `json:"tags"`
+	Tags    string    `json:"tags"`
 }
 
 func NewNoteResponse() *NoteResponse {

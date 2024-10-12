@@ -591,6 +591,13 @@ components:
         email: test@example.com
         createdAt: 2024-10-01T19:30:06Z
         updatedAt: 2024-10-02T03:34:56Z
+        accounts:
+          github_user_id: yashikota
+          discord_channel_id: '9419543265265028'
+          slack_channel_id: HG824ORHQ250
+          qiita_user_id: yashikota
+          zenn_username: yashikota
+          wakatime_token: yashikota
     Versions:
       type: string
       enum:
