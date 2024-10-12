@@ -1,0 +1,62 @@
+post:
+  operationId: Images_uploadImage
+  summary: Upload an image
+  description: 対応画像形式はpngとjpegのみ
+  parameters: []
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/UploadImageResponse.yaml
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Images
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            image:
+              type: string
+              format: binary
+          required:
+            - image
+  security:
+    - BearerAuth: []
+delete:
+  operationId: Images_deleteImage
+  summary: Delete an image
+  description: '`image_path`には画像のパスを指定して削除 (例: `kota/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg`)'
+  parameters:
+    - name: image_path
+      in: query
+      required: true
+      schema:
+        type: string
+      explode: false
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SuccessResponse.yaml
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Images
+  security:
+    - BearerAuth: []

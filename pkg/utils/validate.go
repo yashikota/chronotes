@@ -32,7 +32,7 @@ func ValidateFileType(r *http.Request) (string, error) {
 
 	// Check the file type. jpeg or png
 	fileType := http.DetectContentType(buff)
-	if fileType != "image/jpeg" && fileType != "image/png" {
+	if fileType != "image/jpeg" && fileType != "image/png" && fileType != "image/webp" {
 		return "", errors.New("invalid file type")
 	}
 

@@ -1,4 +1,4 @@
-package upload
+package images
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
+func UploadImageHandler(w http.ResponseWriter, r *http.Request) {
 	userID := r.Context().Value(utils.TokenKey).(utils.Token).UserID
 
 	err := r.ParseMultipartForm(1024)
@@ -18,14 +18,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create directory
-	originalPhotoUploadDir := filepath.Join("img", userID, "o")
+	originalPhotoUploadDir := filepath.Join("img", userID)
 	err = utils.MakeDir(originalPhotoUploadDir)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	convertedPhotoUploadDir := filepath.Join("img", userID, "c")
+	convertedPhotoUploadDir := filepath.Join("img", userID)
 	err = utils.MakeDir(convertedPhotoUploadDir)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
@@ -75,6 +75,5 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		"converted": convertedFilePath,
 	}
 
-	res := map[string]interface{}{"message": uploadLog}
-	utils.SuccessJSONResponse(w, res)
+	utils.SuccessJSONResponse(w, uploadLog)
 }

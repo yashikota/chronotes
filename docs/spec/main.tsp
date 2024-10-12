@@ -246,6 +246,34 @@ interface Notes {
   ): SearchNotesResponse | ErrorResponse;
 }
 
+const UploadImageResponseExample = #{
+  converted: "img/{user_id}/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg",
+  original: "img/{user_id}/01JA0QTJ8Q2GR6TK2YYECCSHGN.jpg",
+};
+model UploadImageResponse {
+  "converted": string,
+  "original": string,
+}
+
+@route("/api/v1/images")
+@tag("Images")
+@useAuth(BearerAuth)
+interface Images {
+  @post
+  @summary("Upload an image")
+  @doc("対応画像形式はpngとjpegのみ。ファイルサイズは10MBまで。")
+  uploadImage(
+    @header contentType: "multipart/form-data", image: bytes
+  ): UploadImageResponse | ErrorResponse;
+
+  @delete
+  @summary("Delete an image")
+  @doc("`image_path`には画像のパスを指定して削除 (例: `kota/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg`)")
+  deleteImage(
+    @query image_path: string
+  ): SuccessResponse | ErrorResponse;
+}
+
 @route("/api/v1/admin")
 @tag("Admin")
 @useAuth(BearerAuth)

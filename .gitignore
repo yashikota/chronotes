@@ -37,9 +37,7 @@ dist/
 .env
 
 # dev photo
-*.jpeg
-*.jpg
-*.png
+img/
 
 # log analytics
 logs/
