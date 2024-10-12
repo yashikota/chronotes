@@ -14,8 +14,5 @@ func CreateNote(note model.Note) error {
 	if result.Error != nil {
 		return result.Error
 	}
-
-	slog.Info("Save note to database passed")
-
 	return nil
 }

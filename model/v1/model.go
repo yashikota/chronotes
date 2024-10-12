@@ -2,10 +2,8 @@ package model
 
 import (
 	db "github.com/yashikota/chronotes/model/v1/db"
-	provider "github.com/yashikota/chronotes/model/v1/provider"
 )
 
-// db package
 type (
 	User         = db.User
 	Login        = db.Login
@@ -15,6 +13,7 @@ type (
 	NoteResponse = db.NoteResponse
 	Summary      = db.Summary
 	Password     = db.Password
+	Accounts     = db.Accounts
 )
 
 const (
@@ -32,13 +31,5 @@ var (
 	NewNoteResponse = db.NewNoteResponse
 	NewSummary      = db.NewSummary
 	NewPassword     = db.NewPassword
-)
-
-// provider package
-type (
-	Accounts = provider.Accounts
-)
-
-var (
-	NewAccounts = provider.NewAccounts
+	NewAccounts     = db.NewAccounts
 )

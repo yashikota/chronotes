@@ -43,14 +43,8 @@ get:
     - BearerAuth: []
 put:
   operationId: Notes_updateNote
-  summary: Update a note
-  parameters:
-    - name: note_id
-      in: query
-      required: true
-      schema:
-        type: string
-      explode: false
+  summary: Update a notes
+  parameters: []
   responses:
     '200':
       description: The request has succeeded.
@@ -71,19 +65,15 @@ put:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/UpdateNoteRequest.yaml
+          type: array
+          items:
+            $ref: ../components/schemas/Note.yaml
   security:
     - BearerAuth: []
 delete:
   operationId: Notes_deleteNote
-  summary: Delete a note
-  parameters:
-    - name: note_id
-      in: query
-      required: true
-      schema:
-        type: string
-      explode: false
+  summary: Delete a notes
+  parameters: []
   responses:
     '200':
       description: The request has succeeded.
@@ -99,5 +89,13 @@ delete:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Notes
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: ../components/schemas/Note.yaml
   security:
     - BearerAuth: []

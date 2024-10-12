@@ -197,17 +197,6 @@ model Note {
 }
 
 @example(#{
-  title: "Updated Note Title",
-  content: "This is the updated content of my note.",
-  tags: "go, python"
-})
-model UpdateNoteRequest {
-  title?: string;
-  content?: string;
-  tags?: string;
-}
-
-@example(#{
   notes: #[
   noteExample,
   noteExample
@@ -237,16 +226,15 @@ interface Notes {
   ): Note[] | ErrorResponse;
 
   @put
-  @summary("Update a note")
+  @summary("Update a notes")
   updateNote(
-    @query note_id: string;
-    @body requestBody: UpdateNoteRequest
+    @body requestBody: Note[]
   ): Note | ErrorResponse;
 
   @delete
-  @summary("Delete a note")
+  @summary("Delete a notes")
   deleteNote(
-    @query note_id: string
+    @body requestBody: Note[]
   ): SuccessResponse | ErrorResponse;
 
   @route("/search")

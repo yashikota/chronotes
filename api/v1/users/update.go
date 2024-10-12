@@ -10,13 +10,13 @@ import (
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func UpdateAccountsHandler(w http.ResponseWriter, r *http.Request) {
+func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
-	user := model.NewUser()
-	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
+	req := model.NewUser()
+	req.UserID = r.Context().Value(utils.TokenKey).(utils.Token).UserID
 
 	// Check if token exists
-	key := "jwt:" + user.UserID
+	key := "jwt:" + req.UserID
 	if _, err := utils.GetToken(key); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
@@ -25,18 +25,28 @@ func UpdateAccountsHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Validation passed")
 
 	// Parse request
-	var accounts model.Accounts
-	accounts.UserID = user.UserID
-	err := json.NewDecoder(r.Body).Decode(&accounts)
+	user := model.NewUser()
+	user.UserID = req.UserID
+	user.Accounts.UserID = req.UserID
+
+	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
-	slog.Info("Parsed request: ", slog.Any("%v", accounts))
+	slog.Info("Parsed request: ", slog.Any("%v", user))
+
+	// Update user
+	err = users.UpdateUser(user)
+	if err != nil {
+		slog.Error("Update user failed")
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	// Update accounts
-	err = users.UpdateAccounts(&accounts)
+	err = users.UpdateAccounts(&user.Accounts)
 	if err != nil {
 		slog.Error("Update accounts failed")
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)

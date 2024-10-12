@@ -13,7 +13,7 @@ import (
 
 type tokenContextKey struct{}
 type Token struct {
-	ID      string
+	UserID  string
 	Exp     time.Time
 	IsAdmin bool
 }
@@ -63,7 +63,7 @@ func ValidateToken(ctx context.Context, tokenString string) (context.Context, er
 	}
 
 	token := Token{
-		ID:      id,
+		UserID:  id,
 		Exp:     exp,
 		IsAdmin: isAdmin,
 	}

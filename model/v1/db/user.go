@@ -13,11 +13,12 @@ const (
 
 type User struct {
 	gorm.Model
-	UserID   string `json:"user_id" gorm:"uniqueIndex"`
-	UserName string `json:"user_name"`
-	Email    string `json:"email" gorm:"uniqueIndex"`
-	Password string `json:"password"`
-	Role     Role   `json:"role"`
+	UserID   string   `json:"user_id" gorm:"uniqueIndex"`
+	UserName string   `json:"user_name"`
+	Email    string   `json:"email" gorm:"uniqueIndex"`
+	Password string   `json:"password"`
+	Role     Role     `json:"role"`
+	Accounts Accounts `json:"accounts" gorm:"foreignKey:UserID"`
 }
 
 func NewUser() *User {

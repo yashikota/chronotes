@@ -212,14 +212,8 @@ paths:
         - BearerAuth: []
     put:
       operationId: Notes_updateNote
-      summary: Update a note
-      parameters:
-        - name: note_id
-          in: query
-          required: true
-          schema:
-            type: string
-          explode: false
+      summary: Update a notes
+      parameters: []
       responses:
         '200':
           description: The request has succeeded.
@@ -240,19 +234,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateNoteRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/Note'
       security:
         - BearerAuth: []
     delete:
       operationId: Notes_deleteNote
-      summary: Delete a note
-      parameters:
-        - name: note_id
-          in: query
-          required: true
-          schema:
-            type: string
-          explode: false
+      summary: Delete a notes
+      parameters: []
       responses:
         '200':
           description: The request has succeeded.
@@ -268,6 +258,14 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       tags:
         - Notes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Note'
       security:
         - BearerAuth: []
   /api/v1/notes/search:
@@ -553,19 +551,6 @@ components:
           type: string
       example:
         message: Success
-    UpdateNoteRequest:
-      type: object
-      properties:
-        title:
-          type: string
-        content:
-          type: string
-        tags:
-          type: string
-      example:
-        title: Updated Note Title
-        content: This is the updated content of my note.
-        tags: go, python
     UpdateUserRequest:
       type: object
       properties:

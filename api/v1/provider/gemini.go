@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	model "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/provider"
 	"github.com/yashikota/chronotes/pkg/utils"
 )

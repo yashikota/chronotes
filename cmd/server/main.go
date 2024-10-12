@@ -61,15 +61,15 @@ func main() {
 
 			// User routes
 			r.HandleFunc("POST /auth/logout", auth.LogoutHandler)
-			// r.HandleFunc("GET /users/me", users.GetAccountHandler)
-			r.HandleFunc("PUT /users/me", users.UpdateAccountsHandler)
-			r.HandleFunc("DELETE /users/me", users.DeleteHandler)
+			r.HandleFunc("GET /users/me", users.GetUserHandler)
+			r.HandleFunc("PUT /users/me", users.UpdateUserHandler)
+			r.HandleFunc("DELETE /users/me", users.DeleteUserHandler)
 			r.HandleFunc("PUT /users/promote", users.PromoteHandler)
 
 			// Notes routes
 			r.HandleFunc("GET /notes", notes.GetNoteHandler)
-			// r.HandleFunc("PUT /notes", notes.UpdateNoteHandler)
-			// r.HandleFunc("DELETE /notes", notes.DeleteNoteHandler)
+			r.HandleFunc("PUT /notes", notes.UpdateNoteHandler)
+			r.HandleFunc("DELETE /notes", notes.DeleteNoteHandler)
 			// r.HandleFunc("POST /notes/search", notes.SearchNoteHandler)
 			r.HandleFunc("GET /notes/summary", notes.GetNoteSummaryHandler)
 
