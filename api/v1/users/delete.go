@@ -9,10 +9,10 @@ import (
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
 	user := model.NewUser()
-	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
+	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).UserID
 
 	// Check if token exists
 	key := "jwt:" + user.UserID

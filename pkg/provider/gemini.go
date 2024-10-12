@@ -5,12 +5,13 @@ import (
 	"log/slog"
 	"strings"
 
-	model "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/model/v1"
+	provider "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/gemini"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func Gemini(input model.Accounts) (model.Response, error) {
+func Gemini(input model.Accounts) (provider.Response, error) {
 	var text []string
 	var summary []string
 	var result string
@@ -44,7 +45,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 	day = utils.GetDay()
 
 	if len(text) == 0 {
-		return model.Response{
+		return provider.Response{
 			Result: "",
 			Title:  "",
 			Day:    day,
@@ -54,7 +55,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 	summary, err := gemini.SummarizeText(text)
 	if err != nil {
 		slog.Error("Error summarizing text", "error", err)
-		return model.Response{
+		return provider.Response{
 			Result: "",
 			Title:  "",
 			Day:    day,
@@ -65,7 +66,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 	title, err := gemini.MakeTitle(summary)
 	if err != nil {
 		slog.Error("Error making title", "error", err)
-		return model.Response{
+		return provider.Response{
 			Result: result,
 			Title:  day,
 			Day:    day,
@@ -77,7 +78,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 
 	if err != nil {
 		slog.Error("Error making tag", "error", err)
-		return model.Response{
+		return provider.Response{
 			Result: result,
 			Title:  title,
 			Day:    day,
@@ -85,7 +86,7 @@ func Gemini(input model.Accounts) (model.Response, error) {
 		}, nil
 	}
 	fmt.Printf("Gemini : result: %s, title: %s, day: %s, tag: %s\n", result, title, day, tag)
-	return model.Response{
+	return provider.Response{
 		Result: result,
 		Title:  title,
 		Day:    day,

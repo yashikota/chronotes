@@ -9,7 +9,7 @@ import (
 )
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value(utils.TokenKey).(utils.Token).ID
+	userID := r.Context().Value(utils.TokenKey).(utils.Token).UserID
 
 	err := r.ParseMultipartForm(1024)
 	if err != nil {
