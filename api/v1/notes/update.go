@@ -35,6 +35,10 @@ func UpdateNoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Get user
 	user, err := users.GetUser(user)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
 
 	err = n.UpdateNote(note, user)
 	if err != nil {
