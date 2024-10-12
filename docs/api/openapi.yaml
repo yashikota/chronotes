@@ -7,6 +7,7 @@ tags:
   - name: Auth
   - name: Users
   - name: Notes
+  - name: Images
   - name: Admin
 paths:
   /api/v1/admin/notes:
@@ -19,6 +20,8 @@ paths:
     $ref: paths/api_v1_auth_register.yaml
   /api/v1/health:
     $ref: paths/api_v1_health.yaml
+  /api/v1/images:
+    $ref: paths/api_v1_images.yaml
   /api/v1/notes:
     $ref: paths/api_v1_notes.yaml
   /api/v1/notes/search:

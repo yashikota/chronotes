@@ -11,8 +11,8 @@ import (
 
 	"github.com/yashikota/chronotes/api/v1/auth"
 	"github.com/yashikota/chronotes/api/v1/debug"
+	"github.com/yashikota/chronotes/api/v1/images"
 	"github.com/yashikota/chronotes/api/v1/notes"
-	"github.com/yashikota/chronotes/api/v1/upload"
 	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/pkg/db"
 	"github.com/yashikota/chronotes/pkg/redis"
@@ -31,7 +31,7 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
@@ -73,8 +73,9 @@ func main() {
 			// r.HandleFunc("POST /notes/search", notes.SearchNoteHandler)
 			r.HandleFunc("GET /notes/summary", notes.GetNoteSummaryHandler)
 
-			// Upload route
-			r.HandleFunc("POST /upload/image", upload.UploadHandler)
+			// Images routes
+			r.HandleFunc("POST /images", images.UploadImageHandler)
+			// r.HandleFunc("DELETE /images", images.DeleteImageHandler)
 		})
 
 		// Admin routes
@@ -89,7 +90,7 @@ func main() {
 	// Photo Preview
 	photoServer := http.StripPrefix("/img/", http.FileServer(http.Dir("./img")))
 	r.Get("/img/*", func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasSuffix(r.URL.Path, ".jpg") || strings.HasSuffix(r.URL.Path, ".jpeg") || strings.HasSuffix(r.URL.Path, ".png") {
+		if strings.HasSuffix(r.URL.Path, ".jpg") || strings.HasSuffix(r.URL.Path, ".jpeg") || strings.HasSuffix(r.URL.Path, ".png") || strings.HasSuffix(r.URL.Path, ".webp") {
 			photoServer.ServeHTTP(w, r)
 		} else {
 			http.NotFound(w, r)
