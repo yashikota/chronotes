@@ -5,7 +5,8 @@ import (
 	"log/slog"
 	"strings"
 
-	model "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/model/v1"
+	provider "github.com/yashikota/chronotes/model/v1/provider"
 	"github.com/yashikota/chronotes/pkg/gemini"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
