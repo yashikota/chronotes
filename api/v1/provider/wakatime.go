@@ -11,7 +11,17 @@ import (
 
 func WakatimeHandler(w http.ResponseWriter, r *http.Request) {
 	apiKey, err := utils.GetQueryParam(r, "apiKey", true)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
 	startDate, err := utils.GetQueryParam(r, "startDate", true)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+	
 	endDate, err := utils.GetQueryParam(r, "endDate", true)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
