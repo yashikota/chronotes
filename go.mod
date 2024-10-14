@@ -22,6 +22,7 @@ require (
 	github.com/google/generative-ai-go v0.18.0
 	github.com/ktsujichan/qiita-sdk-go v1.0.1
 	github.com/redis/go-redis/v9 v9.6.1
+	github.com/rivo/uniseg v0.4.7
 	github.com/samber/slog-multi v1.2.3
 	github.com/samber/slog-sentry/v2 v2.8.0
 	github.com/slack-go/slack v0.14.0
@@ -61,7 +62,6 @@ require (
 	github.com/lestrrat-go/httprc v1.0.6 // indirect
 	github.com/lestrrat-go/iter v1.0.2 // indirect
 	github.com/lestrrat-go/option v1.0.1 // indirect
-	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/samber/lo v1.47.0 // indirect
 	github.com/samber/slog-common v0.17.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
