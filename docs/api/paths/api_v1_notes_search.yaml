@@ -14,7 +14,9 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/SearchNotesResponse.yaml
+            type: array
+            items:
+              $ref: ../components/schemas/Note.yaml
     default:
       description: An unexpected error response.
       content:

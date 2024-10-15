@@ -1,12 +1,13 @@
 using TypeSpec.Http;
 
 namespace Chronotes {
-  const UploadImageResponseExample = #{
-    converted: "img/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg",
-    original: "img/01JA0QTJB2MHTBNJV3SJ9KYN9J_original.jpg",
-  };
   model UploadImageResponse {
+    @doc("変換後の画像パス")
+    @example("img/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg")
     converted: string;
+
+    @doc("変換前の画像パス")
+    @example("img/01JA0QTJB2MHTBNJV3SJ9KYN9J_original.jpg")
     original: string;
   }
 
@@ -16,7 +17,7 @@ namespace Chronotes {
   interface Images {
     @post
     @summary("Upload an image")
-    @doc("対応画像形式はpngとjpegのみ。ファイルサイズは10MBまで。")
+    @doc("対応画像形式はpngとjpegとwebpのみ。ファイルサイズは10MBまで。")
     uploadImage(
       @header contentType: "multipart/form-data",
       image: bytes,

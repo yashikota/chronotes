@@ -1,50 +1,19 @@
 using TypeSpec.Http;
 
 namespace Chronotes {
-  const userExample = #{
-    user_id: UserIDExample,
-    user_name: UserNameExample,
-    email: MailAddressExample,
-    createdAt: utcDateTime.fromISO("2024-10-01T19:30:06Z"),
-    updatedAt: utcDateTime.fromISO("2024-10-02T03:34:56Z"),
-    accounts: AccountsExample,
-  };
-  @example(userExample)
-  model User {
-    user_id: UserID;
-    user_name: UserName;
-    email: MailAddress;
-    createdAt: utcDateTime;
-    updatedAt: utcDateTime;
-    accounts?: Accounts;
-  }
-
-  const PromoteUserRequestExample = #{ password: "password" };
-  model PromoteUserRequest {
-    password: string;
-  }
-
-  const AccountsExample = #{
-    github_user_id: "yashikota",
-    discord_channel_id: "9419543265265028",
-    slack_channel_id: "HG824ORHQ250",
-    qiita_user_id: "yashikota",
-    zenn_username: "yashikota",
-    wakatime_token: "yashikota",
-  };
-  model Accounts {
-    github_user_id?: string;
-    discord_channel_id?: string;
-    slack_channel_id?: string;
-    qiita_user_id?: string;
-    zenn_username?: string;
-    wakatime_token?: string;
+  model GetUserResponse {
+    user_id: User.user_id;
+    user_name: User.user_name;
+    email: User.email;
+    createdAt: User.createdAt;
+    updatedAt: User.updatedAt;
+    accounts: Accounts;
   }
 
   model UpdateUserRequest {
-    user_name?: UserID;
-    email?: MailAddress;
-    password?: Password;
+    user_name?: User.user_name;
+    email?: User.email;
+    password?: User.password;
     accounts?: Accounts;
   }
 
@@ -54,8 +23,19 @@ namespace Chronotes {
   interface Users {
     @get
     @summary("Get user information")
-    get(): User | ErrorResponse;
+    get(): GetUserResponse | ErrorResponse;
 
+    /**
+     * 更新したい要素のみ指定すること \
+     * 例えば、GitHubアカウントのみ更新する場合
+     * ```json
+     * {
+     *   "accounts": {
+     *   "github_user_id": "yashikota"
+     * }
+     * ```
+     * このリクエストを送信する
+     */
     @put
     @summary("Update user information")
     update(@body requestBody: UpdateUserRequest): User | ErrorResponse;
@@ -72,7 +52,9 @@ namespace Chronotes {
     @put
     @summary("Promote a user")
     promote(
-      @body requestBody: PromoteUserRequest,
+      @body requestBody: {
+        password: User.password;
+      },
     ): SuccessResponse | ErrorResponse;
   }
 }

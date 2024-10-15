@@ -22,6 +22,15 @@ put:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/PromoteUserRequest.yaml
+          type: object
+          properties:
+            password:
+              type: string
+              example: password
+              minLength: 8
+              maxLength: 20
+              description: パスワード。8文字以上20文字以下
+          required:
+            - password
   security:
     - BearerAuth: []

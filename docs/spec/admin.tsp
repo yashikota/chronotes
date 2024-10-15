@@ -13,6 +13,6 @@ namespace Chronotes {
     @route("/notes")
     @delete
     @summary("Delete notes")
-    deleteNotes(@query user_id: UserID): SuccessResponse | ErrorResponse;
+    deleteNotes(@query user_id: User.user_id): SuccessResponse | ErrorResponse;
   }
 }

@@ -36,6 +36,10 @@ delete:
       required: true
       schema:
         type: string
+        example: test123
+        minLength: 4
+        maxLength: 20
+        pattern: ^[a-zA-Z0-9_]+$
       explode: false
   responses:
     '200':

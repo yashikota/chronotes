@@ -3,6 +3,7 @@ import "@typespec/rest";
 import "@typespec/openapi3";
 import "@typespec/versioning";
 
+import "./model.tsp";
 import "./auth.tsp";
 import "./users.tsp";
 import "./notes.tsp";
@@ -25,16 +26,16 @@ namespace Chronotes {
   }
 
   // misc
-  const SuccessResponseExample = #{ message: "Success" };
-  @example(SuccessResponseExample)
   model SuccessResponse {
+    @doc("Success message")
+    @example("Success")
     message: string;
   }
 
-  const ErrorResponseExample = #{ message: "Error" };
-  @example(ErrorResponseExample)
   @error
   model ErrorResponse {
+    @doc("Error message")
+    @example("Error")
     message: string;
   }
 
