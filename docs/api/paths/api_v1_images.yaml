@@ -1,7 +1,7 @@
 post:
   operationId: Images_uploadImage
   summary: Upload an image
-  description: 対応画像形式はpngとjpegのみ。ファイルサイズは10MBまで。
+  description: 対応画像形式はpngとjpegとwebpのみ。ファイルサイズは10MBまで。
   parameters: []
   responses:
     '200':

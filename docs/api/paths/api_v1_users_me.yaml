@@ -8,7 +8,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/User.yaml
+            $ref: ../components/schemas/GetUserResponse.yaml
     default:
       description: An unexpected error response.
       content:
@@ -22,6 +22,16 @@ get:
 put:
   operationId: Users_update
   summary: Update user information
+  description: |-
+    更新したい要素のみ指定すること \
+    例えば、GitHubアカウントのみ更新する場合
+    ```json
+    {
+     "accounts": {
+      "github_user_id": "yashikota"
+    }
+    ```
+    このリクエストを送信する
   parameters: []
   responses:
     '200':
