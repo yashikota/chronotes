@@ -220,6 +220,7 @@ model AddTagsRequest {
 interface Notes {
   @get
   @summary("Get a list of notes")
+  @doc("fieldsは `note_id`, `user_id`, `title`, `content`, `length`, `tags`が指定可能。複数指定する場合は空白なしのコンマで指定 (例) `title,tags`")
   getNotes(
     @query from: utcDateTime;
     @query to: utcDateTime;
@@ -247,8 +248,8 @@ interface Notes {
 }
 
 const UploadImageResponseExample = #{
-  converted: "img/{user_id}/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg",
-  original: "img/{user_id}/01JA0QTJ8Q2GR6TK2YYECCSHGN.jpg",
+  converted: "img/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg",
+  original: "img/01JA0QTJB2MHTBNJV3SJ9KYN9J_original.jpg",
 };
 model UploadImageResponse {
   "converted": string,
@@ -268,9 +269,9 @@ interface Images {
 
   @delete
   @summary("Delete an image")
-  @doc("`image_path`には画像のパスを指定して削除 (例: `kota/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg`)")
+  @doc("`image_path`には画像のIDを指定して削除")
   deleteImage(
-    @query image_path: string
+    @query image_id: string
   ): SuccessResponse | ErrorResponse;
 }
 

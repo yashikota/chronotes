@@ -171,7 +171,7 @@ paths:
     post:
       operationId: Images_uploadImage
       summary: Upload an image
-      description: 対応画像形式はpngとjpegのみ
+      description: 対応画像形式はpngとjpegのみ。ファイルサイズは10MBまで。
       parameters: []
       responses:
         '200':
@@ -205,9 +205,9 @@ paths:
     delete:
       operationId: Images_deleteImage
       summary: Delete an image
-      description: '`image_path`には画像のパスを指定して削除 (例: `kota/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg`)'
+      description: '`image_path`には画像のIDを指定して削除'
       parameters:
-        - name: image_path
+        - name: image_id
           in: query
           required: true
           schema:
@@ -234,6 +234,7 @@ paths:
     get:
       operationId: Notes_getNotes
       summary: Get a list of notes
+      description: fieldsは `note_id`, `user_id`, `title`, `content`, `length`, `tags`が指定可能。複数指定する場合は空白なしのコンマで指定 (例) `title,tags`
       parameters:
         - name: from
           in: query
