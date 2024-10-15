@@ -1,0 +1,24 @@
+type: object
+required:
+  - user_id
+  - user_name
+  - email
+  - password
+properties:
+  user_id:
+    $ref: ./UserID.yaml
+  user_name:
+    $ref: ./UserName.yaml
+  email:
+    $ref: ./MailAddress.yaml
+  password:
+    $ref: ./Password.yaml
+example:
+  user_id:
+    user_id: test123
+  user_name:
+    user_name: hoge太郎
+  email:
+    email: test@example.com
+  password:
+    password: password

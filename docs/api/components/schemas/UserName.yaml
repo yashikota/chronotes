@@ -1,0 +1,9 @@
+type: object
+required:
+  - user_name
+properties:
+  user_name:
+    type: string
+    minLength: 1
+    maxLength: 20
+    description: ユーザー名。1文字以上20文字以下
