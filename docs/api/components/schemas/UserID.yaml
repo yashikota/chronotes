@@ -1,0 +1,10 @@
+type: object
+required:
+  - user_id
+properties:
+  user_id:
+    type: string
+    minLength: 4
+    maxLength: 20
+    pattern: ^[a-zA-Z0-9_]+$
+    description: 任意に変更可能なID。英数字とアンダースコアのみ。4文字以上20文字以下

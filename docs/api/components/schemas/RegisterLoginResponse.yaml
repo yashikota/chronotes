@@ -1,0 +1,6 @@
+type: object
+required:
+  - token
+properties:
+  token:
+    $ref: ./Token.yaml

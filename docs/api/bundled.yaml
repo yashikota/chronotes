@@ -78,7 +78,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterUserResponse'
+                $ref: '#/components/schemas/RegisterLoginResponse'
         default:
           description: An unexpected error response.
           content:
@@ -128,7 +128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterUserResponse'
+                $ref: '#/components/schemas/RegisterLoginResponse'
         default:
           description: An unexpected error response.
           content:
@@ -142,7 +142,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterUserRequest'
+              $ref: '#/components/schemas/RegisterRequest'
       security:
         - {}
   /api/v1/health:
@@ -476,15 +476,10 @@ components:
           type: string
         wakatime_token:
           type: string
-    AddTagsRequest:
-      type: object
-      required:
-        - tags
-      properties:
-        tags:
-          type: string
-      example:
-        tags: important, urgent, project
+    ApiVersion:
+      type: string
+      enum:
+        - v1
     ErrorResponse:
       type: object
       required:
@@ -500,15 +495,29 @@ components:
         - password
       properties:
         user_id:
-          type: string
+          $ref: '#/components/schemas/UserID'
+        email:
+          $ref: '#/components/schemas/MailAddress'
+        password:
+          $ref: '#/components/schemas/Password'
+      example:
+        user_id:
+          user_id: test123
+        email:
+          email: test@example.com
+        password:
+          password: password
+      description: '`user_id` または `email` のどちらかでログイン可能'
+    MailAddress:
+      type: object
+      required:
+        - email
+      properties:
         email:
           type: string
-        password:
-          type: string
-      example:
-        email: test@example.com
-        user_id: test123
-        password: password
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          format: email
+          description: メールアドレス
     Note:
       type: object
       required:
@@ -521,7 +530,7 @@ components:
         - updatedAt
       properties:
         user_id:
-          type: string
+          $ref: '#/components/schemas/UserID'
         note_id:
           type: string
         title:
@@ -537,13 +546,24 @@ components:
           type: string
           format: date-time
       example:
-        user_id: test123
+        user_id:
+          user_id: test123
         note_id: FHNWFLAQN
         title: My First Note
         content: This is the content of my first note.
         tags: work, project
         createdAt: 2023-01-01T12:00:00Z
         updatedAt: 2023-01-01T12:30:00Z
+    Password:
+      type: object
+      required:
+        - password
+      properties:
+        password:
+          type: string
+          minLength: 8
+          maxLength: 20
+          description: パスワード。8文字以上20文字以下
     PromoteUserRequest:
       type: object
       required:
@@ -551,7 +571,14 @@ components:
       properties:
         password:
           type: string
-    RegisterUserRequest:
+    RegisterLoginResponse:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          $ref: '#/components/schemas/Token'
+    RegisterRequest:
       type: object
       required:
         - user_id
@@ -560,28 +587,22 @@ components:
         - password
       properties:
         user_id:
-          type: string
+          $ref: '#/components/schemas/UserID'
         user_name:
-          type: string
+          $ref: '#/components/schemas/UserName'
         email:
-          type: string
+          $ref: '#/components/schemas/MailAddress'
         password:
-          type: string
+          $ref: '#/components/schemas/Password'
       example:
-        user_id: test123
-        user_name: hoge太郎
-        email: test@example.com
-        password: password
-    RegisterUserResponse:
-      type: object
-      required:
-        - user
-        - token
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
-        token:
-          type: string
+        user_id:
+          user_id: test123
+        user_name:
+          user_name: hoge太郎
+        email:
+          email: test@example.com
+        password:
+          password: password
     SearchNotesResponse:
       type: object
       required:
@@ -593,14 +614,16 @@ components:
             $ref: '#/components/schemas/Note'
       example:
         notes:
-          - user_id: test123
+          - user_id:
+              user_id: test123
             note_id: FHNWFLAQN
             title: My First Note
             content: This is the content of my first note.
             tags: work, project
             createdAt: 2023-01-01T12:00:00Z
             updatedAt: 2023-01-01T12:30:00Z
-          - user_id: test123
+          - user_id:
+              user_id: test123
             note_id: FHNWFLAQN
             title: My First Note
             content: This is the content of my first note.
@@ -616,15 +639,25 @@ components:
           type: string
       example:
         message: Success
+    Token:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          pattern: ^[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_.+/=]+$
+          format: jwt
+          description: JWTトークン
     UpdateUserRequest:
       type: object
       properties:
         user_name:
-          type: string
+          $ref: '#/components/schemas/UserID'
         email:
-          type: string
+          $ref: '#/components/schemas/MailAddress'
         password:
-          type: string
+          $ref: '#/components/schemas/Password'
         accounts:
           $ref: '#/components/schemas/Accounts'
     UploadImageResponse:
@@ -647,11 +680,11 @@ components:
         - updatedAt
       properties:
         user_id:
-          type: string
+          $ref: '#/components/schemas/UserID'
         user_name:
-          type: string
+          $ref: '#/components/schemas/UserName'
         email:
-          type: string
+          $ref: '#/components/schemas/MailAddress'
         createdAt:
           type: string
           format: date-time
@@ -661,9 +694,12 @@ components:
         accounts:
           $ref: '#/components/schemas/Accounts'
       example:
-        user_id: test123
-        user_name: hoge太郎
-        email: test@example.com
+        user_id:
+          user_id: test123
+        user_name:
+          user_name: hoge太郎
+        email:
+          email: test@example.com
         createdAt: 2024-10-01T19:30:06Z
         updatedAt: 2024-10-02T03:34:56Z
         accounts:
@@ -673,10 +709,27 @@ components:
           qiita_user_id: yashikota
           zenn_username: yashikota
           wakatime_token: yashikota
-    Versions:
-      type: string
-      enum:
-        - v1
+    UserID:
+      type: object
+      required:
+        - user_id
+      properties:
+        user_id:
+          type: string
+          minLength: 4
+          maxLength: 20
+          pattern: ^[a-zA-Z0-9_]+$
+          description: 任意に変更可能なID。英数字とアンダースコアのみ。4文字以上20文字以下
+    UserName:
+      type: object
+      required:
+        - user_name
+      properties:
+        user_name:
+          type: string
+          minLength: 1
+          maxLength: 20
+          description: ユーザー名。1文字以上20文字以下
   securitySchemes:
     BearerAuth:
       type: http
