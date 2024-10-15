@@ -1,7 +1,7 @@
 using TypeSpec.Http;
 
 namespace Chronotes {
-  model GetUserResponse {
+  model GetUpdateUserResponse {
     user_id: User.user_id;
     user_name: User.user_name;
     email: User.email;
@@ -23,7 +23,7 @@ namespace Chronotes {
   interface Users {
     @get
     @summary("Get user information")
-    get(): GetUserResponse | ErrorResponse;
+    get(): GetUpdateUserResponse | ErrorResponse;
 
     /**
      * 更新したい要素のみ指定すること \
@@ -38,7 +38,7 @@ namespace Chronotes {
      */
     @put
     @summary("Update user information")
-    update(@body requestBody: UpdateUserRequest): User | ErrorResponse;
+    update(@body requestBody: UpdateUserRequest): GetUpdateUserResponse | ErrorResponse;
 
     @delete
     @summary("Delete a user")
