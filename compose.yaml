@@ -36,6 +36,7 @@ services:
       - redis-commander
       - elasticsearch
       - kibana
+      - minio
 
   api:
     container_name: api
@@ -63,7 +64,9 @@ services:
     restart: always
     user: postgres
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - type: volume
+        source: db-data
+        target: /var/lib/postgresql/data
     environment:
       - POSTGRES_DB=chronotes
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -203,6 +206,27 @@ services:
       test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
     restart: always
 
+  minio:
+    container_name: minio
+    image: quay.io/minio/minio:RELEASE.2024-10-13T13-34-11Z
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - TZ=Asia/Tokyo
+      - MINIO_ROOT_USER=root
+      - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - type: volume
+        source: minio-data
+        target: /data
+    command: server /data --console-address ":9001"
+
   # prism:
   #   image: stoplight/prism:5.11.2
   #   command: "mock -h 0.0.0.0 /tmp/api/openapi.yaml"
@@ -218,3 +242,4 @@ volumes:
   db-data:
   redis-data:
   es-data:
+  minio-data:
