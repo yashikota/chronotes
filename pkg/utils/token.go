@@ -81,7 +81,7 @@ func ExtractToken(ctx context.Context) (Token, error) {
 }
 
 func GetToken(key string) (string, error) {
-	token, err := redis.Client.Get(redis.Ctx, key).Result()
+	token, err := redis.RedisClient.Get(redis.Ctx, key).Result()
 	if err != nil {
 		return "", err
 	}
@@ -90,7 +90,7 @@ func GetToken(key string) (string, error) {
 
 func SaveToken(key, token string) error {
 	ttl := time.Duration(3) * time.Hour
-	err := redis.Client.Set(redis.Ctx, key, token, ttl).Err()
+	err := redis.RedisClient.Set(redis.Ctx, key, token, ttl).Err()
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func SaveToken(key, token string) error {
 }
 
 func DeleteToken(key string) error {
-	err := redis.Client.Del(redis.Ctx, key).Err()
+	err := redis.RedisClient.Del(redis.Ctx, key).Err()
 	if err != nil {
 		return err
 	}
