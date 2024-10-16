@@ -52,4 +52,7 @@ tmp/
 # cert
 .certs
 
+# elasticsearch
+es-data/
+
 # End of https://www.toptal.com/developers/gitignore/api/go
