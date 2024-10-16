@@ -49,6 +49,10 @@ paths:
           required: true
           schema:
             type: string
+            example: test123
+            minLength: 4
+            maxLength: 20
+            pattern: ^[a-zA-Z0-9_]+$
           explode: false
       responses:
         '200':
@@ -71,6 +75,23 @@ paths:
     post:
       operationId: Auth_login
       summary: Login user
+      description: |-
+        `user_id` または `email` のどちらかでログイン可能 \
+        `user_id` でログインする場合は、
+        ```json
+        {
+          "user_id": "yashikota",
+          "password": "password"
+        }
+        ```
+
+        `email` でログインする場合は、
+        ```json
+        {
+         "email": "test@example.com",
+         "password": "password"
+        }
+        ```
       parameters: []
       responses:
         '200':
@@ -78,7 +99,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterUserResponse'
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4uZG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                    pattern: ^[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_.+/=]+$
+                    format: jwt
+                    description: JWTトークン
+                required:
+                  - token
         default:
           description: An unexpected error response.
           content:
@@ -128,7 +158,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterUserResponse'
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4uZG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                    pattern: ^[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_.+/=]+$
+                    format: jwt
+                    description: JWTトークン
+                required:
+                  - token
         default:
           description: An unexpected error response.
           content:
@@ -142,7 +181,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterUserRequest'
+              $ref: '#/components/schemas/RegisterRequest'
       security:
         - {}
   /api/v1/health:
@@ -171,7 +210,7 @@ paths:
     post:
       operationId: Images_uploadImage
       summary: Upload an image
-      description: 対応画像形式はpngとjpegのみ
+      description: 対応画像形式はpngとjpegとwebpのみ。ファイルサイズは10MBまで。
       parameters: []
       responses:
         '200':
@@ -205,9 +244,9 @@ paths:
     delete:
       operationId: Images_deleteImage
       summary: Delete an image
-      description: '`image_path`には画像のパスを指定して削除 (例: `kota/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg`)'
+      description: '`image_path`には画像のIDを指定して削除'
       parameters:
-        - name: image_path
+        - name: image_id
           in: query
           required: true
           schema:
@@ -234,6 +273,17 @@ paths:
     get:
       operationId: Notes_getNotes
       summary: Get a list of notes
+      description: |-
+        fieldsは
+        - `note_id`
+        - `user_id`
+        - `title`
+        - `content`
+        - `length`
+        - `tags` \
+        が指定可能。\
+        複数指定する場合は空白なしのコンマで指定 \
+        (例) `title,tags`
       parameters:
         - name: from
           in: query
@@ -349,7 +399,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchNotesResponse'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Note'
         default:
           description: An unexpected error response.
           content:
@@ -371,7 +423,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/GetUserResponse'
         default:
           description: An unexpected error response.
           content:
@@ -385,6 +437,16 @@ paths:
     put:
       operationId: Users_update
       summary: Update user information
+      description: |-
+        更新したい要素のみ指定すること \
+        例えば、GitHubアカウントのみ更新する場合
+        ```json
+        {
+         "accounts": {
+          "github_user_id": "yashikota"
+        }
+        ```
+        このリクエストを送信する
       parameters: []
       responses:
         '200':
@@ -455,7 +517,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PromoteUserRequest'
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: password
+                  minLength: 8
+                  maxLength: 20
+                  description: パスワード。8文字以上20文字以下
+              required:
+                - password
       security:
         - BearerAuth: []
 components:
@@ -465,25 +536,38 @@ components:
       properties:
         github_user_id:
           type: string
+          example: yashikota
+          pattern: ^[a-zA-Z0-9-]+$
+          description: GitHubのユーザーID
         discord_channel_id:
           type: string
+          example: '9419543265265028'
+          pattern: ^[0-9]+$
+          description: DiscordのチャンネルID
         slack_channel_id:
           type: string
+          example: HG824ORHQ250
+          pattern: ^[a-zA-Z0-9]+$
+          description: SlackのチャンネルID
         qiita_user_id:
           type: string
+          example: yashikota
+          pattern: ^[a-zA-Z0-9_]+$
+          description: QiitaのユーザーID
         zenn_username:
           type: string
+          example: yashikota
+          pattern: ^[a-zA-Z0-9_]+$
+          description: Zennのユーザー名
         wakatime_token:
           type: string
-    AddTagsRequest:
-      type: object
-      required:
-        - tags
-      properties:
-        tags:
-          type: string
-      example:
-        tags: important, urgent, project
+          example: waka_763hgfds1-2ushy-2yfds-lkaxvczv-63hdfgshvds
+          pattern: ^[a-z0-9-]+$
+          description: Wakatimeのトークン
+    ApiVersion:
+      type: string
+      enum:
+        - v1
     ErrorResponse:
       type: object
       required:
@@ -491,8 +575,49 @@ components:
       properties:
         message:
           type: string
-      example:
-        message: Error
+          example: Error
+          description: Error message
+    GetUserResponse:
+      type: object
+      required:
+        - user_id
+        - user_name
+        - email
+        - createdAt
+        - updatedAt
+        - accounts
+      properties:
+        user_id:
+          type: string
+          example: test123
+          minLength: 4
+          maxLength: 20
+          pattern: ^[a-zA-Z0-9_]+$
+          description: 任意に変更可能なID。英数字とアンダースコアのみ。4文字以上20文字以下
+        user_name:
+          type: string
+          example: hoge太郎
+          minLength: 1
+          maxLength: 20
+          description: ユーザー名。1文字以上20文字以下
+        email:
+          type: string
+          example: test@example.com
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          format: email
+          description: メールアドレス
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-10-01T19:30:06Z
+          description: 作成日時
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2024-10-02T03:34:56Z
+          description: 更新日時
+        accounts:
+          $ref: '#/components/schemas/Accounts'
     LoginRequest:
       type: object
       required:
@@ -500,14 +625,23 @@ components:
       properties:
         user_id:
           type: string
+          example: test123
+          minLength: 4
+          maxLength: 20
+          pattern: ^[a-zA-Z0-9_]+$
+          description: 任意に変更可能なID。英数字とアンダースコアのみ。4文字以上20文字以下
         email:
           type: string
+          example: test@example.com
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          format: email
+          description: メールアドレス
         password:
           type: string
-      example:
-        email: test@example.com
-        user_id: test123
-        password: password
+          example: password
+          minLength: 8
+          maxLength: 20
+          description: パスワード。8文字以上20文字以下
     Note:
       type: object
       required:
@@ -521,36 +655,44 @@ components:
       properties:
         user_id:
           type: string
+          example: test123
+          minLength: 4
+          maxLength: 20
+          pattern: ^[a-zA-Z0-9_]+$
+          description: 任意に変更可能なID。英数字とアンダースコアのみ。4文字以上20文字以下
         note_id:
           type: string
+          example: FHNWFLAQN
+          pattern: ^[a-zA-Z0-9]+$
+          description: 内部で付与されるID
         title:
           type: string
+          example: GoとPythonの比較
+          minLength: 1
+          maxLength: 40
+          description: タイトル
         content:
           type: string
+          example: <h1>GoとPythonの比較</h1><p>GoとPythonの比較を行いました。</p>
+          minLength: 1
+          maxLength: 4000
+          description: 内容
         tags:
           type: string
+          example: go,python
+          pattern: ^[a-z0-9, ]+$
+          description: タグ。`,`区切りで複数指定可能
         createdAt:
           type: string
           format: date-time
+          example: 2024-10-01T19:30:06Z
+          description: 作成日時
         updatedAt:
           type: string
           format: date-time
-      example:
-        user_id: test123
-        note_id: FHNWFLAQN
-        title: My First Note
-        content: This is the content of my first note.
-        tags: work, project
-        createdAt: 2023-01-01T12:00:00Z
-        updatedAt: 2023-01-01T12:30:00Z
-    PromoteUserRequest:
-      type: object
-      required:
-        - password
-      properties:
-        password:
-          type: string
-    RegisterUserRequest:
+          example: 2024-10-02T03:34:56Z
+          description: 更新日時
+    RegisterRequest:
       type: object
       required:
         - user_id
@@ -560,52 +702,29 @@ components:
       properties:
         user_id:
           type: string
+          example: test123
+          minLength: 4
+          maxLength: 20
+          pattern: ^[a-zA-Z0-9_]+$
+          description: 任意に変更可能なID。英数字とアンダースコアのみ。4文字以上20文字以下
         user_name:
           type: string
+          example: hoge太郎
+          minLength: 1
+          maxLength: 20
+          description: ユーザー名。1文字以上20文字以下
         email:
           type: string
+          example: test@example.com
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          format: email
+          description: メールアドレス
         password:
           type: string
-      example:
-        user_id: test123
-        user_name: hoge太郎
-        email: test@example.com
-        password: password
-    RegisterUserResponse:
-      type: object
-      required:
-        - user
-        - token
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
-        token:
-          type: string
-    SearchNotesResponse:
-      type: object
-      required:
-        - notes
-      properties:
-        notes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Note'
-      example:
-        notes:
-          - user_id: test123
-            note_id: FHNWFLAQN
-            title: My First Note
-            content: This is the content of my first note.
-            tags: work, project
-            createdAt: 2023-01-01T12:00:00Z
-            updatedAt: 2023-01-01T12:30:00Z
-          - user_id: test123
-            note_id: FHNWFLAQN
-            title: My First Note
-            content: This is the content of my first note.
-            tags: work, project
-            createdAt: 2023-01-01T12:00:00Z
-            updatedAt: 2023-01-01T12:30:00Z
+          example: password
+          minLength: 8
+          maxLength: 20
+          description: パスワード。8文字以上20文字以下
     SuccessResponse:
       type: object
       required:
@@ -613,17 +732,29 @@ components:
       properties:
         message:
           type: string
-      example:
-        message: Success
+          example: Success
+          description: Success message
     UpdateUserRequest:
       type: object
       properties:
         user_name:
           type: string
+          example: hoge太郎
+          minLength: 1
+          maxLength: 20
+          description: ユーザー名。1文字以上20文字以下
         email:
           type: string
+          example: test@example.com
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          format: email
+          description: メールアドレス
         password:
           type: string
+          example: password
+          minLength: 8
+          maxLength: 20
+          description: パスワード。8文字以上20文字以下
         accounts:
           $ref: '#/components/schemas/Accounts'
     UploadImageResponse:
@@ -634,48 +765,68 @@ components:
       properties:
         converted:
           type: string
+          example: img/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg
+          description: 変換後の画像パス
         original:
           type: string
+          example: img/01JA0QTJB2MHTBNJV3SJ9KYN9J_original.jpg
+          description: 変換前の画像パス
     User:
       type: object
       required:
         - user_id
         - user_name
         - email
+        - password
+        - token
         - createdAt
         - updatedAt
       properties:
         user_id:
           type: string
+          example: test123
+          minLength: 4
+          maxLength: 20
+          pattern: ^[a-zA-Z0-9_]+$
+          description: 任意に変更可能なID。英数字とアンダースコアのみ。4文字以上20文字以下
         user_name:
           type: string
+          example: hoge太郎
+          minLength: 1
+          maxLength: 20
+          description: ユーザー名。1文字以上20文字以下
         email:
           type: string
+          example: test@example.com
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          format: email
+          description: メールアドレス
+        password:
+          type: string
+          example: password
+          minLength: 8
+          maxLength: 20
+          description: パスワード。8文字以上20文字以下
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4uZG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+          pattern: ^[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_.+/=]+$
+          format: jwt
+          description: JWTトークン
         createdAt:
           type: string
           format: date-time
+          example: 2024-10-01T19:30:06Z
+          description: 作成日時
         updatedAt:
           type: string
           format: date-time
+          example: 2024-10-02T03:34:56Z
+          description: 更新日時
         accounts:
-          $ref: '#/components/schemas/Accounts'
-      example:
-        user_id: test123
-        user_name: hoge太郎
-        email: test@example.com
-        createdAt: 2024-10-01T19:30:06Z
-        updatedAt: 2024-10-02T03:34:56Z
-        accounts:
-          github_user_id: yashikota
-          discord_channel_id: '9419543265265028'
-          slack_channel_id: HG824ORHQ250
-          qiita_user_id: yashikota
-          zenn_username: yashikota
-          wakatime_token: yashikota
-    Versions:
-      type: string
-      enum:
-        - v1
+          allOf:
+            - $ref: '#/components/schemas/Accounts'
+          description: 外部アカウント情報
   securitySchemes:
     BearerAuth:
       type: http

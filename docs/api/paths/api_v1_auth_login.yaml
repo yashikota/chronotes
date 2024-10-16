@@ -1,6 +1,23 @@
 post:
   operationId: Auth_login
   summary: Login user
+  description: |-
+    `user_id` または `email` のどちらかでログイン可能 \
+    `user_id` でログインする場合は、
+    ```json
+    {
+      "user_id": "yashikota",
+      "password": "password"
+    }
+    ```
+
+    `email` でログインする場合は、
+    ```json
+    {
+     "email": "test@example.com",
+     "password": "password"
+    }
+    ```
   parameters: []
   responses:
     '200':
@@ -8,7 +25,17 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/RegisterUserResponse.yaml
+            type: object
+            properties:
+              token:
+                type: string
+                example: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4uZG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                pattern: ^[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_.+/=]+$
+                format: jwt
+                description: JWTトークン
+            required:
+              - token
     default:
       description: An unexpected error response.
       content:
