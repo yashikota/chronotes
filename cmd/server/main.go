@@ -15,6 +15,9 @@ import (
 	"github.com/yashikota/chronotes/api/v1/notes"
 	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/pkg/db"
+	"github.com/yashikota/chronotes/pkg/elastic"
+	"github.com/yashikota/chronotes/pkg/minio"
+	"github.com/yashikota/chronotes/pkg/rabbitmq"
 	"github.com/yashikota/chronotes/pkg/redis"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
@@ -38,11 +41,12 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	// Connect to database
+	// Connect
 	db.Connect()
-
-	// Connect to Redis
 	redis.Connect()
+	elastic.Connect()
+	minio.Connect()
+	rabbitmq.Connect()
 
 	// Setup JWT
 	utils.LoadPrivateKeyFromEnv()
