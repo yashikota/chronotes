@@ -27,15 +27,10 @@ tasks:
     cmds:
       - docker build -t chronotes .
 
-  dev:up:
+  dev:re:
     desc: "Rebuild service"
     cmds:
-      - docker compose up {{.CLI_ARGS}} --build
-
-  dev:down:
-    desc: "Stop service"
-    cmds:
-      - docker compose rm -fsv {{.CLI_ARGS}}
+      - docker compose up -d --build --force-recreate {{.CLI_ARGS}}
 
   # Go
   go:lint:
