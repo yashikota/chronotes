@@ -58,6 +58,7 @@ func main() {
 
 		// Debug Routes
 		r.HandleFunc("GET /health", debug.HealthHandler)
+		// r.HandleFunc("GET /debug/users", users.GetUsersListHandler)
 
 		// JWT-protected routes
 		r.Group(func(r chi.Router) {
