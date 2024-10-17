@@ -19,9 +19,12 @@ task: Available tasks for this project:
 * default:            Display this help message
 * dev:                Run development environment
 * actions:lint:       Lint GitHub Actions
+* api:fmt:            Format OpenAPI specification
 * api:lint:           Lint API documentation
 * api:split:          Split OpenAPI specification
 * api:tsp:            Generate Open API from TypeSpec
+* dev:down:           Stop service
+* dev:up:             Rebuild service
 * docker:lint:        Lint Dockerfile
 * go:fmt:             Format Go code
 * go:lint:            Lint Go code
