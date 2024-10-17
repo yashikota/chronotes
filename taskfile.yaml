@@ -27,6 +27,16 @@ tasks:
     cmds:
       - docker build -t chronotes .
 
+  dev:up:
+    desc: "Rebuild service"
+    cmds:
+      - docker compose up {{.CLI_ARGS}} --build
+
+  dev:down:
+    desc: "Stop service"
+    cmds:
+      - docker compose rm -fsv {{.CLI_ARGS}}
+
   # Go
   go:lint:
     desc: "Lint Go code"
@@ -60,7 +70,7 @@ tasks:
   #   cmds:
   #     - docker run --rm -v {{.PWD}}:/wd ghcr.io/ogen-go/ogen:v1.4.1 --target wd/pkg/ogen --clean wd/docs/api/bundled.yaml
 
-  api:format:
+  api:fmt:
     desc: "Format OpenAPI specification"
     cmds:
       - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t --user $(id -u):$(id -g) azsdkengsys.azurecr.io/typespec format "**/*.tsp"
