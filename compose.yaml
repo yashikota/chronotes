@@ -96,7 +96,9 @@ services:
     image: redis:7.4.0
     container_name: redis
     volumes:
-      - redis-data:/data
+      - type: volume
+        source: redis-data
+        target: /data
     environment:
       - TZ=Asia/Tokyo
     expose:
