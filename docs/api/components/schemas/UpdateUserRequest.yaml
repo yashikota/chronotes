@@ -1,0 +1,10 @@
+type: object
+properties:
+  user_name:
+    type: string
+  email:
+    type: string
+  password:
+    type: string
+  accounts:
+    $ref: ./Accounts.yaml

@@ -1,0 +1,8 @@
+type: object
+required:
+  - fields
+properties:
+  fields:
+    type: string
+example:
+  fields: title,content,tags

@@ -2,14 +2,12 @@ package notes
 
 import (
 	"errors"
-	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
-
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
+	"github.com/yashikota/chronotes/pkg/gemini"
 	note "github.com/yashikota/chronotes/pkg/notes"
 	"github.com/yashikota/chronotes/pkg/utils"
 
@@ -19,8 +17,8 @@ import (
 
 func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
-	user := model.User{}
-	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
+	user := model.NewUser()
+	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).UserID
 
 	// Check if token exists
 	key := "jwt:" + user.UserID
@@ -29,7 +27,7 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Validation passed")
+	slog.Info("Validation passed")
 
 	// Get date from request
 	iso8601formattedFrom, err := utils.GetQueryParam(r, "from", true)
@@ -48,8 +46,8 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("iso8601formattedFrom: ", iso8601formattedFrom)
-	log.Println("iso8601formattedTo: ", iso8601formattedTo)
+	slog.Info("iso8601formattedFrom: " + iso8601formattedFrom)
+	slog.Info("iso8601formattedTo: " + iso8601formattedTo)
 
 	// URL Decode
 	iso8601formattedFrom, err = utils.URLDecode(iso8601formattedFrom)
@@ -63,9 +61,9 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("URL Decode passed")
-	log.Println("iso8601formattedFrom:", iso8601formattedFrom)
-	log.Println("iso8601formattedTo:", iso8601formattedTo)
+	slog.Info("URL Decode passed")
+	slog.Info("iso8601formattedFrom:" + iso8601formattedFrom)
+	slog.Info("iso8601formattedTo:" + iso8601formattedTo)
 
 	// Parse ISO8601 date
 	from, err := synchro.ParseISO[tz.AsiaTokyo](iso8601formattedFrom)
@@ -79,25 +77,27 @@ func GetNoteSummaryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("from: ", from.StdTime())
-	log.Println("to: ", to.StdTime())
+	slog.Info("from: " + from.StdTime().String())
+	slog.Info("to: " + to.StdTime().String())
 
 	// Get notes from database
-	notes, err := note.GetNoteContents(user.UserID, from.StdTime(), to.StdTime())
+	notes, err := note.GetNotes(user.UserID, from.StdTime(), to.StdTime(), []string{"content"})
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	log.Println("notes: ", notes)
+	slog.Info("notes: ", slog.Any("%v", notes))
 
-	err = godotenv.Load(fmt.Sprintf(".env.%s", os.Getenv("GO_ENV")))
 	token := os.Getenv("GEMINI_TOKEN")
-	if err != nil && !os.IsNotExist(err) {
-		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
-		return
+	var noteContents []string
+	for _, note := range notes {
+		if content, ok := note["content"]; ok {
+			noteContents = append(noteContents, content)
+		}
 	}
-	result, err := utils.Summary(notes, token)
+
+	result, err := gemini.Summary(noteContents, token)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return

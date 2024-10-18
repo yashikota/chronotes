@@ -1,26 +1,21 @@
 package users
 
 import (
-	"errors"
-	"log"
+	"log/slog"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 
 func DeleteUser(u *model.User) error {
-	if db.DB == nil {
-		return errors.New("database connection is not initialized")
-	}
-
 	// Find the user by ID
-	user := model.User{}
+	user := model.NewUser()
 	result := db.DB.Where("user_id = ?", u.UserID).First(&user)
 	if result.Error != nil {
 		return result.Error
 	}
 
-	log.Println("User found")
+	slog.Info("User found")
 
 	// Delete the user
 	result = db.DB.Delete(&user)

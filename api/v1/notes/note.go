@@ -1,19 +1,22 @@
 package notes
 
 import (
-	"log"
+	"errors"
+	"log/slog"
 	"net/http"
 
-	modelDB "github.com/yashikota/chronotes/model/v1/db"
-	modelProvider "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/model/v1"
 	note "github.com/yashikota/chronotes/pkg/notes"
 	"github.com/yashikota/chronotes/pkg/utils"
+
+	"github.com/Code-Hex/synchro"
+	"github.com/Code-Hex/synchro/tz"
 )
 
 func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
-	user := modelDB.User{}
-	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
+	user := model.NewUser()
+	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).UserID
 
 	// Check if token exists
 	key := "jwt:" + user.UserID
@@ -22,73 +25,91 @@ func GetNoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Validation passed")
+	slog.Info("Validation passed")
 
 	// Get date from request
-	date := r.URL.Query().Get("date")
+	iso8601formattedFrom, err := utils.GetQueryParam(r, "from", true)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+	iso8601formattedTo, err := utils.GetQueryParam(r, "to", true)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if iso8601formattedFrom == "" || iso8601formattedTo == "" {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("from and to are required"))
+		return
+	}
+
+	// Get fields from query parameters
+	formattedFields, err := utils.GetQueryParam(r, "fields", true)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
 
 	// URL Decode
-	date, err := utils.URLDecode(date)
+	iso8601formattedFrom, err = utils.URLDecode(iso8601formattedFrom)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+	iso8601formattedTo, err = utils.URLDecode(iso8601formattedTo)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+	fields, err := utils.URLDecode(formattedFields)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
-	log.Println("URL Decode passed")
-	log.Println("date:", date)
+	slog.Info("URL Decode passed")
+	slog.Info("iso8601formattedFrom:" + iso8601formattedFrom)
+	slog.Info("iso8601formattedTo:" + iso8601formattedTo)
+	slog.Info("fields:" + fields)
 
 	// Parse ISO8601 date
-	dateTime, err := utils.Iso8601ToDate(date)
+	from, err := synchro.ParseISO[tz.AsiaTokyo](iso8601formattedFrom)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+	to, err := synchro.ParseISO[tz.AsiaTokyo](iso8601formattedTo)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		return
+	}
+	if to.After(synchro.Now[tz.AsiaTokyo]()) {
+		to = synchro.Now[tz.AsiaTokyo]()
+	}
+
+	// Parse fields
+	fieldArray, err := utils.ParseFields(fields)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
-	log.Println("Parse ISO8601 date passed")
-	log.Println("date:", dateTime)
+	slog.Info("Parse fields passed")
+	slog.Info("from:" + from.String())
+	slog.Info("to:" + to.String())
+	slog.Info("fields:" + fields)
 
-	// Get note from database
-	n, err := note.GetNote(user.UserID, dateTime)
+	// Get notes from database
+	notes, err := note.GetNotes(user.UserID, from.StdTime(), to.StdTime(), fieldArray)
 	if err != nil {
-		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	log.Println("Get note from database passed")
-
-	// Get accounts from database
-	// accounts, err := note.GetAccounts(user.UserID)
-	// if err != nil {
-	// 	utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
-	// 	return
-	// }
-
-	// DEBUG
-	accounts := modelProvider.Gemini{
-		GitHubUserID: "yashikota",
-	}
-
-	log.Println("Get accounts from database passed")
-
-	// Check if note exists
-	if n.UserID == "" {
-		log.Println("Note does not exist")
-		// Generate note
-		n, err = note.GenerateNote(user.UserID, date, accounts)
-		if err != nil {
-			utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
-			return
-		}
-	}
-
-	log.Println("Generate note passed")
+	slog.Info("notes: ", slog.Any("%v", notes))
 
 	// Response
-	res := modelDB.NoteResponse{
-		Date:    dateTime.String(),
-		Title:   n.Title,
-		Content: n.Content,
-		Tags:    n.Tags,
-	}
-	utils.SuccessJSONResponseWithoutEscape(w, res)
+	res := map[string]interface{}{"notes": notes}
+	utils.SuccessJSONResponse(w, res)
 }

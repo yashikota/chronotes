@@ -34,19 +34,20 @@ services:
       - redoc
       - pgweb
       - redis-commander
+      - elasticsearch
+      - kibana
+      - minio
+      - rabbitmq
 
   api:
     container_name: api
     environment:
       - TZ=Asia/Tokyo
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
-      - DISCORD_TOKEN=${DISCORD_TOKEN}
-      - SLACK_TOKEN=${SLACK_TOKEN}
-      - QIITA_TOKEN=${QIITA_TOKEN}
-      - GEMINI_TOKEN=${GEMINI_TOKEN}
+    env_file:
+      - .env
     build:
       context: .
+      dockerfile: Dockerfile
       target: dev
     volumes:
       - type: bind
@@ -64,7 +65,9 @@ services:
     restart: always
     user: postgres
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - type: volume
+        source: db-data
+        target: /var/lib/postgresql/data
     environment:
       - POSTGRES_DB=chronotes
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -93,7 +96,9 @@ services:
     image: redis:7.4.0
     container_name: redis
     volumes:
-      - redis-data:/data
+      - type: volume
+        source: redis-data
+        target: /data
     environment:
       - TZ=Asia/Tokyo
     expose:
@@ -130,7 +135,7 @@ services:
     image: redocly/redoc:v2.1.5
     container_name: redoc
     environment:
-      - SPEC_URL=/redoc/openapi/bundled.yaml
+      - SPEC_URL=/openapi/bundled.yaml
       - TZ=Asia/Tokyo
     volumes:
       - type: bind
@@ -156,17 +161,117 @@ services:
       nginx:
         condition: service_healthy
 
-  # prism:
-  #   image: stoplight/prism:5.11.2
-  #   command: "mock -h 0.0.0.0 /tmp/api/openapi.yaml"
-  #   environment:
-  #     - TZ=Asia/Tokyo
-  #   volumes:
-  #     - type: bind
-  #       source: "docs/api"
-  #       target: "/tmp/api"
-  #       read_only: true
+  elasticsearch:
+    container_name: elasticsearch
+    environment:
+      - TZ=Asia/Tokyo
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    build:
+      context: ./elastic
+      dockerfile: Dockerfile
+    ports:
+      - 9200:9200
+    volumes:
+      - type: volume
+        source: es-data
+        target: /usr/share/elasticsearch/data
+    expose:
+        - 9300
+    healthcheck:
+        test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+        interval: 30s
+        timeout: 60s
+        retries: 5
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    container_name: kibana
+    environment:
+      - TZ=Asia/Tokyo
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - "I18N_LOCALE=ja-JP"
+    ports:
+      - 5601:5601
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:5601/api/status
+    restart: always
+
+  minio:
+    image: quay.io/minio/minio:RELEASE.2024-10-13T13-34-11Z
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - TZ=Asia/Tokyo
+      - MINIO_ROOT_USER=root
+      - MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - type: volume
+        source: minio-data
+        target: /data
+    command: server /data --console-address ":9001"
+
+  rabbitmq:
+    image: rabbitmq:4.0.2-management-alpine
+    container_name: rabbitmq
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+      - type: volume
+        source: rabbitmq-data
+        target: /var/lib/rabbitmq
+      - type: bind
+        source: rabbitmq-log
+        target: /var/log/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  dozzle:
+    image: amir20/dozzle:v8.6.1
+    container_name: dozzle
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+
+  prism:
+    image: stoplight/prism:5.11.2
+    container_name: prism
+    command: "mock -h 0.0.0.0 /tmp/api/openapi.yaml"
+    environment:
+      - TZ=Asia/Tokyo
+    volumes:
+      - type: bind
+        source: "docs/api"
+        target: "/tmp/api"
+        read_only: true
 
 volumes:
   db-data:
   redis-data:
+  es-data:
+  minio-data:
+  rabbitmq-data:

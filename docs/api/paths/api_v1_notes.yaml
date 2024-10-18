@@ -1,6 +1,60 @@
-post:
-  operationId: createNote
-  summary: Create a new note
+get:
+  operationId: Notes_getNotes
+  summary: Get a list of notes
+  description: |-
+    fieldsは
+    - `note_id`
+    - `user_id`
+    - `title`
+    - `content`
+    - `length`
+    - `tags` \
+    が指定可能。\
+    複数指定する場合は空白なしのコンマで指定 \
+    (例) `title,tags`
+  parameters:
+    - name: from
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    - name: to
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+      explode: false
+    - name: fields
+      in: query
+      required: true
+      schema:
+        type: string
+      explode: false
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/Note.yaml
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Notes
+  security:
+    - BearerAuth: []
+put:
+  operationId: Notes_updateNote
+  summary: Update a notes
   parameters: []
   responses:
     '200':
@@ -22,34 +76,22 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/Note.yaml
+          type: array
+          items:
+            $ref: ../components/schemas/Note.yaml
   security:
     - BearerAuth: []
-get:
-  operationId: getNotes
-  summary: Get a list of notes
-  parameters:
-    - name: page
-      in: query
-      required: false
-      schema:
-        type: integer
-        format: int32
-      explode: false
-    - name: pageSize
-      in: query
-      required: false
-      schema:
-        type: integer
-        format: int32
-      explode: false
+delete:
+  operationId: Notes_deleteNote
+  summary: Delete a notes
+  parameters: []
   responses:
     '200':
       description: The request has succeeded.
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/Note.yaml
+            $ref: ../components/schemas/SuccessResponse.yaml
     default:
       description: An unexpected error response.
       content:
@@ -58,5 +100,13 @@ get:
             $ref: ../components/schemas/ErrorResponse.yaml
   tags:
     - Notes
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: ../components/schemas/Note.yaml
   security:
     - BearerAuth: []

@@ -1,5 +1,5 @@
-get:
-  operationId: searchNotes
+post:
+  operationId: Notes_searchNotes
   summary: Search notes
   parameters:
     - name: query
@@ -14,7 +14,9 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/SearchNotesResponse.yaml
+            type: array
+            items:
+              $ref: ../components/schemas/Note.yaml
     default:
       description: An unexpected error response.
       content:

@@ -27,6 +27,11 @@ tasks:
     cmds:
       - docker build -t chronotes .
 
+  dev:re:
+    desc: "Rebuild service"
+    cmds:
+      - docker compose up -d --build --force-recreate {{.CLI_ARGS}}
+
   # Go
   go:lint:
     desc: "Lint Go code"
@@ -60,6 +65,11 @@ tasks:
   #   cmds:
   #     - docker run --rm -v {{.PWD}}:/wd ghcr.io/ogen-go/ogen:v1.4.1 --target wd/pkg/ogen --clean wd/docs/api/bundled.yaml
 
+  api:fmt:
+    desc: "Format OpenAPI specification"
+    cmds:
+      - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t --user $(id -u):$(id -g) azsdkengsys.azurecr.io/typespec format "**/*.tsp"
+
   api:lint:
     desc: "Lint API documentation"
     cmds:
@@ -69,15 +79,14 @@ tasks:
   api:tsp:
     desc: "Generate Open API from TypeSpec"
     cmds:
-      - rm -rf docs/api/paths
-      - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t azsdkengsys.azurecr.io/typespec compile docs/spec
+      - docker run --rm -v {{.PWD}}:/wd --workdir="/wd" -t --user $(id -u):$(id -g) azsdkengsys.azurecr.io/typespec compile docs/spec
       - task: api:split
 
   api:split:
     desc: "Split OpenAPI specification"
     cmds:
       - rm -rf docs/spec/components docs/spec/paths
-      - docker run --rm -v {{.PWD}}:/spec redocly/cli:1.25.2 split docs/api/bundled.yaml --outDir=docs/api
+      - docker run --rm -v {{.PWD}}:/spec --user $(id -u):$(id -g) redocly/cli:1.25.2 split docs/api/bundled.yaml --outDir=docs/api
 
   # api:bundle:
   #   desc: "Bundle OpenAPI specification"

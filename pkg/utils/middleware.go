@@ -33,3 +33,15 @@ func JwtMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
+
+func AdminMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := r.Context().Value(TokenKey).(Token)
+		if !token.IsAdmin {
+			ErrorJSONResponse(w, http.StatusUnauthorized, errors.New("not admin"))
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}

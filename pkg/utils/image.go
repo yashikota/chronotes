@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"golang.org/x/image/draw"
+	"golang.org/x/image/webp"
 )
 
 func LoadImage(data []byte, fileType string) (image.Image, error) {
@@ -21,6 +22,8 @@ func LoadImage(data []byte, fileType string) (image.Image, error) {
 		img, err = jpeg.Decode(bytes.NewReader(data))
 	case "image/png":
 		img, err = png.Decode(bytes.NewReader(data))
+	case "image/webp":
+		img, err = webp.Decode(bytes.NewReader(data))
 	default:
 		err = errors.New("unsupported file type")
 	}

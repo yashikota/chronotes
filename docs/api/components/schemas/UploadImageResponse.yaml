@@ -1,0 +1,6 @@
+type: object
+required:
+  - image_id
+properties:
+  image_id:
+    type: string

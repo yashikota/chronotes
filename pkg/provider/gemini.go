@@ -5,11 +5,13 @@ import (
 	"log/slog"
 	"strings"
 
-	model "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/model/v1"
+	provider "github.com/yashikota/chronotes/model/v1/provider"
+	"github.com/yashikota/chronotes/pkg/gemini"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func Gemini(input model.Gemini) (model.Response, error) {
+func Gemini(input model.Accounts) (provider.Response, error) {
 	var text []string
 	var summary []string
 	var result string
@@ -18,42 +20,42 @@ func Gemini(input model.Gemini) (model.Response, error) {
 	if githubText, err := GitHubProvider(input.GitHubUserID); err == nil {
 		text = append(text, githubText...)
 	} else {
-		slog.Warn("GitHubProvider error for user %s: %v\n", input.GitHubUserID, err)
+		slog.Error("GitHubProvider error for user %s: %v\n", input.GitHubUserID, err)
 	}
 	if slackText, err := SlackProvider(input.SlackChannelID); err == nil {
 		text = append(text, slackText...)
 	} else {
-		slog.Warn("SlackProvider error for channel %s: %v\n", input.SlackChannelID, err)
+		slog.Error("SlackProvider error for channel %s: %v\n", input.SlackChannelID, err)
 	}
 	if discordText, err := DiscordProvider(input.DiscordChannelID); err == nil {
 		text = append(text, discordText...)
 	} else {
-		slog.Warn("DiscordProvider error for channel %s: %v\n", input.DiscordChannelID, err)
+		slog.Error("DiscordProvider error for channel %s: %v\n", input.DiscordChannelID, err)
 	}
 	if qiitaText, err := QiitaProvider(input.QiitaUserID); err == nil {
 		text = append(text, qiitaText...)
 	} else {
-		slog.Warn("QiitaProvider error for user %s: %v\n", input.QiitaUserID, err)
+		slog.Error("QiitaProvider error for user %s: %v\n", input.QiitaUserID, err)
 	}
 	if zennText, err := ZennProvider(input.ZennUsername); err == nil {
 		text = append(text, zennText...)
 	} else {
-		slog.Warn("ZennProvider error for user %s: %v\n", input.ZennUsername, err)
+		slog.Error("ZennProvider error for user %s: %v\n", input.ZennUsername, err)
 	}
 	day = utils.GetDay()
 
 	if len(text) == 0 {
-		return model.Response{
+		return provider.Response{
 			Result: "",
 			Title:  "",
 			Day:    day,
 		}, nil
 	}
 
-	summary, err := utils.SummarizeText(text)
+	summary, err := gemini.SummarizeText(text)
 	if err != nil {
-		slog.Warn("Error summarizing text", "error", err)
-		return model.Response{
+		slog.Error("Error summarizing text", "error", err)
+		return provider.Response{
 			Result: "",
 			Title:  "",
 			Day:    day,
@@ -61,10 +63,10 @@ func Gemini(input model.Gemini) (model.Response, error) {
 		}, nil
 	}
 	result = strings.Join(summary, "\n")
-	title, err := utils.MakeTitle(summary)
+	title, err := gemini.MakeTitle(summary)
 	if err != nil {
-		slog.Warn("Error making title", "error", err)
-		return model.Response{
+		slog.Error("Error making title", "error", err)
+		return provider.Response{
 			Result: result,
 			Title:  day,
 			Day:    day,
@@ -72,10 +74,11 @@ func Gemini(input model.Gemini) (model.Response, error) {
 		}, nil
 	}
 
-	tag, err := utils.MakeTag(summary)
+	tag, err := gemini.MakeTag(summary)
+
 	if err != nil {
-		slog.Warn("Error making tag", "error", err)
-		return model.Response{
+		slog.Error("Error making tag", "error", err)
+		return provider.Response{
 			Result: result,
 			Title:  title,
 			Day:    day,
@@ -83,10 +86,10 @@ func Gemini(input model.Gemini) (model.Response, error) {
 		}, nil
 	}
 	fmt.Printf("Gemini : result: %s, title: %s, day: %s, tag: %s\n", result, title, day, tag)
-	return model.Response{
+	return provider.Response{
 		Result: result,
 		Title:  title,
 		Day:    day,
-		Tag:    tag,
+		Tag:    strings.Join(tag, ","),
 	}, nil
 }

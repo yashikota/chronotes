@@ -2,9 +2,6 @@ package utils
 
 import (
 	"context"
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
 	"errors"
 	"time"
 
@@ -16,28 +13,21 @@ import (
 
 type tokenContextKey struct{}
 type Token struct {
-	ID  string
-	Exp time.Time
+	UserID  string
+	Exp     time.Time
+	IsAdmin bool
 }
 
 var (
-	TokenKey   = &tokenContextKey{}
-	privateKey *ecdsa.PrivateKey
+	TokenKey = &tokenContextKey{}
 )
 
-func SetupPrivateKey() {
-	var err error
-	privateKey, err = ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func GenerateToken(id string) (string, error) {
+func GenerateToken(id string, isAdmin bool) (string, error) {
 	// Build a new token
 	tok, err := jwt.NewBuilder().
 		Subject(id).
-		Expiration(time.Now().Add(time.Hour * 3)).
+		Expiration(time.Now().Add(time.Hour*3)).
+		Claim("isAdmin", isAdmin).
 		Build()
 	if err != nil {
 		return "", err
@@ -63,10 +53,19 @@ func ValidateToken(ctx context.Context, tokenString string) (context.Context, er
 	if time.Now().After(exp) {
 		return ctx, errors.New("token expired")
 	}
+	isAdminValue, ok := verifiedToken.Get("isAdmin")
+	if !ok {
+		return ctx, errors.New("isAdmin not found in token")
+	}
+	isAdmin, ok := isAdminValue.(bool)
+	if !ok {
+		return ctx, errors.New("isAdmin is not a boolean")
+	}
 
 	token := Token{
-		ID:  id,
-		Exp: exp,
+		UserID:  id,
+		Exp:     exp,
+		IsAdmin: isAdmin,
 	}
 
 	ctx = context.WithValue(ctx, TokenKey, token)
@@ -82,7 +81,7 @@ func ExtractToken(ctx context.Context) (Token, error) {
 }
 
 func GetToken(key string) (string, error) {
-	token, err := redis.Client.Get(redis.Ctx, key).Result()
+	token, err := redis.RedisClient.Get(redis.Ctx, key).Result()
 	if err != nil {
 		return "", err
 	}
@@ -91,7 +90,7 @@ func GetToken(key string) (string, error) {
 
 func SaveToken(key, token string) error {
 	ttl := time.Duration(3) * time.Hour
-	err := redis.Client.Set(redis.Ctx, key, token, ttl).Err()
+	err := redis.RedisClient.Set(redis.Ctx, key, token, ttl).Err()
 	if err != nil {
 		return err
 	}
@@ -99,7 +98,7 @@ func SaveToken(key, token string) error {
 }
 
 func DeleteToken(key string) error {
-	err := redis.Client.Del(redis.Ctx, key).Err()
+	err := redis.RedisClient.Del(redis.Ctx, key).Err()
 	if err != nil {
 		return err
 	}

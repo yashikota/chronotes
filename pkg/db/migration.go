@@ -1,21 +1,21 @@
 package db
 
 import (
-	"log"
+	"log/slog"
 
 	"gorm.io/gorm"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 )
 
 func Migration(db *gorm.DB) {
 	err := DB.AutoMigrate(
 		&model.User{},
 		&model.Note{},
-		&model.Account{},
+		&model.Accounts{},
 	)
 
 	if err != nil {
-		log.Fatal("Failed to migrate database:", err)
+		slog.Error("Failed to migrate database:" + err.Error())
 	}
 }

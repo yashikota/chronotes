@@ -1,18 +1,18 @@
 package users
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
-	users "github.com/yashikota/chronotes/pkg/users"
+	"github.com/yashikota/chronotes/model/v1"
+	"github.com/yashikota/chronotes/pkg/users"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func DeleteHandler(w http.ResponseWriter, r *http.Request) {
+func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
-	user := model.User{}
-	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).ID
+	user := model.NewUser()
+	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).UserID
 
 	// Check if token exists
 	key := "jwt:" + user.UserID
@@ -21,26 +21,26 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Validation passed")
+	slog.Info("Validation passed")
 
 	// Delete the user
-	err := users.DeleteUser(&user)
+	err := users.DeleteUser(user)
 	if err != nil {
-		log.Println("Login failed")
+		slog.Warn("Login failed")
 		utils.ErrorJSONResponse(w, http.StatusUnauthorized, err)
 		return
 	}
 
-	log.Println("Delete user successful")
+	slog.Info("Delete user successful")
 
 	// Delete token
-	log.Println("Logout user.UserID: ", user.UserID)
+	slog.Info("Logout user.UserID: " + user.UserID)
 	if err := utils.DeleteToken(key); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	log.Println("Delete toke successful")
+	slog.Info("Delete toke successful")
 
 	// Response
 	res := map[string]interface{}{"message": "delete user successful"}

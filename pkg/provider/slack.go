@@ -7,7 +7,7 @@ import (
 	"time"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
-	"github.com/yashikota/chronotes/pkg/utils"
+	"github.com/yashikota/chronotes/pkg/gemini"
 
 	"github.com/slack-go/slack"
 )
@@ -16,7 +16,7 @@ func SlackProvider(channelID string) ([]string, error) {
 	token := os.Getenv("SLACK_TOKEN")
 
 	if token == "" {
-		slog.Warn("SLACK_TOKEN environment variable is not set")
+		slog.Error("SLACK_TOKEN environment variable is not set")
 		return []string{}, nil
 	}
 
@@ -28,7 +28,7 @@ func SlackProvider(channelID string) ([]string, error) {
 	})
 
 	if err != nil {
-		slog.Warn("Slack : error fetching channel history", slog.Any("error", err))
+		slog.Error("Slack : error fetching channel history" + err.Error())
 		return []string{}, nil
 	}
 
@@ -69,14 +69,14 @@ func SlackProvider(channelID string) ([]string, error) {
 	contens := extractContentSlack(todayMessages)
 
 	if contens == nil {
-		slog.Warn("Slack : could not fetch commits")
+		slog.Error("Slack : could not fetch commits")
 		return []string{}, nil
 	}
 
 	// fmt.Println("Contents:", contens)
-	summaries, err := utils.SummarizeText(contens)
+	summaries, err := gemini.SummarizeText(contens)
 	if err != nil {
-		slog.Warn("Slack : error summarizing text", slog.Any("error", err))
+		slog.Error("Slack : error summarizing text" + err.Error())
 		return []string{}, nil
 	}
 	// fmt.Println("Summarized texts:", summaries)

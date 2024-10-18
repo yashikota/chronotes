@@ -9,23 +9,23 @@ import (
 	"github.com/bwmarrin/discordgo"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
-	"github.com/yashikota/chronotes/pkg/utils"
+	"github.com/yashikota/chronotes/pkg/gemini"
 )
 
 func DiscordProvider(channelID string) ([]string, error) {
 	if channelID == "" {
-		slog.Warn("Discord : channelID is not set")
+		slog.Error("Discord : channelID is not set")
 		return []string{}, nil
 	}
 	token := os.Getenv("DISCORD_TOKEN")
 	if token == "" {
-		slog.Warn("Discord : DISCORD_TOKEN environment variable is not set")
+		slog.Error("Discord : DISCORD_TOKEN environment variable is not set")
 		return []string{}, nil
 	}
 
 	messages, err := runBot(channelID, token)
 	if err != nil {
-		slog.Warn("Discord : Error running bot")
+		slog.Error("Discord : Error running bot")
 		return []string{}, nil
 	}
 
@@ -34,9 +34,9 @@ func DiscordProvider(channelID string) ([]string, error) {
 	// 「Today」カテゴリのメッセージのみを取り出す
 	todayMessages := categorizedMessages["Today"]
 	contents := extractContentsDiscord(todayMessages)
-	summaries, err := utils.SummarizeText(contents)
+	summaries, err := gemini.SummarizeText(contents)
 	if err != nil {
-		slog.Warn("Discord : Error summarizing text")
+		slog.Error("Discord : Error summarizing text")
 		return []string{}, nil
 	}
 	return summaries, nil
@@ -53,7 +53,7 @@ func extractContentsDiscord(messages []model.DiscordMessage) []string {
 func runBot(channelID, token string) ([]*discordgo.Message, error) {
 	dg, err := discordgo.New("Bot " + token)
 	if err != nil {
-		slog.Warn("Discord : Error creating Discord session")
+		slog.Error("Discord : Error creating Discord session")
 		return nil, nil
 	}
 
@@ -61,7 +61,7 @@ func runBot(channelID, token string) ([]*discordgo.Message, error) {
 
 	err = dg.Open()
 	if err != nil {
-		slog.Warn("Discord : Error opening connection")
+		slog.Error("Discord : Error opening connection")
 		return nil, nil
 	}
 	defer dg.Close()
@@ -78,7 +78,7 @@ func getMessageHistory(s *discordgo.Session, channelID string) ([]*discordgo.Mes
 	for {
 		messages, err := s.ChannelMessages(channelID, 100, lastMessageID, "", "")
 		if err != nil {
-			slog.Warn("Discord : Error getting messages")
+			slog.Error("Discord : Error getting messages")
 			return nil, nil
 		}
 		if len(messages) == 0 {

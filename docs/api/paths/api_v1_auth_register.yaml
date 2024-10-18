@@ -1,0 +1,37 @@
+post:
+  operationId: Auth_register
+  summary: Register a new user
+  parameters: []
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                example: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4uZG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                pattern: ^[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_.+/=]+$
+                format: jwt
+                description: JWTトークン
+            required:
+              - token
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Auth
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/RegisterRequest.yaml
+  security:
+    - {}

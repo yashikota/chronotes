@@ -2,23 +2,31 @@ package redis
 
 import (
 	"context"
-	"log"
+	"log/slog"
 
 	"github.com/redis/go-redis/v9"
 )
 
-var Client *redis.Client
+var RedisClient *redis.Client
 var Ctx = context.Background()
 
 func Connect() {
-	Client = redis.NewClient(&redis.Options{
+	RedisClient = redis.NewClient(&redis.Options{
 		Addr: "redis:6379",
 	})
 
-	_, err := Client.Ping(Ctx).Result()
+	_, err := RedisClient.Ping(Ctx).Result()
 	if err != nil {
-		log.Fatal(err)
+		slog.Error(err.Error())
 	}
 
-	log.Println("Connected to Redis")
+	slog.Info("Connected to Redis")
 }
+
+// func Initialize() {
+// 	_, err := Client.FlushAll(Ctx).Result()
+// 	if err != nil {
+// 		slog.Error("Failed to initialize Redis")
+// 	}
+// 	slog.Info("Successfully initialized Redis")
+// }

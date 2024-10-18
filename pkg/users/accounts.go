@@ -2,49 +2,45 @@ package users
 
 import (
 	"errors"
-	"log"
+	"log/slog"
 
 	"gorm.io/gorm"
 
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 
-func UpdateAccounts(newAccounts *model.Account) error {
-	if db.DB == nil {
-		return errors.New("database connection is not initialized")
-	}
+func GetAccounts(userID string) (*model.Accounts, error) {
+	slog.Info("Updating accounts: " + userID)
 
-	log.Println("Updating accounts: ", newAccounts)
-
-	oldAccounts := model.Account{}
-	result := db.DB.Where("user_id = ?", newAccounts.UserID).First(&oldAccounts)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		// Create new account
-		if err := db.DB.Create(&newAccounts).Error; err != nil {
-			return err
+	accounts := model.NewAccounts()
+	result := db.DB.Model(&model.Accounts{}).Where("user_id = ?", userID).First(&accounts)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return accounts, nil
 		}
-	} else if result.Error != nil {
-		return result.Error
+		return nil, result.Error
 	}
+	return accounts, nil
+}
 
-	updates := map[string]interface{}{}
-	if newAccounts.SlackChannelID != "" {
-		updates["slack_channel_id"] = newAccounts.SlackChannelID
-	}
-	if newAccounts.GitHubUserID != "" {
-		updates["git_hub_user_id"] = newAccounts.GitHubUserID
-	}
-	if newAccounts.DiscordChannelID != "" {
-		updates["discord_channel_id"] = newAccounts.DiscordChannelID
-	}
-	if newAccounts.QiitaUserID != "" {
-		updates["qiita_user_id"] = newAccounts.QiitaUserID
-	}
+func UpdateAccounts(accounts *model.Accounts) error {
+	slog.Info("Updating accounts: " + accounts.UserID)
 
-	if len(updates) > 0 {
-		if err := db.DB.Model(&oldAccounts).Where("user_id = ?", newAccounts.UserID).Updates(updates).Error; err != nil {
-			return err
+	result := db.DB.Model(&model.Accounts{}).Where("user_id = ?", accounts.UserID).First(&model.Accounts{})
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			result = db.DB.Create(accounts)
+			if result.Error != nil {
+				return result.Error
+			}
+		} else {
+			return result.Error
+		}
+	} else {
+		result = db.DB.Model(&model.Accounts{}).Where("user_id = ?", accounts.UserID).Updates(accounts)
+		if result.Error != nil {
+			return result.Error
 		}
 	}
 

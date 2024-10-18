@@ -1,103 +1,65 @@
 package notes
 
 import (
-	"errors"
+	"fmt"
+	"strings"
 	"time"
 
-	"gorm.io/gorm"
-
-	model "github.com/yashikota/chronotes/model/v1/db"
+	"github.com/yashikota/chronotes/model/v1"
 	"github.com/yashikota/chronotes/pkg/db"
 )
 
-func GetNote(userID string, dateTime time.Time) (model.Note, error) {
-	if db.DB == nil {
-		return model.Note{}, errors.New("database connection is not initialized")
-	}
-
-	// Get note from database
-	note := model.Note{}
-	result := db.DB.Where("user_id = ? AND created_at::date = ?::date", userID, dateTime).First(&note)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return model.Note{}, nil
-	} else if result.Error != nil {
-		return model.Note{}, result.Error
-	}
-
-	return note, nil
-}
-
-func GetNoteIgnoreContent(userID string, dateTime time.Time) (model.Note, error) {
-	if db.DB == nil {
-		return model.Note{}, errors.New("database connection is not initialized")
-	}
-
-	// Get note from database
-	note := model.Note{}
-	result := db.DB.Where("user_id = ? AND created_at::date = ?::date", userID, dateTime).First(&note)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return model.Note{}, nil
-	} else if result.Error != nil {
-		return model.Note{}, result.Error
-	}
-	note.Content = ""
-
-	return note, nil
-}
-
-func GetSummary(userID string, startDate time.Time, endDate time.Time, daysCount int) (model.Summary, error) {
-	result := db.DB.Where("user_id = ? AND start_date = ? AND end_date = ? AND days_count = ?",
-		userID, startDate, endDate, daysCount).First(&model.Summary{})
-
-	var summary model.Summary
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return model.Summary{}, nil
-	} else if result.Error != nil {
-		return model.Summary{}, result.Error
-	}
-
-	return summary, nil
-}
-
-func GetNoteContents(userID string, startDate time.Time, endDate time.Time) ([]string, error) {
-	query := db.DB.Where("user_id = ? AND created_at::date BETWEEN ? AND ?",
-		userID, startDate, endDate)
-
-	var notes []model.Note
-	result := query.Select("content").Find(&notes)
-
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	contents := make([]string, len(notes))
-	for i, note := range notes {
-		contents[i] = note.Content
-	}
-
-	return contents, nil
-}
-
-func GetNoteList(userID string, startDate time.Time, endDate time.Time) ([]map[string]string, error) {
-	query := db.DB.Where("user_id = ? AND created_at::date BETWEEN ? AND ?",
+func GetNotes(userID string, startDate time.Time, endDate time.Time, fields []string) ([]map[string]string, error) {
+	query := db.DB.Where("user_id = ? AND created_at::date BETWEEN ?::date AND ?::date",
 		userID, startDate, endDate)
 
 	var noteList []map[string]string
-	rows, err := query.Model(&model.Note{}).Select("title, tags, created_at").Rows()
+	note := model.NewNote()
+	filed := strings.Join(fields, ",")
+	rows, err := query.Model(note).Select(filed).Rows()
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var title, tags, date string
-		rows.Scan(&title, &tags, &date)
-		noteList = append(noteList, map[string]string{
-			"title": title,
-			"tags":  tags,
-			"date":  date,
-		})
+		var note model.Note
+		db.DB.ScanRows(rows, &note)
+		noteList = append(noteList, toMap(&note))
+	}
+	return noteList, nil
+}
+
+func toMap(note *model.Note) map[string]string {
+	result := make(map[string]string)
+
+	if note.NoteID != "" {
+		result["note_id"] = note.NoteID
+	}
+	if note.UserID != "" {
+		result["user_id"] = note.UserID
+	}
+	if note.Title != "" {
+		result["title"] = note.Title
+	}
+	if note.Content != "" {
+		result["content"] = note.Content
+	}
+	if note.Tags != "" {
+		result["tags"] = note.Tags
+	}
+	if note.Length != 0 {
+		result["length"] = fmt.Sprint(note.Length)
+	}
+	if !note.CreatedAt.IsZero() {
+		result["created_at"] = note.CreatedAt.Format(time.RFC3339)
+	}
+	if !note.UpdatedAt.IsZero() {
+		result["updated_at"] = note.UpdatedAt.Format(time.RFC3339)
+	}
+	if !note.DeletedAt.Time.IsZero() {
+		result["deleted_at"] = note.DeletedAt.Time.Format(time.RFC3339)
 	}
 
-	return noteList, nil
+	return result
 }

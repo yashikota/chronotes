@@ -37,9 +37,7 @@ dist/
 .env
 
 # dev photo
-*.jpeg
-*.jpg
-*.png
+img/
 
 # log analytics
 logs/
@@ -50,5 +48,18 @@ tmp/
 
 # basic auth
 .htpasswd
+
+# cert
+.certs
+
+# elasticsearch
+es-data/
+
+# minio
+minio-data/
+
+# rabbitmq
+rabbitmq-data/
+rabbitmq-log/
 
 # End of https://www.toptal.com/developers/gitignore/api/go
