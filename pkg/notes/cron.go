@@ -23,7 +23,7 @@ func Cron() {
 	ns.Start()
 
 	_, err = ns.NewJob(
-		gocron.CronJob("0 0 0 * * *", false),
+		gocron.CronJob("50 23 * * *", false),
 		gocron.NewTask(GenerateNoteCron),
 	)
 	if err != nil {
