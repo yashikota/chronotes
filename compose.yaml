@@ -135,7 +135,7 @@ services:
     image: redocly/redoc:v2.1.5
     container_name: redoc
     environment:
-      - SPEC_URL=/openapi/bundled.yaml
+      - SPEC_URL=/redoc/openapi/bundled.yaml
       - TZ=Asia/Tokyo
     volumes:
       - type: bind
@@ -249,25 +249,16 @@ services:
       timeout: 30s
       retries: 3
 
-  dozzle:
-    image: amir20/dozzle:v8.6.1
-    container_name: dozzle
-    volumes:
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-
-  prism:
-    image: stoplight/prism:5.11.2
-    container_name: prism
-    command: "mock -h 0.0.0.0 /tmp/api/openapi.yaml"
-    environment:
-      - TZ=Asia/Tokyo
-    volumes:
-      - type: bind
-        source: "docs/api"
-        target: "/tmp/api"
-        read_only: true
+  # prism:
+  #   image: stoplight/prism:5.11.2
+  #   command: "mock -h 0.0.0.0 /tmp/api/openapi.yaml"
+  #   environment:
+  #     - TZ=Asia/Tokyo
+  #   volumes:
+  #     - type: bind
+  #       source: "docs/api"
+  #       target: "/tmp/api"
+  #       read_only: true
 
 volumes:
   db-data:
