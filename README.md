@@ -23,7 +23,8 @@ task: Available tasks for this project:
 * api:lint:           Lint API documentation
 * api:split:          Split OpenAPI specification
 * api:tsp:            Generate Open API from TypeSpec
-* dev:re:             Rebuild service
+* dev:down:           Stop service
+* dev:up:             Rebuild service
 * docker:lint:        Lint Dockerfile
 * go:fmt:             Format Go code
 * go:lint:            Lint Go code
