@@ -1,10 +1,10 @@
 package notes
 
 import (
+	"github.com/go-co-op/gocron/v2"
+	"github.com/yashikota/chronotes/pkg/users"
 	"log/slog"
 	"time"
-    "github.com/go-co-op/gocron/v2"
-	"github.com/yashikota/chronotes/pkg/users"
 )
 
 func Cron() {
@@ -32,7 +32,7 @@ func Cron() {
 	}
 }
 
-func GenerateNoteCron(){
+func GenerateNoteCron() {
 	var usersList []string
 	today := time.Now().Format("2006-01-02")
 	usersList, err := users.GetUsersList()
