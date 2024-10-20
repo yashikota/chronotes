@@ -35,12 +35,12 @@ func LoadImage(data []byte, fileType string) (image.Image, error) {
 	return img, nil
 }
 
-func Resize(data []byte, maxHeight int) []byte {
+func Resize(data []byte, maxHeight int) (*bytes.Buffer, int64) {
 	// Aspect ratio preserving image resizing
 	mimeType := http.DetectContentType(data)
 	img, err := LoadImage(data, mimeType)
 	if err != nil {
-		return nil
+		return nil, 0
 	}
 
 	// Calculate the new size
@@ -63,5 +63,8 @@ func Resize(data []byte, maxHeight int) []byte {
 	buf := new(bytes.Buffer)
 	png.Encode(buf, dst)
 
-	return buf.Bytes()
+	// Get Size
+	fileSize := int64(buf.Len())
+
+	return buf, fileSize
 }

@@ -38,7 +38,9 @@ namespace Chronotes {
      */
     @put
     @summary("Update user information")
-    update(@body requestBody: UpdateUserRequest): GetUpdateUserResponse | ErrorResponse;
+    update(
+      @body requestBody: UpdateUserRequest,
+    ): GetUpdateUserResponse | ErrorResponse;
 
     @delete
     @summary("Delete a user")
