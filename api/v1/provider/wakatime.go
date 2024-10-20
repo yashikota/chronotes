@@ -21,7 +21,7 @@ func WakatimeHandler(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
-	
+
 	endDate, err := utils.GetQueryParam(r, "endDate", true)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)

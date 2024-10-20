@@ -11,7 +11,7 @@ import (
 var MinioClient *minio.Client
 
 func Connect() {
-	endpoint := "localhost:9000"
+	endpoint := "minio:9000"
 	accessKeyID := "root"
 	secretAccessKey := os.Getenv("MINIO_PASSWORD")
 	useSSL := false

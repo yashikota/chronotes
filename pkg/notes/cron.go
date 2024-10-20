@@ -1,10 +1,12 @@
 package notes
 
 import (
-	"github.com/go-co-op/gocron/v2"
-	"github.com/yashikota/chronotes/pkg/users"
 	"log/slog"
 	"time"
+
+	"github.com/go-co-op/gocron/v2"
+
+	"github.com/yashikota/chronotes/pkg/users"
 )
 
 func Cron() {

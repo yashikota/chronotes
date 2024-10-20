@@ -14,8 +14,8 @@ post:
     `email` でログインする場合は、
     ```json
     {
-     "email": "test@example.com",
-     "password": "password"
+      "email": "test@example.com",
+      "password": "password"
     }
     ```
   parameters: []

@@ -41,11 +41,12 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	// Connect
+	// Initialize
 	db.Connect()
 	redis.Connect()
 	elastic.Connect()
 	minio.Connect()
+	minio.CreateBucket()
 	rabbitmq.Connect()
 
 	// Setup JWT
@@ -80,7 +81,8 @@ func main() {
 
 			// Images routes
 			r.HandleFunc("POST /images", images.UploadImageHandler)
-			// r.HandleFunc("DELETE /images", images.DeleteImageHandler)
+			r.HandleFunc("GET /images", images.GetImageHandler)
+			r.HandleFunc("DELETE /images", images.DeleteImageHandler)
 		})
 
 		// Admin routes

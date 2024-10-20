@@ -50,10 +50,10 @@ func SaveFile(data []byte, path string, extension string) (string, error) {
 	return filename, nil
 }
 
-func ReadFormFile(r *http.Request) ([]byte, error) {
-	file, _, err := r.FormFile("image")
+func ReadFormFile(r *http.Request) (*bytes.Buffer, string, int64, error) {
+	file, header, err := r.FormFile("image")
 	if err != nil {
-		return nil, errors.New("failed to read the form file")
+		return nil, "", 0, errors.New("failed to read the form file")
 	}
 	defer file.Close()
 
@@ -61,8 +61,8 @@ func ReadFormFile(r *http.Request) ([]byte, error) {
 	buf := new(bytes.Buffer)
 	_, err = io.Copy(buf, file)
 	if err != nil {
-		return nil, errors.New("failed to read the form file")
+		return nil, "", 0, errors.New("failed to read the form file")
 	}
 
-	return buf.Bytes(), nil
+	return buf, header.Filename, header.Size, nil
 }

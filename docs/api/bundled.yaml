@@ -88,8 +88,8 @@ paths:
         `email` でログインする場合は、
         ```json
         {
-         "email": "test@example.com",
-         "password": "password"
+          "email": "test@example.com",
+          "password": "password"
         }
         ```
       parameters: []
@@ -210,7 +210,7 @@ paths:
     post:
       operationId: Images_uploadImage
       summary: Upload an image
-      description: 対応画像形式はpngとjpegとwebpのみ。ファイルサイズは10MBまで。
+      description: 対応画像形式はpngとjpegとwebpのみ。ファイルサイズは10MBまで
       parameters: []
       responses:
         '200':
@@ -241,12 +241,41 @@ paths:
                 - image
       security:
         - BearerAuth: []
+    get:
+      operationId: Images_getImage
+      summary: Get an image
+      description: '`object_name` を指定して画像を取得。URLは60秒間のみ有効'
+      parameters:
+        - name: object_name
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: string
+                format: byte
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Images
+      security:
+        - BearerAuth: []
     delete:
       operationId: Images_deleteImage
       summary: Delete an image
-      description: '`image_path`には画像のIDを指定して削除'
+      description: '`object_name` を指定して削除'
       parameters:
-        - name: image_id
+        - name: object_name
           in: query
           required: true
           schema:
@@ -423,7 +452,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetUserResponse'
+                $ref: '#/components/schemas/GetUpdateUserResponse'
         default:
           description: An unexpected error response.
           content:
@@ -442,7 +471,7 @@ paths:
         例えば、GitHubアカウントのみ更新する場合
         ```json
         {
-         "accounts": {
+          "accounts": {
           "github_user_id": "yashikota"
         }
         ```
@@ -454,7 +483,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/GetUpdateUserResponse'
         default:
           description: An unexpected error response.
           content:
@@ -577,7 +606,7 @@ components:
           type: string
           example: Error
           description: Error message
-    GetUserResponse:
+    GetUpdateUserResponse:
       type: object
       required:
         - user_id
@@ -760,17 +789,12 @@ components:
     UploadImageResponse:
       type: object
       required:
-        - converted
-        - original
+        - object_name
       properties:
-        converted:
+        object_name:
           type: string
-          example: img/01JA0QTJB2MHTBNJV3SJ9KYN9J.jpg
-          description: 変換後の画像パス
-        original:
-          type: string
-          example: img/01JA0QTJB2MHTBNJV3SJ9KYN9J_original.jpg
-          description: 変換前の画像パス
+          example: test123/01JAKVW7B6SRJZTV4AXV3E1FK1_my_dango.png
+          description: 画像パス
     User:
       type: object
       required:
