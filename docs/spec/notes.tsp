@@ -12,7 +12,9 @@ namespace Chronotes {
      * - `title`
      * - `content`
      * - `length`
-     * - `tags` \
+     * - `tags`
+     * - `created_at`
+     * - `updated_at` \
      * が指定可能。\
      * 複数指定する場合は空白なしのコンマで指定 \
      * (例) `title,tags`
