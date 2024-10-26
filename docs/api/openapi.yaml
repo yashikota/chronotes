@@ -26,6 +26,8 @@ paths:
     $ref: paths/api_v1_notes.yaml
   /api/v1/notes/search:
     $ref: paths/api_v1_notes_search.yaml
+  /api/v1/notes/share:
+    $ref: paths/api_v1_notes_share.yaml
   /api/v1/users/me:
     $ref: paths/api_v1_users_me.yaml
   /api/v1/users/promote:

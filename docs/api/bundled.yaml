@@ -441,6 +441,65 @@ paths:
         - Notes
       security:
         - BearerAuth: []
+  /api/v1/notes/share:
+    get:
+      operationId: ShareNotes_shareNotes
+      summary: Share notes
+      parameters:
+        - name: note_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: FHNWFLAQN
+            pattern: ^[a-zA-Z0-9]+$
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Notes
+      security:
+        - BearerAuth: []
+    delete:
+      operationId: ShareNotes_unshareNotes
+      summary: Unshare notes
+      parameters:
+        - name: note_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: FHNWFLAQN
+            pattern: ^[a-zA-Z0-9]+$
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Notes
+      security:
+        - BearerAuth: []
   /api/v1/users/me:
     get:
       operationId: Users_get
