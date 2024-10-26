@@ -9,6 +9,7 @@ type Accounts struct {
 	QiitaUserID      string `json:"qiita_user_id"`
 	ZennUsername     string `json:"zenn_username"`
 	WakatimeToken    string `json:"wakatime_token"`
+	ConnpassUserID   string `json:"connpass_user_id"`
 }
 
 func NewAccounts() *Accounts {
