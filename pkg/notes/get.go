@@ -30,6 +30,48 @@ func GetNotes(userID string, startDate time.Time, endDate time.Time, fields []st
 	return noteList, nil
 }
 
+func GetByNoteID(noteIDs []string, fields []string) ([]map[string]string, error) {
+	query := db.DB.Where("id IN (?)", noteIDs)
+
+	var noteList []map[string]string
+	note := model.NewNote()
+	filed := strings.Join(fields, ",")
+	rows, err := query.Model(note).Select(filed).Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var note model.Note
+		db.DB.ScanRows(rows, &note)
+		noteList = append(noteList, toMap(&note))
+	}
+	return noteList, nil
+}
+
+func GetUSerAllNotes(userID string, fields []string) ([]map[string]string, error) {
+	query := db.DB.Where("user_id = ?", userID)
+
+	note := model.NewNote()
+	filed := strings.Join(fields, ",")
+	rows, err := query.Model(note).Select(filed).Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var noteList []map[string]string
+	for rows.Next() {
+		var note model.Note
+		if err := db.DB.ScanRows(rows, &note); err != nil {
+			return nil, err
+		}
+		noteList = append(noteList, toMap(&note))
+	}
+	return noteList, nil
+}
+
 func toMap(note *model.Note) map[string]string {
 	result := make(map[string]string)
 
