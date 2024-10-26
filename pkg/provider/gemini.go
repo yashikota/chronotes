@@ -42,6 +42,12 @@ func Gemini(input model.Accounts) (provider.Response, error) {
 	} else {
 		slog.Error("ZennProvider error for user %s: %v\n", input.ZennUsername, err)
 	}
+	if connpassText, err := ConnpassProvider(input.ConnpassUserID); err == nil {
+		text = append(text, connpassText...)
+	} else {
+		slog.Error("ConnpassProvider error for user %s: %v\n",
+			input.ConnpassUserID, err)
+	}
 	day = utils.GetDay()
 
 	if len(text) == 0 {
