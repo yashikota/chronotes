@@ -105,7 +105,6 @@ paths:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4uZG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
                     pattern: ^[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_.+/=]+$
-                    format: jwt
                     description: JWTトークン
                 required:
                   - token
@@ -164,7 +163,6 @@ paths:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4uZG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
                     pattern: ^[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_.+/=]+$
-                    format: jwt
                     description: JWTトークン
                 required:
                   - token
@@ -442,7 +440,7 @@ paths:
       security:
         - BearerAuth: []
   /api/v1/notes/share:
-    get:
+    post:
       operationId: ShareNotes_shareNotes
       summary: Share notes
       parameters:
@@ -461,6 +459,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SuccessResponse'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Notes
+      security:
+        - BearerAuth: []
+    get:
+      operationId: ShareNotes_getSharedNotes
+      summary: Get shared notes
+      parameters:
+        - name: share_url
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 01J9ESHFPMJDX5FH4JKQKE6TJM
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
         default:
           description: An unexpected error response.
           content:
@@ -692,7 +718,6 @@ components:
           type: string
           example: test@example.com
           pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
-          format: email
           description: メールアドレス
         createdAt:
           type: string
@@ -722,7 +747,6 @@ components:
           type: string
           example: test@example.com
           pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
-          format: email
           description: メールアドレス
         password:
           type: string
@@ -738,6 +762,7 @@ components:
         - title
         - content
         - tags
+        - length
         - createdAt
         - updatedAt
       properties:
@@ -770,6 +795,13 @@ components:
           example: go,python
           pattern: ^[a-z0-9, ]+$
           description: タグ。`,`区切りで複数指定可能
+        length:
+          type: integer
+          description: 文字数
+        share_url:
+          type: string
+          example: 01J9ESHFPMJDX5FH4JKQKE6TJM
+          description: 共有URL
         createdAt:
           type: string
           format: date-time
@@ -805,7 +837,6 @@ components:
           type: string
           example: test@example.com
           pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
-          format: email
           description: メールアドレス
         password:
           type: string
@@ -835,7 +866,6 @@ components:
           type: string
           example: test@example.com
           pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
-          format: email
           description: メールアドレス
         password:
           type: string
@@ -882,7 +912,6 @@ components:
           type: string
           example: test@example.com
           pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
-          format: email
           description: メールアドレス
         password:
           type: string
@@ -894,7 +923,6 @@ components:
           type: string
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG4uZG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
           pattern: ^[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_=]+\.[a-zA-Z0-9-_.+/=]+$
-          format: jwt
           description: JWTトークン
         createdAt:
           type: string

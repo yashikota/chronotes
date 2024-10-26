@@ -1,4 +1,4 @@
-get:
+post:
   operationId: ShareNotes_shareNotes
   summary: Share notes
   parameters:
@@ -17,6 +17,34 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/SuccessResponse.yaml
+    default:
+      description: An unexpected error response.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ErrorResponse.yaml
+  tags:
+    - Notes
+  security:
+    - BearerAuth: []
+get:
+  operationId: ShareNotes_getSharedNotes
+  summary: Get shared notes
+  parameters:
+    - name: share_url
+      in: query
+      required: true
+      schema:
+        type: string
+        example: 01J9ESHFPMJDX5FH4JKQKE6TJM
+      explode: false
+  responses:
+    '200':
+      description: The request has succeeded.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Note.yaml
     default:
       description: An unexpected error response.
       content:

@@ -49,7 +49,7 @@ namespace Chronotes {
 
     @get
     @summary("Get shared notes")
-    getSharedNotes(@query note_id: Note.note_id): Note[] | ErrorResponse;
+    getSharedNotes(@query share_url: Note.share_url): Note | ErrorResponse;
 
     @delete
     @summary("Unshare notes")

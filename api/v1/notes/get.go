@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/yashikota/chronotes/model/v1"
-	"github.com/yashikota/chronotes/pkg/notes"
+	note "github.com/yashikota/chronotes/pkg/notes"
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-func UnShareNoteHandler(w http.ResponseWriter, r *http.Request) {
+func GetSharedNoteHandler(w http.ResponseWriter, r *http.Request) {
 	// Validate token
 	user := model.NewUser()
 	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).UserID
@@ -24,21 +24,22 @@ func UnShareNoteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Validation passed")
 
 	// Get date from request
-	noteID, err := utils.GetQueryParam(r, "note_id", true)
+	shareURL, err := utils.GetQueryParam(r, "share_url", true)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
-	slog.Info("note_id: " + noteID)
-
-	// UnShare Note
-	err = notes.UnShareNote(noteID)
+	// Get sharedNote from database
+	sharedNote, err := note.GetNoteByNoteShareURL(shareURL)
 	if err != nil {
-		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	res := map[string]string{"message": "success"}
+	slog.Info("note: ", slog.Any("%v", sharedNote))
+
+	// Response
+	res := map[string]interface{}{"shared_note": sharedNote}
 	utils.SuccessJSONResponse(w, res)
 }

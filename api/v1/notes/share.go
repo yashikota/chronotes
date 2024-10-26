@@ -30,12 +30,15 @@ func ShareNoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	slog.Info("note_id: " + noteID)
+
 	// Share Note
-	note, err := notes.ShareNote(noteID)
+	shareURL, err := notes.ShareNote(noteID)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
-	utils.SuccessJSONResponse(w, note)
+	res := map[string]string{"share_id": shareURL}
+	utils.SuccessJSONResponse(w, res)
 }
