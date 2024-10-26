@@ -102,6 +102,14 @@ namespace Chronotes {
     @example("go,python")
     tags: string;
 
+    @doc("文字数")
+    length: integer;
+
+    @doc("共有URL")
+    @format("share_url")
+    @example("01J9ESHFPMJDX5FH4JKQKE6TJM")
+    share_url?: string;
+
     createdAt: User.createdAt;
     updatedAt: User.updatedAt;
   }

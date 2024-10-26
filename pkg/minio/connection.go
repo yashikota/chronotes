@@ -26,5 +26,5 @@ func Connect() {
 		slog.Error(err.Error())
 	}
 
-	slog.Info(MinioClient.EndpointURL().String())
+	slog.Info("Connected to Minio")
 }

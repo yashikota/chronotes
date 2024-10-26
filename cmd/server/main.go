@@ -78,6 +78,9 @@ func main() {
 			r.HandleFunc("DELETE /notes", notes.DeleteNoteHandler)
 			// r.HandleFunc("POST /notes/search", notes.SearchNoteHandler)
 			r.HandleFunc("GET /notes/summary", notes.GetNoteSummaryHandler)
+			r.HandleFunc("GET /notes/share", notes.GetSharedNoteHandler)
+			r.HandleFunc("POST /notes/share", notes.ShareNoteHandler)
+			r.HandleFunc("DELETE /notes/share", notes.UnShareNoteHandler)
 
 			// Images routes
 			r.HandleFunc("POST /images", images.UploadImageHandler)
