@@ -29,7 +29,7 @@ require (
 	github.com/rivo/uniseg v0.4.7
 	github.com/samber/slog-multi v1.2.3
 	github.com/samber/slog-sentry/v2 v2.8.0
-	github.com/slack-go/slack v0.14.0
+	github.com/slack-go/slack v0.15.0
 	golang.org/x/image v0.20.0
 	google.golang.org/api v0.198.0
 )

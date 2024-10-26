@@ -83,6 +83,9 @@ func main() {
 			r.HandleFunc("POST /images", images.UploadImageHandler)
 			r.HandleFunc("GET /images", images.GetImageHandler)
 			r.HandleFunc("DELETE /images", images.DeleteImageHandler)
+
+			// Slack routes
+			r.HandleFunc("GET /slack/start_oauth", utils.StartOAuthFlow)
 		})
 
 		// Admin routes
