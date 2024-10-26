@@ -6,15 +6,24 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"os"
 	"time"
 
 	model "github.com/yashikota/chronotes/model/v1/provider"
 )
 
 func ConnpassProvider(userID string) ([]string, error) {
-
-	baseURL := "https://chronotes:kota@chronotes.yashikota.com/connpass/api/v1/user"
-	url := fmt.Sprintf("%s/%s/attended_event/", baseURL, userID)
+	basicName := os.Getenv("BASIC_NAME")
+	if basicName == ""{
+		slog.Error("Connpass: BasicName is not set")
+	}
+	basicPass := os.Getenv("BASIC_PASS")
+	if basicPass == ""{
+		slog.Error("Connpass: BasicPass is not set")
+	}
+	
+	baseURL := "@chronotes.yashikota.com/connpass/api/v1/user"
+	url := fmt.Sprintf("https://%s:%s%s/attended_event/", basicName, basicPass, baseURL)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		slog.Error("Connpass : Failed to create request")
