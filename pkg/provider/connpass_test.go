@@ -18,7 +18,7 @@ func TestConnpassHandler(t *testing.T) {
 	userID := os.Getenv("CONNPASS_USER_ID")
 
 	if userID == "" {
-		userID = "taueikumi"
+		userID = "yukii5"
 	}
 
 	if userID == "" {

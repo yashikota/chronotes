@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -20,7 +19,7 @@ func ConnpassHandler(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, errors.New("connpass userID is not set"))
 		return
 	}
-	
+
 	data, err := provider.ConnpassProvider(userID)
 
 	if err != nil {
@@ -28,8 +27,5 @@ func ConnpassHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(data); err != nil {
-		utils.SuccessJSONResponse(w, data)
-	}
+	utils.SuccessJSONResponse(w, data)
 }
