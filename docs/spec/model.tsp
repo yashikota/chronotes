@@ -113,4 +113,10 @@ namespace Chronotes {
     createdAt: User.createdAt;
     updatedAt: User.updatedAt;
   }
+
+  model Morph {
+    @doc("形態素解析結果")
+    @example("[[[日本語],[を],[分析],[し],[ます]]]")
+    WordList: string;
+  }
 }

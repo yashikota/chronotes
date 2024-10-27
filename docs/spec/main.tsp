@@ -9,6 +9,7 @@ import "./users.tsp";
 import "./notes.tsp";
 import "./images.tsp";
 import "./admin.tsp";
+import "./morph.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.Rest;
