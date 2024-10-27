@@ -1,6 +1,7 @@
 package notes
 
 import (
+	"encoding/json"
 	"log/slog"
 	"net/http"
 
@@ -24,16 +25,15 @@ func UnShareNoteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Validation passed")
 
 	// Get date from request
-	noteID, err := utils.GetQueryParam(r, "note_id", true)
-	if err != nil {
+	note := model.NewNote()
+	if err := json.NewDecoder(r.Body).Decode(&note); err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
-
-	slog.Info("note_id: " + noteID)
+	slog.Info("note_id: " + note.NoteID)
 
 	// UnShare Note
-	err = notes.UnShareNote(noteID)
+	err := notes.UnShareNote(note.NoteID)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return

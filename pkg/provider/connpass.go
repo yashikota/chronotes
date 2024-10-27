@@ -31,7 +31,6 @@ func ConnpassProvider(userID string) ([]string, error) {
 		return []string{}, err
 	}
 
-
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {

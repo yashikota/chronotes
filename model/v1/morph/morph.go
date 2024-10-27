@@ -8,7 +8,7 @@ type MorphRequest struct {
 }
 
 type MorphResponse struct {
-	InfoFilter string        `json:"info_filter"`
-	RequestID  string        `json:"request_id"`
-	WordList   [][][]string  `json:"word_list"`
+	InfoFilter string       `json:"info_filter"`
+	RequestID  string       `json:"request_id"`
+	WordList   [][][]string `json:"word_list"`
 }
