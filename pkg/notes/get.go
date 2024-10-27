@@ -105,3 +105,23 @@ func toMap(note *model.Note) map[string]string {
 
 	return result
 }
+
+func GetNoteByNoteID(noteID string) (*model.Note, error) {
+	query := db.DB.Where("note_id = ?", noteID)
+	note := model.NewNote()
+	err := query.Model(note).Take(note).Error
+	if err != nil {
+		return nil, err
+	}
+	return note, nil
+}
+
+func GetNoteByNoteShareURL(shareURL string) (*model.Note, error) {
+	query := db.DB.Where("share_url = ?", shareURL)
+	note := model.NewNote()
+	err := query.Model(note).Take(note).Error
+	if err != nil {
+		return nil, err
+	}
+	return note, nil
+}

@@ -40,4 +40,21 @@ namespace Chronotes {
     @summary("Search notes")
     searchNotes(@query query: string): Note[] | ErrorResponse;
   }
+
+  @route("/api/v1/notes/share")
+  @tag("Notes")
+  @useAuth(BearerAuth)
+  interface ShareNotes {
+    @post
+    @summary("Share notes")
+    shareNotes(@query note_id: Note.note_id): SuccessResponse | ErrorResponse;
+
+    @get
+    @summary("Get shared notes")
+    getSharedNotes(@query share_url: Note.share_url): Note | ErrorResponse;
+
+    @delete
+    @summary("Unshare notes")
+    unshareNotes(@query note_id: Note.note_id): SuccessResponse | ErrorResponse;
+  }
 }

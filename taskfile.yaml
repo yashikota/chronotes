@@ -22,15 +22,25 @@ tasks:
     cmds:
       - docker compose up --build
 
-  build:
-    desc: "Build Docker image"
-    cmds:
-      - docker build -t chronotes .
-
   dev:re:
     desc: "Rebuild service"
     cmds:
       - docker compose up -d --build --force-recreate {{.CLI_ARGS}}
+
+  dev:log:
+    desc: "Show logs"
+    cmds:
+      - docker compose logs {{.CLI_ARGS}}
+
+  dev:ps:
+    desc: "List services status"
+    cmds:
+      - docker compose ps
+
+  build:
+    desc: "Build Docker image"
+    cmds:
+      - docker build -t chronotes .
 
   # Go
   go:lint:

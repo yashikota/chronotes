@@ -8,12 +8,14 @@ import (
 
 type Note struct {
 	gorm.Model
-	NoteID  string `json:"note_id" gorm:"uniqueIndex"`
-	UserID  string `json:"user_id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Length  int    `json:"length"`
-	Tags    string `json:"tags"`
+	NoteID           string `json:"note_id" gorm:"uniqueIndex"`
+	UserID           string `json:"user_id"`
+	Title            string `json:"title"`
+	Content          string `json:"content"`
+	TokenizedContent string `json:"tokenized_content"`
+	Length           int    `json:"length"`
+	Tags             string `json:"tags"`
+	ShareURL         string `json:"share_url"`
 }
 
 func NewNote() *Note {
