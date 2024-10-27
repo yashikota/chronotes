@@ -11,7 +11,7 @@ import (
 )
 
 // SearchHandler - ユーザーのノートを検索して、指定された単語を含むノートを返す
-func SearchHandler(w http.ResponseWriter, r *http.Request) {
+func SearchNoteHandler(w http.ResponseWriter, r *http.Request) {
 	// トークンの検証
 	user := model.NewUser()
 	user.UserID = r.Context().Value(utils.TokenKey).(utils.Token).UserID
@@ -42,7 +42,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ノートを検索
-	matchingNotes, err := n.Search(user.UserID, word)
+	matchingNotes, err := n.SearchNote(user.UserID, word)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
