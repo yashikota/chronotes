@@ -12,6 +12,7 @@ import (
 	"github.com/yashikota/chronotes/api/v1/auth"
 	"github.com/yashikota/chronotes/api/v1/debug"
 	"github.com/yashikota/chronotes/api/v1/images"
+	"github.com/yashikota/chronotes/api/v1/morph"
 	"github.com/yashikota/chronotes/api/v1/notes"
 	"github.com/yashikota/chronotes/api/v1/users"
 	"github.com/yashikota/chronotes/pkg/db"
@@ -86,6 +87,9 @@ func main() {
 			r.HandleFunc("POST /images", images.UploadImageHandler)
 			r.HandleFunc("GET /images", images.GetImageHandler)
 			r.HandleFunc("DELETE /images", images.DeleteImageHandler)
+
+			// Morph routes
+			r.HandleFunc("GET /morph", morph.GetMorphHandler)
 		})
 
 		// Admin routes

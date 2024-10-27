@@ -3,6 +3,7 @@ package images
 import (
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"github.com/yashikota/chronotes/pkg/minio"
 	"github.com/yashikota/chronotes/pkg/utils"
@@ -49,6 +50,16 @@ func UploadImageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get SignedURL
+	signedURL, err := minio.GetObjectURL(uploadInfo.Key)
+	if err != nil {
+		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	// Replace URL
+	signedURL = strings.Replace(signedURL, "http://minio:9000", "https://chronotes.yashikota.com/file", 1)
+
 	// Resize the photo
 	// file, fileSize = utils.Resize(file.Bytes(), 720)
 	// _, err = minio.SaveFile(file, "c_" + filePath, fileSize, mimeType)
@@ -58,7 +69,8 @@ func UploadImageHandler(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	res := map[string]string{
-		"object_name": uploadInfo.Key,
+		// "object_name": uploadInfo.Key,
+		"url": signedURL,
 	}
 	utils.SuccessJSONResponse(w, res)
 }

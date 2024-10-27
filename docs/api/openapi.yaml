@@ -9,6 +9,7 @@ tags:
   - name: Notes
   - name: Images
   - name: Admin
+  - name: Morph
 paths:
   /api/v1/admin/notes:
     $ref: paths/api_v1_admin_notes.yaml
@@ -22,6 +23,8 @@ paths:
     $ref: paths/api_v1_health.yaml
   /api/v1/images:
     $ref: paths/api_v1_images.yaml
+  /api/v1/morph:
+    $ref: paths/api_v1_morph.yaml
   /api/v1/notes:
     $ref: paths/api_v1_notes.yaml
   /api/v1/notes/search:

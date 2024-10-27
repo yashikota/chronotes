@@ -9,6 +9,7 @@ tags:
   - name: Notes
   - name: Images
   - name: Admin
+  - name: Morph
 paths:
   /api/v1/admin/notes:
     post:
@@ -294,6 +295,35 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       tags:
         - Images
+      security:
+        - BearerAuth: []
+  /api/v1/morph:
+    get:
+      operationId: Morhpological_getMorph
+      summary: Morhpological analysis
+      description: 文字列を送ると形態素解析した結果を返す
+      parameters:
+        - name: sentence
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Morph'
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Morph
       security:
         - BearerAuth: []
   /api/v1/notes:
@@ -756,6 +786,15 @@ components:
           minLength: 8
           maxLength: 20
           description: パスワード。8文字以上20文字以下
+    Morph:
+      type: object
+      required:
+        - WordList
+      properties:
+        WordList:
+          type: string
+          example: '[[[日本語],[を],[分析],[し],[ます]]]'
+          description: 形態素解析結果
     Note:
       type: object
       required:
