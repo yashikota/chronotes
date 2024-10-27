@@ -2,6 +2,7 @@ package model
 
 import (
 	db "github.com/yashikota/chronotes/model/v1/db"
+	morph "github.com/yashikota/chronotes/model/v1/morph"
 )
 
 type (
@@ -14,6 +15,8 @@ type (
 	Summary      = db.Summary
 	Password     = db.Password
 	Accounts     = db.Accounts
+	MorphRequest = morph.MorphRequest
+	MorphResponse = morph.MorphResponse
 )
 
 const (

@@ -1,0 +1,8 @@
+type: object
+required:
+  - WordList
+properties:
+  WordList:
+    type: string
+    example: '[[[日本語],[を],[分析],[し],[ます]]]'
+    description: 形態素解析結果
