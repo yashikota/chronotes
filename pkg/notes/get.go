@@ -53,6 +53,7 @@ func GetByNoteID(noteIDs []string, fields []string) ([]map[string]string, error)
 func GetUSerAllNotes(userID string, fields []string) ([]map[string]string, error) {
 	query := db.DB.Where("user_id = ?", userID)
 
+	var noteList []map[string]string
 	note := model.NewNote()
 	filed := strings.Join(fields, ",")
 	rows, err := query.Model(note).Select(filed).Rows()
@@ -61,12 +62,9 @@ func GetUSerAllNotes(userID string, fields []string) ([]map[string]string, error
 	}
 	defer rows.Close()
 
-	var noteList []map[string]string
 	for rows.Next() {
 		var note model.Note
-		if err := db.DB.ScanRows(rows, &note); err != nil {
-			return nil, err
-		}
+		db.DB.ScanRows(rows, &note)
 		noteList = append(noteList, toMap(&note))
 	}
 	return noteList, nil

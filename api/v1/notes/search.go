@@ -10,7 +10,7 @@ import (
 	"github.com/yashikota/chronotes/pkg/utils"
 )
 
-// SearchHandler - ユーザーのノートを検索して、指定された単語を含むノートを返す
+// SearchNoteHandler - ユーザーのノートを検索して、指定された単語を含むノートを返す
 func SearchNoteHandler(w http.ResponseWriter, r *http.Request) {
 	// トークンの検証
 	user := model.NewUser()
@@ -26,13 +26,13 @@ func SearchNoteHandler(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Token validation passed")
 
 	// リクエストパラメータから検索ワードを取得
-	word, err := utils.GetQueryParam(r, "word", true)
+	query, err := utils.GetQueryParam(r, "query", true)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
-	slog.Info("Search word received", "word", word)
+	slog.Info("Search query received", "query", query)
 
 	// ユーザー情報の取得
 	user, err = users.GetUser(user)
@@ -42,7 +42,7 @@ func SearchNoteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ノートを検索
-	matchingNotes, err := n.SearchNote(user.UserID, word)
+	matchingNotes, err := n.SearchNote(user.UserID, query)
 	if err != nil {
 		utils.ErrorJSONResponse(w, http.StatusInternalServerError, err)
 		return
