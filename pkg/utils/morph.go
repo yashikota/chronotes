@@ -20,7 +20,7 @@ func GetMorph(sentence string) (model.MorphResponse, error) {
 	}
 
 	req := model.MorphRequest{
-		AppID: appID,
+		AppID:    appID,
 		Sentence: sentence,
 	}
 
